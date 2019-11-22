@@ -4,6 +4,7 @@ import HomePage from '../components/HomePage';
 import ProfilePage from "../components/ProfilePage";
 import NotFoundPage from '../components/NotFoundPage.';
 import Header from '../components/Header';
+import LogInPage from "../components/LogInPage";
 
 const AppRouter=(props)=> {
   return (
@@ -12,7 +13,8 @@ const AppRouter=(props)=> {
       <Header/>
       <Switch>
         <Route exact={true} path="/" component={HomePage}/>
-        <Route  path="/Profile" component={ProfilePage}/>
+        <Route  path="/profile" component={ProfilePage}/>
+        <Route path="/login" component={LogInPage}/>
         <Route component={NotFoundPage}/>
    </Switch>
     </div>

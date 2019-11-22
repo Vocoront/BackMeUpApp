@@ -2,7 +2,8 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import AppRouter from "./routers/AppRouter";
 import * as serviceWorker from './serviceWorker';
-import "./stil.css";
+import 'normalize.css/normalize.css';//koristi se da normalizuje css na razlicitim browser-ima
+import "./styles/styles.scss";
 ReactDOM.render(<AppRouter />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

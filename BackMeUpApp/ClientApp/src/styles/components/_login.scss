@@ -1,0 +1,79 @@
+.login{
+    display: flex;
+    flex-direction: column;
+    margin: $l-size $m-size;
+    padding: $m-size;
+
+    input {
+        margin-top: $m-size;
+        margin-bottom: $l-size;
+        border: none;
+        background: $adjusten-white;
+        border: .1rem solid darken($adjusten-white, 8%);
+        height: $l-size;
+    }
+
+    div {
+        background: $header-background;
+        color: white;
+        text-align: center;
+        border-radius: 10rem;
+        height: $s-container-size/3;
+        width: $s-container-size;
+        padding-top: $s-size;
+        border: .1rem solid lighten($header-background,10%);
+        cursor: pointer;
+    }
+
+}
+
+
+.login--btn:link,login--btn:visited{
+    text-transform: uppercase;
+    text-decoration: none;
+    padding: $m-size;
+    display: inline-block;
+    border-radius: 100px;
+    transition: all .2s;
+    background: $header-background;
+    color: white;
+}
+
+
+
+.login--btn:hover{
+    transform: translateY(-.2rem);
+    box-shadow: 0 1rem 2rem rgba(0,0,0,.3);
+}
+
+
+.login--option-container{
+    display: flex;
+    margin:0;
+    padding: 0;
+}
+
+.login--option{
+    flex: 1 1 100%;
+    height: $xs-container-size;
+    color: $font-light;
+    font-weight: 500;
+    background: $adjusten-white;
+    border-bottom: .1rem solid darken($adjusten-white,8%);
+    padding-top: $l-size;
+    font-size: $m-font-size;
+    text-align: center;
+    cursor: pointer;
+}
+
+.login--option:hover{
+    color: darken($font-light,8%);
+    border-bottom: .3rem solid darken($font-light,8%);
+     font-weight: 600;
+}
+
+.login--option__selected{
+    color: darken($font-light,12%);
+
+    border-bottom: .1rem solid darken($font-light,8%);
+}
