@@ -1,5 +1,7 @@
 import React, { Component } from "react";
-import LogIn from './LogIn';
+import LogIn from "./LogIn";
+import CreateAccount from './CreateAccount';
+
 class LogInPage extends Component {
   constructor(props) {
     super(props);
@@ -10,23 +12,23 @@ class LogInPage extends Component {
     this.loginSubmit.bind(this);
   }
 
-  loginMode=(mode)=>{
-      this.setState({login:mode});
-  }
+  loginMode = mode => {
+    this.setState({ login: mode });
+  };
 
-
-  loginSubmit=()=>{
+  loginSubmit = () => {
     fetch("api/user/me")
-    .then(res=>res.json())
-    .then(data=>console.log(data))
-    .catch(er=>console.log(er));
-  }
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(er => console.log(er));
+  };
 
   render() {
     return (
       <div className="container">
         <div className="login--option-container">
-          <div onClick={()=>this.loginMode(true)}
+          <div
+            onClick={() => this.loginMode(true)}
             className={
               (this.state.login && "login--option login--option__selected") ||
               "login--option "
@@ -34,7 +36,8 @@ class LogInPage extends Component {
           >
             Log In
           </div>
-          <div onClick={()=>this.loginMode(false)}
+          <div
+            onClick={() => this.loginMode(false)}
             className={
               (this.state.login && "login--option") ||
               "login--option  login--option__selected"
@@ -43,10 +46,7 @@ class LogInPage extends Component {
             Create Account
           </div>
         </div>
-        {
-          this.state.login&&   <LogIn submitLogIn={this.loginSubmit}/>
-        }
-     
+        {this.state.login && <LogIn submitLogIn={this.loginSubmit} /> || <CreateAccount/> }
       </div>
     );
   }

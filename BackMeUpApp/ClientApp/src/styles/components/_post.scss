@@ -1,0 +1,30 @@
+.post__container{
+    min-height: $m-container-size;
+    display: flex;
+    flex-direction: column;
+    padding-left: $l-size;
+    justify-content: space-between;
+}
+
+.post__title{
+    margin-bottom: $m-size;
+    font-size: $l-font-size;
+    padding-top: $m-size;
+}
+
+.post__content{
+    flex: 2 2 100%;
+    border-top: .3rem solid black;
+
+}
+
+.post__vote{
+    display: flex;
+    border-top: .3rem solid black;
+}   
+
+.post__vote__option{
+    flex: 1 1 100%;
+    text-align: center;
+    padding: $m-size 0;
+}
