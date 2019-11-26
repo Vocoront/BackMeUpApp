@@ -45,11 +45,30 @@ namespace BackMeUpApp.Controllers
 
         // POST: api/User
         [HttpPost]
-        public async Task<User> Post([FromForm]User value)
+        public async Task<ActionResult<User>> Post([FromForm]User value)
         {
-            IEnumerable<User> ret= await this._client.Cypher.Create("(m:User {params})").WithParam("params",value).Return<User>("m").ResultsAsync;
-            return ret.First();
+            IEnumerable<User> existingUser = await this.GetUser(value);
+            if (existingUser.Count() == 0) {
+                IEnumerable<User> ret = await this._client.Cypher.Create("(m:User {params})").WithParam("params", value).Return<User>("m").ResultsAsync;
+                return Ok(ret.First());
+            }
+
+            return Conflict();
+          
         }
+
+        [HttpPost("login")]
+        public async Task<ActionResult<User>> PostLogin([FromForm]User user)
+        {
+            IEnumerable<User> existingUser =await this._client.Cypher.Match("(m:User)").Where((User m) => m.username == user.username && m.password == user.password).Return<User>("m").ResultsAsync;
+
+            if (existingUser.Count() != 0)
+            {
+                return Ok(existingUser.First());
+            }
+            return BadRequest();
+        }
+
 
         // PUT: api/User/5
         [HttpPut("{id}")]
@@ -62,5 +81,12 @@ namespace BackMeUpApp.Controllers
         public void Delete(int id)
         {
         }
+
+        private async Task<IEnumerable<User>> GetUser(User user)
+        {
+            return await this._client.Cypher.Match("(m:User)").Where((User m) => m.username == user.username || m.email==user.email).Return<User>("m").ResultsAsync;
+        }
+
+
     }
 }

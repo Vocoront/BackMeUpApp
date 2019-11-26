@@ -2,9 +2,9 @@ import React from 'react';
 import {BrowserRouter, Route,Switch} from 'react-router-dom';
 import HomePage from '../components/HomePage';
 import ProfilePage from "../components/ProfilePage";
-import NotFoundPage from '../components/NotFoundPage.';
+import NotFoundPage from '../components/error-page/NotFoundPage';
 import Header from '../components/Header';
-import LogInPage from "../components/LogInPage";
+import LogInPage from "../components/login-page/LogInPage";
 
 const AppRouter=(props)=> {
   return (
