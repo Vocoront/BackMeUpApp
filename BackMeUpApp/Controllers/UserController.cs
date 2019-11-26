@@ -4,20 +4,36 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using BackMeUpApp.DataProviders;
+using Neo4jClient;
+using Neo4jClient.Cypher;
+using BackMeUpApp.DomainModel;
+
 namespace BackMeUpApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
+        private readonly IGraphClient _client;
+
+        public UserController(IGraphClient client)
+        {
+            this._client = client;
+        }
+
         // GET: api/User
         [HttpGet("me")]
-        public string Get()
+        public IList<User> Get()
         {
-         //   UserProvider provider = new UserProvider();
-       //     provider.AddUser();
-            return "RADI OVO DOBRO";
+
+            var query = new Neo4jClient.Cypher.CypherQuery("match (m:User) return m",
+                                                      new Dictionary<string, object>(), CypherResultMode.Set);
+
+            List<User> users = ((IRawGraphClient)_client).ExecuteGetCypherResults<User>(query).ToList();
+
+
+
+            return users;
         }
 
         // GET: api/User/5
@@ -29,8 +45,10 @@ namespace BackMeUpApp.Controllers
 
         // POST: api/User
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<User> Post([FromForm]User value)
         {
+            IEnumerable<User> ret= await this._client.Cypher.Create("(m:User {params})").WithParam("params",value).Return<User>("m").ResultsAsync;
+            return ret.First();
         }
 
         // PUT: api/User/5

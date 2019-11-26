@@ -1,6 +1,7 @@
 import React, { Component } from "react";
+import { connect } from "react-redux";
 import LogIn from "./LogIn";
-import CreateAccount from './CreateAccount';
+import CreateAccount from "./CreateAccount";
 
 class LogInPage extends Component {
   constructor(props) {
@@ -10,7 +11,19 @@ class LogInPage extends Component {
     };
     this.loginMode.bind(this);
     this.loginSubmit.bind(this);
+    this.createAccount.bind(this);
   }
+
+  createAccount = () => {
+    const formData = new FormData();
+    formData.append("username", "miloscar");
+    formData.append("email", "misacar123");
+    formData.append("password", "1234");
+    fetch("api/user", { method: "POST", body: formData })
+      .then(res => res.json())
+      .then(data => console.log(data))
+      .catch(er => console.log(er));
+  };
 
   loginMode = mode => {
     this.setState({ login: mode });
@@ -26,6 +39,7 @@ class LogInPage extends Component {
   render() {
     return (
       <div className="container">
+        {this.props.user.username}
         <div className="login--option-container">
           <div
             onClick={() => this.loginMode(true)}
@@ -46,10 +60,14 @@ class LogInPage extends Component {
             Create Account
           </div>
         </div>
-        {this.state.login && <LogIn submitLogIn={this.loginSubmit} /> || <CreateAccount/> }
+        {(this.state.login && <LogIn submitLogIn={this.createAccount} />) || (
+          <CreateAccount />
+        )}
       </div>
     );
   }
 }
 
-export default LogInPage;
+const mapStateToProps = state => ({ user: state.user });
+
+export default connect(mapStateToProps)(LogInPage);

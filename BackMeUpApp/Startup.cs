@@ -5,6 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Neo4jClient;
+using System;
 
 namespace BackMeUpApp
 {
@@ -21,6 +23,10 @@ namespace BackMeUpApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+
+            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misahaker69");
+            client.Connect();
+            services.AddSingleton<IGraphClient>(provider => client);
 
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
