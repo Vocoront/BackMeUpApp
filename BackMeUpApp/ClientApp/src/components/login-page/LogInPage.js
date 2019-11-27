@@ -2,9 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import passwordValidator from "password-validator";
 import isEmail from "validator/lib/isEmail";
+
 import LogIn from "./LogIn";
 import CreateAccount from "./CreateAccount";
 import ErrorContainer from "../error-page/ErrorContainer";
+import {setToken} from '../../actions/token';
+
 class LogInPage extends Component {
   constructor(props) {
     super(props);
@@ -116,20 +119,21 @@ class LogInPage extends Component {
     formData.append("username", username);
     formData.append("email", email);
     formData.append("password", password);
-    fetch("api/user", { method: "POST", body: formData })
+    fetch("api/auth/create", { method: "POST", body: formData })
       .then(res => {
-        if (res.status === 409) {
-          this.setState((state, props) => ({
-            error: {
-              visible: true,
-              title: "Couldn't create account",
-              message: "User with same username/email alredy exists"
-            }
-          }));
-          throw new Error("User with same username/email alredy exists");
-        } else return res.json();
+        if (res.status !== 200) return res.json();
+        this.setState((state, props) => ({
+          error: {
+            visible: true,
+            title: "Couldn't create account",
+            message: "Account couldn't be created!"
+          }
+        }));
+        throw new Error("Account couldn't be created!");
       })
-      .then(data => console.log(data))
+      .then(data => {
+        this.props.dispatch(setToken(data.token));
+      })
       .catch(er => console.log(er));
   };
 
@@ -141,15 +145,28 @@ class LogInPage extends Component {
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
-    fetch("api/user/login", { method: "POST", body: formData })
-    .then(res => res.json())
-    .then(data => console.log(data))
-    .catch(er => console.log(er));
+    fetch("api/auth/login", { method: "POST", body: formData })
+      .then(res => {
+        if (res.status === 200) return res.json();
+        this.setState((state, props) => ({
+          error: {
+            visible: true,
+            title: "Couldn't login",
+            message: "Login failed!"
+          }
+        }));
+        throw new Error("Login failed!");
+      })
+      .then(data => {
+        this.props.dispatch(setToken(data.token));
+      })
+      .catch(er => console.log(er));
   };
 
   render() {
     return (
       <div>
+        <div className=""></div>
         {this.state.error.visible && (
           <ErrorContainer
             errorTitle={this.state.error.title}
@@ -189,6 +206,6 @@ class LogInPage extends Component {
   }
 }
 
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = state => ({ token: state.token });
 
 export default connect(mapStateToProps)(LogInPage);

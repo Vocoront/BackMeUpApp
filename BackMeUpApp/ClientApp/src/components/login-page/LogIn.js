@@ -29,9 +29,7 @@ class LogIn extends Component {
         />
         <div
           className="login--btn"
-          onClick={() =>
-            this.props.submitLogIn(this.state)
-          }
+          onClick={() => this.props.submitLogIn(this.state)}
         >
           Log In
         </div>
