@@ -1,7 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
-
+import '../node_modules/font-awesome/css/font-awesome.min.css'; 
 import AppRouter from "./routers/AppRouter";
 import configureStore from "./store/configureStore";
 
