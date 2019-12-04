@@ -27,6 +27,8 @@ namespace BackMeUpApp.Controllers
             this._config = config ;
         }
 
+
+
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm]UserForRegisterDto userForRegisterDto)
         {
@@ -68,8 +70,8 @@ namespace BackMeUpApp.Controllers
         public async Task<IActionResult> Register([FromForm]UserForRegisterDto userForRegisterDto)
         {
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-            if (await this._repo.UserExists(userForRegisterDto.Username))
-                return BadRequest("Username alredy exists");
+            if (await this._repo.UsernameAndEmailExists(userForRegisterDto.Username,userForRegisterDto.Email))
+                return BadRequest();
             var userToCreate = new User
             {
                 Username = userForRegisterDto.Username,
@@ -88,7 +90,7 @@ namespace BackMeUpApp.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddHours(2),
                 SigningCredentials = creds
             };
 

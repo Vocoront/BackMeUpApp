@@ -2,17 +2,19 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import passwordValidator from "password-validator";
 import isEmail from "validator/lib/isEmail";
-
+import Spinner from "react-bootstrap/Spinner";
+import { Button } from "react-bootstrap";
 import LogIn from "./LogIn";
 import CreateAccount from "./CreateAccount";
 import ErrorContainer from "../error-page/ErrorContainer";
-import {setToken} from '../../actions/token';
+import { setToken } from "../../actions/token";
 
 class LogInPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       login: true,
+      loading: false,
       error: {
         visible: false,
         title: "title",
@@ -119,9 +121,15 @@ class LogInPage extends Component {
     formData.append("username", username);
     formData.append("email", email);
     formData.append("password", password);
+    this.setState((state, props) => ({
+      error: {
+        visible: false
+      }
+    }));
+    this.setState((state, props) => ({ loading: true }));
     fetch("api/auth/create", { method: "POST", body: formData })
       .then(res => {
-        if (res.status !== 200) return res.json();
+        if (res.status === 200) return res.json();
         this.setState((state, props) => ({
           error: {
             visible: true,
@@ -129,6 +137,7 @@ class LogInPage extends Component {
             message: "Account couldn't be created!"
           }
         }));
+        this.setState((state, props) => ({ loading: false }));
         throw new Error("Account couldn't be created!");
       })
       .then(data => {
@@ -145,6 +154,12 @@ class LogInPage extends Component {
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
+    this.setState((state, props) => ({ loading: true }));
+    this.setState((state, props) => ({
+      error: {
+        visible: false
+      }
+    }));
     fetch("api/auth/login", { method: "POST", body: formData })
       .then(res => {
         if (res.status === 200) return res.json();
@@ -155,6 +170,7 @@ class LogInPage extends Component {
             message: "Login failed!"
           }
         }));
+        this.setState((state, props) => ({ loading: false }));
         throw new Error("Login failed!");
       })
       .then(data => {
@@ -195,10 +211,17 @@ class LogInPage extends Component {
               Create Account
             </div>
           </div>
-          {this.state.login ? (
-            <LogIn submitLogIn={this.loginSubmit} />
+          {this.state.loading ? (
+           <Spinner animation="border" variant="info" />
           ) : (
-            <CreateAccount createAccount={this.createAccount} />
+            <div>
+              {" "}
+              {this.state.login ? (
+                <LogIn submitLogIn={this.loginSubmit} />
+              ) : (
+                <CreateAccount createAccount={this.createAccount} />
+              )}
+            </div>
           )}
         </div>
       </div>

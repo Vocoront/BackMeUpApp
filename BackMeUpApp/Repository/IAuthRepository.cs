@@ -10,6 +10,9 @@ namespace BackMeUpApp.Repository
     {
         Task<User> Login(string username,string password);
         Task<User> CreateAccount(User user, string password);
-        Task<bool> UserExists(string username);
+        Task<bool> UsernameExists(string username);
+        Task<bool> UsernameAndEmailExists(string username,string email);
+
+
     }
 }

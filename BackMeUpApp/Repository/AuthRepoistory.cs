@@ -18,6 +18,16 @@ namespace BackMeUpApp.Repository
             this._client = client;
         }
 
+        private string CreateHash(string password,byte[] salt)
+        {
+            return Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA1,
+                iterationCount: 10000,
+                numBytesRequested: 256 / 8));
+        }
+
         public async Task<User> CreateAccount(User user, string password)
         {
             byte[] salt = new byte[128 / 8];
@@ -26,14 +36,7 @@ namespace BackMeUpApp.Repository
                 rng.GetBytes(salt);
             }
 
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-
-            user.PasswordHash = hashed;
+            user.PasswordHash = this.CreateHash(password,salt);
             user.PasswordSalt = Convert.ToBase64String(salt);
 
              IEnumerable<User> ret = await this._client.Cypher.Create("(m:User {params})").WithParam("params", user).Return<User>("m").ResultsAsync;
@@ -48,13 +51,7 @@ namespace BackMeUpApp.Repository
             IEnumerable<User> user = await this._client.Cypher.Match("(m:User)").Where((User m) => m.Username == username).Return<User>("m").ResultsAsync;
             if (user.Count() == 0)
                 return null;
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-             password: password,
-             salt: Convert.FromBase64String(user.First().PasswordSalt),
-             prf: KeyDerivationPrf.HMACSHA1,
-             iterationCount: 10000,
-             numBytesRequested: 256 / 8));
-
+            string hashed = CreateHash(password, Convert.FromBase64String(user.First().PasswordSalt));
             if (hashed != user.First().PasswordHash)
                 return null;
 
@@ -63,12 +60,19 @@ namespace BackMeUpApp.Repository
 
      
 
-        public async Task<bool> UserExists(string username)
+        public async Task<bool> UsernameExists(string username)
         {
             IEnumerable<User> user = await this._client.Cypher.Match("(m:User)").Where((User m) => m.Username == username).Return<User>("m").ResultsAsync;
             if (user.Count() == 0)
                 return false;
             return true; 
+        }
+        public async Task<bool> UsernameAndEmailExists(string username,string email)
+        {
+            IEnumerable<User> user = await this._client.Cypher.Match("(m:User)").Where((User m) => m.Username == username ||m.Email== email).Return<User>("m").ResultsAsync;
+            if (user.Count() == 0)
+                return false;
+            return true;
         }
     }
 }

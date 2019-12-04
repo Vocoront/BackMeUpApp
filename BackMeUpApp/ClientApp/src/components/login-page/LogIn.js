@@ -28,7 +28,7 @@ class LogIn extends Component {
           placeholder="Enter password"
         />
         <div
-          className="login--btn"
+          className="bkm__btn login--btn"
           onClick={() => this.props.submitLogIn(this.state)}
         >
           Log In

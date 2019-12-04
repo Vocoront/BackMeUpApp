@@ -1,11 +1,20 @@
 .error-container{
-
+    width: $m-container-size;
+    padding: $m-size;
+    box-shadow: 0 1rem 2rem rgba(250, 7, 7, 0.3);
 }
 
 .error-container__title{
-
+    margin-bottom: $m-size;
+    font-size: $l-font-size;
+    border-bottom: .1rem solid black;
 }
 
 .error-container__message{
+    margin: $s-size $m-size;
     color: red;
+}
+
+.error-container__btn{
+    width: $s-container-size;
 }

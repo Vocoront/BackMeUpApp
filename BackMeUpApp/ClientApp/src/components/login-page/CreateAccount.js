@@ -46,7 +46,7 @@ class CreateAccount extends Component {
             }}
             placeholder="Confirm password"
           />
-          <div className="login--btn create-account--btn" onClick={()=>this.props.createAccount(this.state)}>Create Account</div>
+          <div className="bkm__btn login--btn create-account--btn" onClick={()=>this.props.createAccount(this.state)}>Create Account</div>
         </div>
       </div>
     );

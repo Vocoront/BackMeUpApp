@@ -1,30 +1,39 @@
 .login{
     display: flex;
     flex-direction: column;
-    margin: $l-size $m-size;
+    margin: $m-size $m-size;
     padding: $m-size;
 
     input {
         margin-top: $m-size;
-        margin-bottom: $l-size;
+        margin-bottom: $m-size;
         border: none;
         background: $adjusten-white;
         border: .1rem solid darken($adjusten-white, 8%);
         height: $l-size;
     }
 
-    div {
-        background: $header-background;
-        color: white;
-        text-align: center;
-        border-radius: 10rem;
-        height: $s-container-size/3;
-        width: $s-container-size;
-        padding-top: $s-size;
-        border: .1rem solid lighten($header-background,10%);
-        cursor: pointer;
-    }
+   
 
+}
+
+.bkm__btn {
+    width: $s-container-size;
+    background: $header-background;
+    color: white;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    border-radius: 10rem;
+    padding-top: $s-size;
+    border: .1rem solid lighten($header-background,10%);
+    cursor: pointer;
+}
+
+
+.login--btn{
+    text-align: center;
+    padding: $s-size;
 }
 
 
@@ -69,7 +78,7 @@
     font-weight: 500;
     background: $adjusten-white;
     border-bottom: .1rem solid darken($adjusten-white,8%);
-    padding-top: $l-size;
+    padding-top: $m-size;
     font-size: $m-font-size;
     text-align: center;
     cursor: pointer;

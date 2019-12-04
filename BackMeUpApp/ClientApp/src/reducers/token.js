@@ -1,11 +1,11 @@
 const defaulState={
-    token: ''
+    token: localStorage.getItem("token")
 }
 
 const tokenReducer=(state=defaulState,action)=>{
     switch (action.type){
-        case  "SET_TOKEN":return {token:action.token};
-        case  "DELETE_TOKEN": return {token:''};
+        case  "SET_TOKEN":{localStorage.setItem("token",action.token); return {token:action.token}};
+        case  "DELETE_TOKEN":{localStorage.removeItem("token"); return {token:localStorage.getItem("token")};};
         default: return state;
     }
 }
