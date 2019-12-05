@@ -3,6 +3,7 @@
     flex-direction: column;
     margin: $m-size $m-size;
     padding: $m-size;
+    
 
     input {
         margin-top: $m-size;
@@ -66,12 +67,23 @@
 
 
 .login--option-container{
+    
+
     display: flex;
     margin:0;
     padding: 0;
 }
 
+.login__option--left{
+    border-top-left-radius: 25px;
+}
+
+.login__option--right{
+    border-top-right-radius: 25px;
+}
 .login--option{
+
+ 
     flex: 1 1 100%;
     height: $xs-container-size;
     color: $font-light;

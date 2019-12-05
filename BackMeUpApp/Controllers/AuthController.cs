@@ -61,7 +61,8 @@ namespace BackMeUpApp.Controllers
             var token = tokenHandler.CreateToken(tokenDescriptor);
 
             return Ok(new  { 
-                token=tokenHandler.WriteToken(token)
+                token=tokenHandler.WriteToken(token),
+                username = user.Username
             });
         }
 
@@ -99,7 +100,8 @@ namespace BackMeUpApp.Controllers
 
             return Ok(new
             {
-                token = tokenHandler.WriteToken(token)
+                token = tokenHandler.WriteToken(token),
+                username=createdUser.Username
             });
         }
 

@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import passwordValidator from "password-validator";
 import isEmail from "validator/lib/isEmail";
-import Spinner from "react-bootstrap/Spinner";
-import { Button } from "react-bootstrap";
+import { withRouter } from "react-router-dom";
 import LogIn from "./LogIn";
 import CreateAccount from "./CreateAccount";
 import ErrorContainer from "../error-page/ErrorContainer";
 import { setToken } from "../../actions/token";
+import {setUsername} from '../../actions/user';
 
 class LogInPage extends Component {
   constructor(props) {
@@ -29,6 +29,34 @@ class LogInPage extends Component {
     this.validateUsername.bind(this);
     this.clearError.bind(this);
     this.validate.bind(this);
+    this.validateLogin.bind(this);
+  }
+
+  validateLogin(username, password) {
+    if (!this.validateUsername(username)) {
+      this.setState((state, props) => ({
+        error: {
+          visible: true,
+          title: "Username not valid!",
+          message:
+            "Username should have between 6 and 32 characters without spaces"
+        }
+      }));
+      return false;
+    }
+
+    if (!this.validatePassword(password, password)) {
+      this.setState((state, props) => ({
+        error: {
+          visible: true,
+          title: "Password not valid!",
+          message:
+            "password should have between 6 and 32 characters without spaces, with at least one digit,one uppercase and one lowercase character"
+        }
+      }));
+      return false;
+    }
+    return true;
   }
 
   validate = (username, email, password, repassword) => {
@@ -142,6 +170,8 @@ class LogInPage extends Component {
       })
       .then(data => {
         this.props.dispatch(setToken(data.token));
+        this.props.dispatch(setUsername(data.username));
+        this.props.history.push("/");
       })
       .catch(er => console.log(er));
   };
@@ -151,6 +181,7 @@ class LogInPage extends Component {
   };
 
   loginSubmit = ({ username, password }) => {
+    if (!this.validateLogin(username, password)) return;
     const formData = new FormData();
     formData.append("username", username);
     formData.append("password", password);
@@ -175,6 +206,8 @@ class LogInPage extends Component {
       })
       .then(data => {
         this.props.dispatch(setToken(data.token));
+        this.props.dispatch(setUsername(data.username));
+        this.props.history.push("/");
       })
       .catch(er => console.log(er));
   };
@@ -182,53 +215,57 @@ class LogInPage extends Component {
   render() {
     return (
       <div>
-        <div className=""></div>
-        {this.state.error.visible && (
-          <ErrorContainer
-            errorTitle={this.state.error.title}
-            errorMessage={this.state.error.message}
-            onOk={this.clearError}
-          />
-        )}
-        <div className="post">
-          <div className="login--option-container">
-            <div
-              onClick={() => this.loginMode(true)}
-              className={
-                (this.state.login && "login--option login--option__selected") ||
-                "login--option "
-              }
-            >
-              Log In
-            </div>
-            <div
-              onClick={() => this.loginMode(false)}
-              className={
-                (this.state.login && "login--option") ||
-                "login--option  login--option__selected"
-              }
-            >
-              Create Account
+        {this.state.loading ? (
+          <div className="loader">Loading...</div>
+        ) : (
+          <div>
+            <div className=""></div>
+            {this.state.error.visible && (
+              <ErrorContainer
+                errorTitle={this.state.error.title}
+                errorMessage={this.state.error.message}
+                onOk={this.clearError}
+              />
+            )}
+            <div className="post">
+              <div className="login--option-container">
+                <div
+                  onClick={() => this.loginMode(true)}
+                  className={
+                    (this.state.login &&
+                      "login--option login__option--left login--option__selected") ||
+                    "login--option login__option--left"
+                  }
+                >
+                  Log In
+                </div>
+                <div
+                  onClick={() => this.loginMode(false)}
+                  className={
+                    (this.state.login &&
+                      "login--option login__option--right") ||
+                    "login--option  login--option__selected login__option--right"
+                  }
+                >
+                  Create Account
+                </div>
+              </div>
+
+              <div>
+                {this.state.login ? (
+                  <LogIn submitLogIn={this.loginSubmit} />
+                ) : (
+                  <CreateAccount createAccount={this.createAccount} />
+                )}
+              </div>
             </div>
           </div>
-          {this.state.loading ? (
-            <Spinner animation="border" variant="info" />
-          ) : (
-            <div>
-              {" "}
-              {this.state.login ? (
-                <LogIn submitLogIn={this.loginSubmit} />
-              ) : (
-                <CreateAccount createAccount={this.createAccount} />
-              )}
-            </div>
-          )}
-        </div>
+        )}
       </div>
     );
   }
 }
 
-const mapStateToProps = state => ({ token: state.token });
+const mapStateToProps = state => ({ token: state.token, user: state.user });
 
-export default connect(mapStateToProps)(LogInPage);
+export default withRouter(connect(mapStateToProps)(LogInPage));

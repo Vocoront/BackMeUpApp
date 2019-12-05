@@ -13,7 +13,7 @@ const AppRouter=(props)=> {
       <Header/>
       <Switch>
         <Route exact={true} path="/" component={HomePage}/>
-        <Route  path="/profile" component={ProfilePage}/>
+        <Route  path="/user/:id" component={ProfilePage}/>
         <Route path="/login" component={LogInPage}/>
         <Route component={NotFoundPage}/>
    </Switch>
