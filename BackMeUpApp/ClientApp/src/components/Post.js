@@ -23,7 +23,7 @@ class Post extends Component {
             Y
           </AwesomeButton>
           <AwesomeButton size="large" type="link">
-            N
+            N<i class="far fa-hand-point-right"></i>
           </AwesomeButton>
         </div>
       </div>

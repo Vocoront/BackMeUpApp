@@ -4,7 +4,7 @@
   "private": true,
   "dependencies": {
     "bootstrap": "^4.4.1",
-    "font-awesome": "^4.7.0",
+    "font-awesome": "^5.11.2",
     "node-sass": "^4.13.0",
     "normalize.css": "^8.0.1",
     "password-validator": "^5.0.3",
@@ -40,5 +40,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.11.2"
   }
 }
