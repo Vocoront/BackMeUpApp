@@ -5,17 +5,30 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using BackMeUpApp.DomainModel;
+using BackMeUpApp.DTOs;
+using BackMeUpApp.Repository;
 
 namespace BackMeUpApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class PostController : ControllerBase
     {
+        private readonly IPostRepository _rep;
+
+        public PostController(IPostRepository rep)
+        {
+            _rep = rep;
+
+        }
+
+
         [HttpGet]
         public string Get()
         {
-            return "HELLO";
+            var newPost = _rep.addPost();
+            return newPost.ToString();
         }
     }
 }

@@ -190,7 +190,7 @@ class LogInPage extends Component {
             onOk={this.clearError}
           />
         )}
-        <div className="container">
+        <div className="post">
           <div className="login--option-container">
             <div
               onClick={() => this.loginMode(true)}
@@ -212,7 +212,7 @@ class LogInPage extends Component {
             </div>
           </div>
           {this.state.loading ? (
-           <Spinner animation="border" variant="info" />
+            <Spinner animation="border" variant="info" />
           ) : (
             <div>
               {" "}

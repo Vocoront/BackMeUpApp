@@ -1,59 +1,87 @@
-.post__container{
-    min-height: $m-container-size;
-    display: flex;
-    flex-direction: column;
-    padding-left: $l-size;
-    justify-content: space-between;
+.post__container {
+  min-height: $m-container-size;
+  display: flex;
+  flex-direction: column;
+  padding-left: $l-size;
+  padding-right: $l-size;
+  justify-content: space-around;
 }
 
-.post__title{
-    margin-bottom: $m-size;
-    font-size: $l-font-size;
-    padding-top: $m-size;
+.post__title {
+  margin-bottom: $m-size;
+  font-size: $l-font-size;
+  padding-top: $m-size;
 }
 
-.post__content{
-    flex: 2 2 100%;
-    border-top: .3rem solid black;
-
+.post__content {
+  flex: 2 2 100%;
+  border-top: 0.3rem solid black;
 }
 
-.post__vote{
-    display: flex;
-    border-top: .3rem solid black;
-    flex-direction:row;
-    justify-content:space-around;
-    padding:1rem;
-}   
-
-.post__vote__option{
-    flex: 1 1 100%;
-    text-align: center;
-    padding: $m-size 0;
+.post__vote {
+  display: flex;
+  border-top: 0.3rem solid black;
+  flex-direction: row;
+  justify-content: space-around;
+  padding: 1rem;
 }
 
+.post__vote__option {
+  flex: 1 1 100%;
+  text-align: center;
+  padding: $m-size 0;
+}
+
+button {
+  border-radius: 25px;
+}
+
+.post__newPost {
+  min-height: $newPost-container-size;
+  display: flex;
+  flex-direction: column;
+  padding-left: $s-size;
+  padding-right: $s-size;
+  justify-content: space-around;
+  box-shadow: 0 0 0 rgba(0, 0, 0, 0.3);
+  max-height: $s-container-size;
+}
+
+.newPostBody {
+  display: flex;
+  flex-direction: column;
+  min-height: 20rem;
+}
+
+.row1 {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  min-height: 7rem;
+}
 
 .aws-btn {
-    --button-default-height: 48px;
-    --button-default-font-size: 14px;
-    --button-default-border-radius: 6px;
-    --button-horizontal-padding: 20px;
-    --button-raise-level: 5px;
-    --button-hover-pressure: 2;
-    --transform-speed: 0.185s;
-    --button-primary-color: #475472;
-    --button-primary-color-dark: #2a3143;
-    --button-primary-color-light: #d4d9e4;
-    --button-primary-color-hover: #424e6a;
-    --button-primary-border: none;
-    --button-secondary-color: #fffc6c;
-    --button-secondary-color-dark: #b9b500;
-    --button-secondary-color-light: #6c6a00;
-    --button-secondary-color-hover: #fffb3e;
-    --button-secondary-border: none;
-    --button-anchor-color: #f3c8ad;
-    --button-anchor-color-dark: #734922;
-    --button-anchor-color-light: #4c3016;
-    --button-anchor-color-hover: #f1bfa0;
-    --button-anchor-border: 1px solid #8c633c;
+  --button-default-height: 48px;
+  --button-default-font-size: 14px;
+  --button-default-border-radius: 25px !important;
+  --button-horizontal-padding: 25px;
+  --button-raise-level: 2px !important;
+  --button-hover-pressure: 1;
+  --transform-speed: 0.185s;
+  --button-primary-color: #475472;
+  --button-primary-color-dark: #2a3143;
+  --button-primary-color-light: #d4d9e4;
+  --button-primary-color-hover: #424e6a;
+  --button-primary-border: none;
+  --button-secondary-color: #ffff00;
+  --button-secondary-color-dark: #b9b500;
+  --button-secondary-color-light: #6c6a00;
+  --button-secondary-color-hover: #fffb3e;
+  --button-secondary-border: none;
+  --button-anchor-color: #f3c8ad;
+  --button-anchor-color-dark: #734922;
+  --button-anchor-color-light: #4c3016;
+  --button-anchor-color-hover: #f1bfa0;
+  --button-anchor-border: 1px solid #8c633c;
 }

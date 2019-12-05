@@ -8,7 +8,9 @@ const Header=(props)=>(
       <div className="header__filler"></div>
       <NavLink className="header__navlink" exact={true} activeClassName="header__navlink--is-active" to="/">Home</NavLink>
       <NavLink className="header__navlink" activeClassName="header__navlink--is-active" to="/profile">Profile</NavLink>
-      {props.token.token?<NavLink className="header__navlink" to="/" onClick={()=>props.dispatch(deleteToken())}>Logout</NavLink>:  <NavLink className="header__navlink" activeClassName="header__navlink--is-active" to="/login">Log In</NavLink>}
+        {props.token.token ? <NavLink className="header__navlink" to="/"
+                onClick={() => props.dispatch(deleteToken())}>Logout</NavLink> : <NavLink className="header__navlink"
+                activeClassName="header__navlink--is-active" to="/login">Log In</NavLink>}
 
     
     </div>
