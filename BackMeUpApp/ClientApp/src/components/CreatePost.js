@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import styles from "react-awesome-button/src/styles/themes/theme-bojack";
 //import "../../node_modules/font-awesome/css/font-awesome.css";
-import { Form, Container, Col, Row } from "react-bootstrap";
+import { Form } from "react-bootstrap";
 
 class CreatePost extends Component {
   constructor(props) {
@@ -29,15 +29,12 @@ class CreatePost extends Component {
   render() {
     return (
       <div className="post post__newPost">
-        {console.log("aaa")}
-
-        <i class="fas fa-clock"></i>
         {this.createPost()}
         <div className="newPostBody">
           <div className="newPostBody row1">
             <Form.Control type="text" placeholder="Title" />
             <AwesomeButton style={styles} size="extrasmall" type="secondary">
-              <i class="	fa fa-file-picture-o"></i>
+              <i className="	fa fa-file-picture-o"></i>
             </AwesomeButton>
           </div>
           <div>

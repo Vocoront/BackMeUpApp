@@ -1,10 +1,10 @@
 import React from 'react';
 import Post from './Post';
-import NewPostForm from './NewPostForm';
+import CreatePost from './CreatePost';
 
 const HomePage=()=>(
     <div>
-      <NewPostForm />
+      <CreatePost />
       <Post/>
       <Post/>
       <Post/>

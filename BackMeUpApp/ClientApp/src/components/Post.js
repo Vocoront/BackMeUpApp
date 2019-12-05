@@ -10,7 +10,6 @@ class Post extends Component {
   render() {
     return (
       <div className="post post__container">
-        {console.log("aaa")}
         <div className="post__title">Title</div>
         <div className="post__content">Picture</div>
         <div className="post__vote">
@@ -23,7 +22,7 @@ class Post extends Component {
             Y
           </AwesomeButton>
           <AwesomeButton size="large" type="link">
-            N<i class="far fa-hand-point-right"></i>
+            <i className="far fa-hand-point-right"></i>
           </AwesomeButton>
         </div>
       </div>
