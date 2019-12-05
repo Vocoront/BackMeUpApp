@@ -61,6 +61,25 @@ button {
   min-height: 7rem;
 }
 
+.row1 input {
+  margin-right: 1rem;
+}
+
+.tagBar {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  overflow-x: scroll;
+  justify-content: center;
+  scroll-padding-top: 3rem;
+  padding-top: 1rem;
+  padding-bottom: 1rem;
+}
+
+.tagBar::-webkit-scrollbar {
+  display: none;
+}
+
 .aws-btn {
   --button-default-height: 48px;
   --button-default-font-size: 14px;

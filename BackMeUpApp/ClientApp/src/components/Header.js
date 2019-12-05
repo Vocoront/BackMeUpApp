@@ -1,9 +1,11 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
+import Navbar from "react-bootstrap/Navbar";
+
 import { connect } from "react-redux";
 import { deleteToken } from "../actions/token";
 const Header = props => (
-  <div className="header">
+  <Navbar bg="dark" variant="dark" sticky="top" className="header">
     <div className="header__title">Back Me Up</div>
     <div className="header__filler"></div>
     <NavLink
@@ -20,7 +22,7 @@ const Header = props => (
         <NavLink
           className="header__navlink"
           activeClassName="header__navlink--is-active"
-          to={"/user/"+props.user.username}
+          to={"/user/" + props.user.username}
         >
           Profile
         </NavLink>
@@ -41,7 +43,7 @@ const Header = props => (
         Log In
       </NavLink>
     )}
-  </div>
+  </Navbar>
 );
 
 const mapStateToProps = state => ({ token: state.token, user: state.user });
