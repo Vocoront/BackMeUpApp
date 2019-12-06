@@ -9,7 +9,7 @@ namespace BackMeUpApp.Repository
 {
     public interface IPostRepository
     {
-        Task<IEnumerable<PostWithCreatorDto>> GetPostsAsync();
+        Task<IEnumerable<PostForDisplayDto>> GetPostsAsync();
         Task<Post> GetPostAsync();
         Task<Post> AddPostAsync(Post post,string username);
             
