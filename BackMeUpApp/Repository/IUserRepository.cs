@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BackMeUpApp.Repository
 {
-    public interface IAuthRepository
+    public interface IUserRepository
     {
         Task<User> Login(string username,string password);
         Task<User> CreateAccount(User user, string password);

@@ -17,16 +17,17 @@ namespace BackMeUpApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class UserController : ControllerBase
     {
-        private readonly IAuthRepository _repo;
+        private readonly IUserRepository _repo;
         private readonly IConfiguration _config;
-        public AuthController(IAuthRepository repo,IConfiguration config)
+        private readonly IPostRepository _postRepo;
+        public UserController(IUserRepository repo,IPostRepository postRepository,IConfiguration config)
         {
             this._repo = repo;
             this._config = config ;
+            this._postRepo = postRepository;
         }
-
 
 
         [HttpPost("login")]

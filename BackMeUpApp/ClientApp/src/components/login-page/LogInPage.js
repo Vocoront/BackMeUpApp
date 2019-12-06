@@ -156,7 +156,7 @@ class LogInPage extends Component {
       }
     }));
     this.setState((state, props) => ({ loading: true }));
-    fetch("api/auth/create", { method: "POST", body: formData })
+    fetch("api/user/create", { method: "POST", body: formData })
       .then(res => {
         if (res.status === 200) return res.json();
         this.setState((state, props) => ({
@@ -192,7 +192,7 @@ class LogInPage extends Component {
         visible: false
       }
     }));
-    fetch("api/auth/login", { method: "POST", body: formData })
+    fetch("api/user/login", { method: "POST", body: formData })
       .then(res => {
         if (res.status === 200) return res.json();
         this.setState((state, props) => ({
