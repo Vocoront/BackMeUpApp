@@ -15,7 +15,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BackMeUpApp.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : ControllerBase
     {
@@ -29,13 +29,6 @@ namespace BackMeUpApp.Controllers
             this._postRepo = postRepository;
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> Get(String username)
-        {
-
-            IEnumerable<PostForDisplayDto> posts = await _postRepo.GetPostAsync(username);
-            return Ok(posts);
-        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm]UserForRegisterDto userForRegisterDto)

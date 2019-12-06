@@ -1,5 +1,5 @@
 const defaulState={
-    username: "username",
+    username: "",
     token: localStorage.getItem("token")
 }
 

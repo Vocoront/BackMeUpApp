@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Post from "./Post";
-import  {connect} from "react-redux";
+import { connect } from "react-redux";
 class ProfilePage extends Component {
   constructor(props) {
     super(props);
@@ -14,7 +14,7 @@ class ProfilePage extends Component {
   }
 
   GetPosts() {
-    fetch(this.props.user.username, { method: "GET" })
+    fetch("/api/post/createdby/" + this.props.user.username, { method: "GET" })
       .then(res => res.json())
       .then(data => {
         console.log(data);
@@ -28,7 +28,14 @@ class ProfilePage extends Component {
       <div>
         <div>
           {this.state.posts.map((post, index) => {
-            return <Post key={index} title={post.title} creator={post.username} content={post.text} />;
+            return (
+              <Post
+                key={index}
+                title={post.title}
+                creator={post.username}
+                content={post.text}
+              />
+            );
           })}
         </div>
       </div>

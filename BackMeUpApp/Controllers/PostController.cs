@@ -11,7 +11,7 @@ using BackMeUpApp.Repository;
 
 namespace BackMeUpApp.Controllers
 {
-    [Route("[controller]")]
+    [Route("api/[controller]")]
     [ApiController]
     
     public class PostController : ControllerBase
@@ -33,7 +33,7 @@ namespace BackMeUpApp.Controllers
             return Ok(posts);
         }
 
-        [HttpGet("{username}")]
+        [HttpGet("createdby/{username}")]
         public async Task<IActionResult> Get(String username)
         {
 
