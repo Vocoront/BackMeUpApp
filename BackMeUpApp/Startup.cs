@@ -38,7 +38,7 @@ namespace BackMeUpApp
                 configuration.RootPath = "ClientApp/build";
             });
 
-            services.AddScoped<IAuthRepository, AuthRepoistory>();
+            services.AddScoped<IUserRepository, UserRepoistory>();
             services.AddScoped<IPostRepository, PostRepository>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)

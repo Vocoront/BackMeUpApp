@@ -39,6 +39,32 @@ namespace BackMeUpApp.Repository
             return null; 
         }
 
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostAsync(string Username)
+        {
+            var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
+                .Where((User u)=>u.Username==Username)
+              .Return((m, u) => new
+              {
+                  Post = m.As<Node<Post>>(),
+                  Username = u.As<User>().Username
+              }
+              );
+            var results = await query.ResultsAsync;
+
+            List<PostForDisplayDto> posts = new List<PostForDisplayDto>();
+            foreach (var post in results)
+            {
+                posts.Add(new PostForDisplayDto
+                {
+                    Id = post.Post.Reference.Id,
+                    Title = post.Post.Data.Title,
+                    Text = post.Post.Data.Text,
+                    Username = post.Username
+                });
+            }
+            return posts;
+        }
+
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")

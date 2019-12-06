@@ -14,7 +14,7 @@ class HomePage extends Component {
   }
 
   GetPosts() {
-    fetch("api/post", { method: "GET" })
+    fetch("post", { method: "GET" })
       .then(res => res.json())
       .then(data => {
         console.log(data);

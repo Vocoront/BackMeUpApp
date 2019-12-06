@@ -9,11 +9,11 @@ using Neo4jClient;
 
 namespace BackMeUpApp.Repository
 {
-    public class AuthRepoistory : IAuthRepository
+    public class UserRepoistory : IUserRepository
     {
         private readonly IGraphClient _client;
 
-        public AuthRepoistory(IGraphClient client)
+        public UserRepoistory(IGraphClient client)
         {
             this._client = client;
         }

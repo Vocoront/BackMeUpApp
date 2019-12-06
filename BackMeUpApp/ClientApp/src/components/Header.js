@@ -22,7 +22,7 @@ const Header = props => (
         <NavLink
           className="header__navlink"
           activeClassName="header__navlink--is-active"
-          to={"/user/" + props.user.username}
+          to={"/post/"+props.user.username}
         >
           Profile
         </NavLink>

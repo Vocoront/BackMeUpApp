@@ -12,5 +12,7 @@ namespace BackMeUpApp.DTOs
         public string Username { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
+        
+        public String Tags { get; set; }
     }
 }

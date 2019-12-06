@@ -17,9 +17,14 @@ class CreatePostPage extends Component {
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
-    formData.append("Tags", tags);
+
+    const tagsArray=tags.split(" ");
+    console.log(tagsArray);
+
+
+    formData.append("Tags", tagsArray);
     formData.append("Username", this.props.user.username);
-    fetch("api/post/create", { method: "POST", body: formData })
+    fetch("post/create", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
         console.log(data);

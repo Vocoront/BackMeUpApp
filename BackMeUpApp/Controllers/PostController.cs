@@ -11,7 +11,7 @@ using BackMeUpApp.Repository;
 
 namespace BackMeUpApp.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("[controller]")]
     [ApiController]
     
     public class PostController : ControllerBase
@@ -30,6 +30,14 @@ namespace BackMeUpApp.Controllers
         {
 
             IEnumerable<PostForDisplayDto> posts= await _rep.GetPostsAsync();
+            return Ok(posts);
+        }
+
+        [HttpGet("{username}")]
+        public async Task<IActionResult> Get(String username)
+        {
+
+            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostAsync(username);
             return Ok(posts);
         }
 
