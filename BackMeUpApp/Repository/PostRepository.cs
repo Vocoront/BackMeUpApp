@@ -18,9 +18,17 @@ namespace BackMeUpApp.Repository
             this._client = client;
         }
 
-        public async Task<Post> AddPostAsync(Post post)
+        public async Task<Post> AddPostAsync(Post post,string username)
         {
-            IEnumerable<Post> ret = await this._client.Cypher.Create("(m:Post { params })").WithParam("params", post).Return<Post>("m").ResultsAsync;
+            
+
+
+            IEnumerable<Post> ret = await this._client.Cypher.Match("(u:User)")
+                .Where((User u)=>u.Username==username)
+                .Create("(p:Post { params })")
+                .WithParam("params", post)
+                .Create("(p)-[:CreatedBy]->(u)")
+                .Return<Post>("p").ResultsAsync;
             return ret.First();
         }
 

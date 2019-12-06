@@ -39,6 +39,7 @@ namespace BackMeUpApp.Controllers
                 Email = userForRegisterDto.Email
             };
 
+
            User user=await  _repo.Login(userForRegisterDto.Username, userForRegisterDto.Password);
             if (user == null)
                 return Unauthorized();

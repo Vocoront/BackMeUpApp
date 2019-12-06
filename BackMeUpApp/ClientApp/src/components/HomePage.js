@@ -1,35 +1,39 @@
-import React, { Component } from 'react';
-import Post from './Post';
-
+import React, { Component } from "react";
+import Post from "./Post";
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      posts:[]
-     }
+    this.state = {
+      posts: []
+    };
 
-     this.GetPosts();
+    this.GetPosts();
 
-     this.GetPosts.bind(this);
+    this.GetPosts.bind(this);
   }
 
-  GetPosts(){
-    fetch("api/post",{method :'GET'})
-    .then(res=>res.json())
-    .then(data=>{console.log(data);this.setState((state,props)=>({posts:data}))})
-    .catch(er=>console.log(er));
+  GetPosts() {
+    fetch("api/post", { method: "GET" })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        this.setState((state, props) => ({ posts: data }));
+      })
+      .catch(er => console.log(er));
   }
 
-  render() { 
-    return (<div>
+  render() {
+    return (
       <div>
-        {this.state.posts.map((post)=>{
-          return <Post title={post.title} content={post.text}/>
-        })}
+        <div>
+          {this.state.posts.map((post, index) => {
+            return <Post key={index} title={post.title} content={post.text} />;
+          })}
+        </div>
       </div>
-    </div>  );
+    );
   }
 }
- 
+
 export default HomePage;

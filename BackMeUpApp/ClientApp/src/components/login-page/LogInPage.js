@@ -6,8 +6,7 @@ import { withRouter } from "react-router-dom";
 import LogIn from "./LogIn";
 import CreateAccount from "./CreateAccount";
 import ErrorContainer from "../error-page/ErrorContainer";
-import { setToken } from "../../actions/token";
-import {setUsername} from '../../actions/user';
+import {setUsername,setToken} from '../../actions/user';
 
 class LogInPage extends Component {
   constructor(props) {
@@ -31,6 +30,8 @@ class LogInPage extends Component {
     this.validate.bind(this);
     this.validateLogin.bind(this);
   }
+
+  
 
   validateLogin(username, password) {
     if (!this.validateUsername(username)) {
@@ -266,6 +267,6 @@ class LogInPage extends Component {
   }
 }
 
-const mapStateToProps = state => ({ token: state.token, user: state.user });
+const mapStateToProps = state => ({ user: state.user });
 
 export default withRouter(connect(mapStateToProps)(LogInPage));

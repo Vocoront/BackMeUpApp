@@ -10,8 +10,7 @@ namespace BackMeUpApp.Repository
     {
         Task<IEnumerable<Post>> GetPostsAsync();
         Task<Post> GetPostAsync();
-
-        Task<Post> AddPostAsync(Post post);
+        Task<Post> AddPostAsync(Post post,string username);
             
 
     }

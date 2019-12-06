@@ -1,45 +1,33 @@
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import styles from "react-awesome-button/src/styles/themes/theme-bojack";
-//import "../../node_modules/font-awesome/css/font-awesome.css";
+
 import { Form } from "react-bootstrap";
 import Tag from "./Tag.js";
 
 class CreatePost extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      title: "",
+      text: ""
+    };
 
-    this.createPost.bind(this);
   }
 
-  createPost = () => {
-    const formData = new FormData();
-    formData.append("naslov", "username");
-
-    fetch("api/post", { method: "GET" })
-      .then(res => {
-        if (res.status === 200) return res.json();
-      })
-      .then(data => {
-        console.log(data);
-      })
-      .catch(er => console.log(er));
-  };
 
   render() {
     return (
       <div className="post post__newPost">
-        {this.createPost()}
         <div className="newPostBody">
           <div className="newPostBody row1">
-            <Form.Control type="text" placeholder="Title" />
+            <Form.Control type="text" placeholder="Title" onChange={(e)=>{this.setState({title:e.target.value})}} />
             <AwesomeButton style={styles} size="extrasmall" type="secondary">
               <i className="	fa fa-file-picture-o"></i>
             </AwesomeButton>
           </div>
           <div>
-            <Form.Control as="textarea" rows="4" placeholder="Text" />
+            <Form.Control as="textarea" rows="4" onChange={(e)=>{this.setState({text:e.target.value})}} placeholder="Text" />
           </div>
 
           <div className="tagBar">
@@ -61,6 +49,7 @@ class CreatePost extends Component {
           size="large"
           type="primary"
           border-radius="2rem"
+          onPress={()=>this.props.onAddNewPost(this.state.title,this.state.text)}
         >
           Dodaj
         </AwesomeButton>

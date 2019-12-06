@@ -3,7 +3,7 @@ import { NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 
 import { connect } from "react-redux";
-import { deleteToken } from "../actions/token";
+import { deleteToken } from "../actions/user";
 const Header = props => (
   <Navbar bg="dark" variant="dark" sticky="top" className="header">
     <div className="header__title">Back Me Up</div>
@@ -17,7 +17,7 @@ const Header = props => (
       Home
     </NavLink>
 
-    {props.token.token ? (
+    {props.user.token ? (
       <div>
         <NavLink
           className="header__navlink"
@@ -53,5 +53,5 @@ const Header = props => (
   </Navbar>
 );
 
-const mapStateToProps = state => ({ token: state.token, user: state.user });
+const mapStateToProps = state => ({user: state.user });
 export default connect(mapStateToProps)(Header);

@@ -13,6 +13,7 @@ namespace BackMeUpApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _rep;
@@ -35,9 +36,10 @@ namespace BackMeUpApp.Controllers
 
 
         [HttpPost("create")]
-        public async Task<IActionResult> AddNewPost([FromForm]Post post)
+        public async Task<IActionResult> AddNewPost([FromForm]NewPostDto newPostDto)
         {
-            var addedPost = await _rep.AddPostAsync(post);
+            Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title };
+            var addedPost = await _rep.AddPostAsync(post,newPostDto.Username);
             return Ok(addedPost); 
         }
 
