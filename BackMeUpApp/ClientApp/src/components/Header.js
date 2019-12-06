@@ -26,6 +26,13 @@ const Header = props => (
         </NavLink>
         <NavLink
           className="header__navlink"
+          activeClassName="header__navlink--is-active"
+          to="/createpost"
+        >
+          Create Post
+        </NavLink>
+        <NavLink
+          className="header__navlink"
           to="/"
           onClick={() => props.dispatch(deleteToken())}
         >

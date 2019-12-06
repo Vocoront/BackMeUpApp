@@ -1,0 +1,10 @@
+.new-post-form{
+    display: flex;
+    flex-direction: column;
+    padding: $l-size;
+
+    input{
+        display: block;
+        margin: $m-size;
+    }
+}

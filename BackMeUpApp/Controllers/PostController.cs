@@ -25,10 +25,21 @@ namespace BackMeUpApp.Controllers
 
 
         [HttpGet]
-        public string Get()
+        public async Task<IActionResult> Get()
         {
-            var newPost = _rep.addPost();
-            return newPost.ToString();
+
+            IEnumerable<Post> posts= await _rep.GetPostsAsync();
+            return Ok(posts);
         }
+
+
+
+        [HttpPost("create")]
+        public async Task<IActionResult> AddNewPost([FromForm]Post post)
+        {
+            var addedPost = await _rep.AddPostAsync(post);
+            return Ok(addedPost); 
+        }
+
     }
 }

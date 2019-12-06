@@ -5,7 +5,7 @@ import ProfilePage from "../components/ProfilePage";
 import NotFoundPage from '../components/error-page/NotFoundPage';
 import Header from '../components/Header';
 import LogInPage from "../components/login-page/LogInPage";
-
+import CreatePostPage from "../components/CreatePostPage"
 const AppRouter=(props)=> {
   return (
     <BrowserRouter>
@@ -13,6 +13,7 @@ const AppRouter=(props)=> {
       <Header/>
       <Switch>
         <Route exact={true} path="/" component={HomePage}/>
+        <Route  path="/createpost" component={CreatePostPage}/>
         <Route  path="/user/:id" component={ProfilePage}/>
         <Route path="/login" component={LogInPage}/>
         <Route component={NotFoundPage}/>

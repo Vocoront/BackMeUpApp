@@ -18,12 +18,22 @@ namespace BackMeUpApp.Repository
             this._client = client;
         }
 
-        public async Task<Post> addPost()
+        public async Task<Post> AddPostAsync(Post post)
         {
-            string naslov = "proba";
-
-            IEnumerable<Post> ret = await this._client.Cypher.Create("(m:Post {param})").WithParam("param", naslov).Return<Post>("m").ResultsAsync;
+            IEnumerable<Post> ret = await this._client.Cypher.Create("(m:Post { params })").WithParam("params", post).Return<Post>("m").ResultsAsync;
             return ret.First();
+        }
+
+
+        public async Task<Post> GetPostAsync()
+        {
+            return null; 
+        }
+
+        public async Task<IEnumerable<Post>> GetPostsAsync()
+        {
+            IEnumerable<Post> posts= await this._client.Cypher.Match("(m:Post)").Return<Post>("m").ResultsAsync;
+            return posts;
         }
     }
 }

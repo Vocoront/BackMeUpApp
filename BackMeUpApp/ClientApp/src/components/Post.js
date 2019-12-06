@@ -10,8 +10,8 @@ class Post extends Component {
   render() {
     return (
       <div className="post post__container">
-        <div className="post__title">Title</div>
-        <div className="post__content">Picture</div>
+        <div className="post__title">{this.props.title}</div>
+        <div className="post__content">{this.props.content}</div>
         <div className="post__vote">
           <AwesomeButton
             className="aws-btn"
