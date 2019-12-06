@@ -10,7 +10,8 @@ class CreatePost extends Component {
     super(props);
     this.state = {
       title: "",
-      text: ""
+      text: "",
+      tags: ""
     };
   }
 
@@ -41,6 +42,14 @@ class CreatePost extends Component {
             />
           </div>
 
+          <Form.Control
+            type="text"
+            placeholder="#tag #noticeMe"
+            onChange={e => {
+              this.setState({ tags: e.target.value });
+            }}
+          />
+
           <div className="tagBar">
             <Tag />
             <Tag />
@@ -61,7 +70,11 @@ class CreatePost extends Component {
           type="primary"
           border-radius="2rem"
           onPress={() =>
-            this.props.onAddNewPost(this.state.title, this.state.text)
+            this.props.onAddNewPost(
+              this.state.title,
+              this.state.text,
+              this.state.tags
+            )
           }
         >
           Dodaj

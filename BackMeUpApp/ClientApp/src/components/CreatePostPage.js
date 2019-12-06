@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { AwesomeButton } from "react-awesome-button";
-import styles from "react-awesome-button/src/styles/themes/theme-bojack";
+
 import CreatePost from "./CreatePost";
 
 class CreatePostPage extends Component {
@@ -11,10 +10,11 @@ class CreatePostPage extends Component {
 
     this.AddNewPost.bind(this);
   }
-  AddNewPost = (title, text) => {
+  AddNewPost = (title, text, tags) => {
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
+    formData.append("Tags", tags);
     formData.append("Username", this.props.user.username);
     fetch("api/post/create", { method: "POST", body: formData })
       .then(res => res.json())
