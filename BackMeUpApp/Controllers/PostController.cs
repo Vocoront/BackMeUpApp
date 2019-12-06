@@ -38,7 +38,7 @@ namespace BackMeUpApp.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
         {
-            Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title };
+            Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title, Tags=newPostDto.Tags };
             var addedPost = await _rep.AddPostAsync(post,newPostDto.Username);
             return Ok(addedPost); 
         }

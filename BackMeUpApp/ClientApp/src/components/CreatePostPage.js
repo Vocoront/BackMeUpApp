@@ -14,21 +14,33 @@ class CreatePostPage extends Component {
     this.AddNewPost.bind(this);
   }
   AddNewPost = (title, text, tags) => {
+    let tagsSend = this.addTags(tags);
+
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
-    formData.append("Tags", tags);
+    formData.append("Tags", tagsSend);
     formData.append("Username", this.props.user.username);
     fetch("api/post/create", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
         console.log(data);
-        this.setState((state,props)=>({loading:false}));
+        this.setState((state, props) => ({ loading: false }));
 
         this.props.history.push("/");
       })
       .catch(er => console.log(er));
   };
+
+  addTags = tagsString => {
+    let tags = tagsString.split("#");
+    tags.shift();
+    tags.forEach(el => {
+      el.replace(" ", "");
+    });
+    return tags;
+  };
+
   render() {
     return (
       <div>
