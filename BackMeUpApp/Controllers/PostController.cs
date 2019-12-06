@@ -42,6 +42,14 @@ namespace BackMeUpApp.Controllers
             var addedPost = await _rep.AddPostAsync(post,newPostDto.Username);
             return Ok(addedPost); 
         }
+        [HttpPost("vote")]
+        public async Task<IActionResult> AddNewVote([FromForm] VoteForCreation newVote)
+        {
+
+            var ret = await _rep.AddChoiceAsync(newVote.IdPosta, newVote.Username, newVote.isLeft);
+            return Ok(ret);
+
+        }
 
     }
 }

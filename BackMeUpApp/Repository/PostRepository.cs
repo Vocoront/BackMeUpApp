@@ -63,5 +63,23 @@ namespace BackMeUpApp.Repository
             }
             return posts;
         }
+        public async Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft)
+        {
+            String choice;
+            if (ChoiceLeft)
+            {
+                choice = "left";
+            }
+            else
+                choice = "right";
+
+            IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
+                .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
+                .CreateUnique("(u)-[:Choice {side:'" + choice + "'}]->(p)")
+                .Return<User>("u").ResultsAsync;
+            return ret.First();
+
+        }
+
     }
 }

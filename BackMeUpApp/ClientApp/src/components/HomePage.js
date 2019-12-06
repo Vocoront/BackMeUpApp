@@ -27,8 +27,8 @@ class HomePage extends Component {
     return (
       <div>
         <div>
-          {this.state.posts.map((post, index) => {
-            return <Post key={index} title={post.title} creator={post.username} content={post.text} />;
+                {this.state.posts.map((post, index) => {
+                    return <Post key={index} title={post.title} creator={post.username} content={post.text} postId={post.id} />;
           })}
         </div>
       </div>

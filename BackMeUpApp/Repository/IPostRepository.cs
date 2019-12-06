@@ -12,7 +12,7 @@ namespace BackMeUpApp.Repository
         Task<IEnumerable<PostForDisplayDto>> GetPostsAsync();
         Task<Post> GetPostAsync();
         Task<Post> AddPostAsync(Post post,string username);
-            
+        Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft);
 
 
     }
