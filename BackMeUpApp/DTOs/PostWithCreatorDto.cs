@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace BackMeUpApp.DTOs
 {
-    public class NewPostDto
+    public class PostWithCreatorDto
     {
         public string Username { get; set; }
         public string Title { get; set; }

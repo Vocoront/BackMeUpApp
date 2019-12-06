@@ -4,6 +4,7 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using BackMeUpApp.DomainModel;
+using BackMeUpApp.DTOs;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Neo4jClient;
 
@@ -38,10 +39,19 @@ namespace BackMeUpApp.Repository
             return null; 
         }
 
-        public async Task<IEnumerable<Post>> GetPostsAsync()
+        public async Task<IEnumerable<PostWithCreatorDto>> GetPostsAsync()
         {
-            IEnumerable<Post> posts= await this._client.Cypher.Match("(m:Post)").Return<Post>("m").ResultsAsync;
-            return posts;
+            var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
+                .Return((m,u) => new PostWithCreatorDto
+                {
+                    Title = m.As<Post>().Title,
+                    Text = m.As<Post>().Text,
+                    Username = u.As<User>().Username
+                }
+                );
+
+            IEnumerable<PostWithCreatorDto> results = await query.ResultsAsync;
+            return results;
         }
     }
 }

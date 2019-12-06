@@ -12,6 +12,7 @@ class Post extends Component {
     return (
       <div className="post post__container">
         <div className="post__title">{this.props.title}</div>
+       <div>{this.props.creator}</div>
         <div className="post__content">{this.props.content}</div>
         <div className="post__vote">
           <AwesomeButton

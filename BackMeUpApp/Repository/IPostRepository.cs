@@ -1,4 +1,5 @@
 ﻿using BackMeUpApp.DomainModel;
+using BackMeUpApp.DTOs;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,10 +9,11 @@ namespace BackMeUpApp.Repository
 {
     public interface IPostRepository
     {
-        Task<IEnumerable<Post>> GetPostsAsync();
+        Task<IEnumerable<PostWithCreatorDto>> GetPostsAsync();
         Task<Post> GetPostAsync();
         Task<Post> AddPostAsync(Post post,string username);
             
+
 
     }
 }
