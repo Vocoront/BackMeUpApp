@@ -1,0 +1,19 @@
+.tag {
+  background-color: $dark-background;
+  color: whitesmoke;
+  border-radius: 25px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  min-width: 7rem;
+  min-height: 3rem;
+  margin-right: 1rem;
+}
+
+.tag:hover {
+  transform: translateY(-0.05rem);
+  box-shadow: 0 0.5rem 0.5rem rgba(0, 0, 0, 0.3);
+}

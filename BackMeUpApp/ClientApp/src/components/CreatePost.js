@@ -3,6 +3,7 @@ import { AwesomeButton } from "react-awesome-button";
 import styles from "react-awesome-button/src/styles/themes/theme-bojack";
 //import "../../node_modules/font-awesome/css/font-awesome.css";
 import { Form } from "react-bootstrap";
+import Tag from "./Tag.js";
 
 class CreatePost extends Component {
   constructor(props) {
@@ -39,6 +40,20 @@ class CreatePost extends Component {
           </div>
           <div>
             <Form.Control as="textarea" rows="4" placeholder="Text" />
+          </div>
+
+          <div className="tagBar">
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
+            <Tag />
           </div>
         </div>
         <AwesomeButton

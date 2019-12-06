@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
+import Tag from "./Tag.js";
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss";
 
 class Post extends Component {

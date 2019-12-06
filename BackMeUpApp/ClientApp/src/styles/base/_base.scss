@@ -1,15 +1,14 @@
-html{
-    font-size: 62.5%;//rem=16px, 16*0.625=10, rem=10
+html {
+  font-size: 62.5%; //rem=16px, 16*0.625=10, rem=10
 }
 
 body {
-    font-family: 'Roboto', sans-serif;
-    background: $background;
-    color: white;
-    font-size: 1.6rem;
+  font-family: "Roboto", sans-serif;
+  background: $background;
+  color: white;
+  font-size: 1.6rem;
 }
 ::-webkit-scrollbar {
-    width: 0px;
-    background: transparent;
+  width: 0px;
+  background: transparent;
 }
-
