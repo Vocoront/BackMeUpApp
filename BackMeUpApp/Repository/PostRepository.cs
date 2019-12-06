@@ -21,16 +21,34 @@ namespace BackMeUpApp.Repository
 
         public async Task<Post> AddPostAsync(Post post,string username)
         {
-            
-
-
-            IEnumerable<Post> ret = await this._client.Cypher.Match("(u:User)")
+            IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
-                .Create("(p:Post { params })")
-                .WithParam("params", post)
+                .Create("(p:Post { Title:'"+post.Title+"', " +
+                "Text:'" +post.Text+
+                "' })")
                 .Create("(p)-[:CreatedBy]->(u)")
-                .Return<Post>("p").ResultsAsync;
-            return ret.First();
+                .Return<Node<Post>>("p").ResultsAsync;
+
+            var pom= ret.First();
+
+            int id = (int)pom.Reference.Id;
+
+            String str = post.Tags[0];
+
+            String[] tags = str.Split(',');
+
+            foreach (string t in tags)
+            {
+                IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
+                .Where("id(p)=" + id)
+                .Create("(t:Tag { Title:'" + t + "' })")
+                .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
+
+                var paaom=tret;
+
+            }
+
+            return pom.Data;
         }
 
 

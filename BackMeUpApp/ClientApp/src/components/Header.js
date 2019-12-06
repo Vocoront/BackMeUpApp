@@ -5,7 +5,7 @@ import Navbar from "react-bootstrap/Navbar";
 import { connect } from "react-redux";
 import { deleteToken } from "../actions/user";
 const Header = props => (
-  <Navbar bg="dark" variant="dark" sticky="top" className="header">
+  <Navbar bg="dark" variant="dark" sticky="top" expand="md" className="header">
     <div className="header__title">Back Me Up</div>
     <div className="header__filler"></div>
     <NavLink
@@ -53,5 +53,5 @@ const Header = props => (
   </Navbar>
 );
 
-const mapStateToProps = state => ({user: state.user });
+const mapStateToProps = state => ({ user: state.user });
 export default connect(mapStateToProps)(Header);
