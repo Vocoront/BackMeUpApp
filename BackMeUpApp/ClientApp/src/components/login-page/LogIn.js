@@ -1,4 +1,6 @@
 import React, { Component } from "react";
+import { AwesomeButton } from "react-awesome-button";
+import styles from "react-awesome-button/src/styles/themes/theme-bojack";
 
 class LogIn extends Component {
   constructor(props) {
@@ -27,12 +29,14 @@ class LogIn extends Component {
           }}
           placeholder="Enter password"
         />
-        <div
-          className="bkm__btn login--btn"
-          onClick={() => this.props.submitLogIn(this.state)}
+        <AwesomeButton
+          style={styles}
+          size="medium"
+          type="link"
+          onPress={() => this.props.submitLogIn(this.state)}
         >
           Log In
-        </div>
+        </AwesomeButton>
       </div>
     );
   }
