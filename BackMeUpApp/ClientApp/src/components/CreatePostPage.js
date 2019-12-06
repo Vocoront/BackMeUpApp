@@ -13,12 +13,12 @@ class CreatePostPage extends Component {
 
     this.AddNewPost.bind(this);
   }
-  AddNewPost = (title, text) => {
+  AddNewPost = (title, text, tags) => {
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
+    formData.append("Tags", tags);
     formData.append("Username", this.props.user.username);
-    this.setState((state,props)=>({loading:true}));
     fetch("api/post/create", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
