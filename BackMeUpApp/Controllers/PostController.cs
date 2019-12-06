@@ -33,12 +33,20 @@ namespace BackMeUpApp.Controllers
             return Ok(posts);
         }
 
+        [HttpGet("createdby/{username}")]
+        public async Task<IActionResult> Get(String username)
+        {
+
+            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostAsync(username);
+            return Ok(posts);
+        }
+
 
 
         [HttpPost("create")]
         public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
         {
-            Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title };
+            Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title, Tags=newPostDto.Tags };
             var addedPost = await _rep.AddPostAsync(post,newPostDto.Username);
             return Ok(addedPost); 
         }

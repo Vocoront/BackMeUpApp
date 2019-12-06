@@ -30,18 +30,22 @@
   text-decoration: none;
 }
 
-
-.header__navlink:hover{
-    color: #F8FF00;
-    font-weight: 600;
-    text-decoration: none;
+.header__navlink:hover {
+  color: #f8ff00;
+  font-weight: 600;
+  text-decoration: none;
 }
 
-
-.header__navlink--is-active{
-    color: #F8FF00;
+.header__navlink--is-active {
+  color: #f8ff00;
 }
 
 .header__filler {
   flex: 2;
+}
+
+@media (min-width: 768px) and (max-width: 1000px) {
+  .collapse {
+    display: none !important;
+  }
 }
