@@ -112,9 +112,9 @@ namespace BackMeUpApp.Repository
         {
 
             var query = this._client.Cypher.Match("(p:Post)-[:CreatedBy]->(u:User)").Where("id(p)=" + id)
-                .Return((m, u) => new
+                .Return((p, u) => new
                 {
-                    Post = m.As<Node<Post>>(),
+                    Post = p.As<Node<Post>>(),
                     Username = u.As<User>().Username
                 }
                 );

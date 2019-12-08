@@ -10,15 +10,11 @@ class ExtendedPost extends Component {
     super(props);
     this.state = {
       post: "",
-      postId: 108,
-      postTitle: "blabla",
-      postUserCreator: "dusan",
-        postText: "dusan je car",
-        comment : ""
+      comment : ""
 
     };
-    
 
+      this.GetPost();
       this.GetPost = this.GetPost.bind(this);                // ovako se pravilno bind-uje
       this.CommentOnChageHandler = this.CommentOnChageHandler.bind(this);
       this.AddComment = this.AddComment.bind(this);
@@ -27,14 +23,15 @@ class ExtendedPost extends Component {
     // nesto ne radi
     const formData = new FormData();
 
-    let putanja = " api/post/getPostById/?postId=" + this.props.match.params.id;
+    let putanja = " /api/post/getPostById/" + this.props.match.params.id;         // ovde mora / pre api !!!
     fetch(putanja, { method: "GET" })
       .then(res => res.json())
       .then(data => {
         console.log(data);
         this.setState((state, props) => ({ post: data }));
       })
-      .catch(er => console.log(er));
+          .catch(er => console.log(er));
+
   }
   
     CommentOnChageHandler(evt) {
@@ -51,7 +48,7 @@ class ExtendedPost extends Component {
         fetch("/api/post/make_comment", { method: "POST", body: formData })
             .then(res => res.json())
             .then(data => {
-                console.log(data);
+                
                 this.setState((state, props) => ({ loading: false }));
 
                 this.props.history.push("/");
@@ -63,9 +60,12 @@ class ExtendedPost extends Component {
   render() {
     return (
         <div className="extPost">
+            <p> Title : {this.state.post.title} </p>
+            <p> User : {this.state.post.username} </p>
+            <p> Text : {this.state.post.text} </p>
             <Form>
             <Form.Group controlId="exampleForm.ControlTextarea1">
-                <Form.Label>Example textarea</Form.Label>
+                
                     <Form.Control as="textarea" rows="3" name="comment" onChange={this.CommentOnChageHandler}/>
                 </Form.Group>
             </Form>
