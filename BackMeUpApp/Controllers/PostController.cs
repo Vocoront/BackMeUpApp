@@ -32,6 +32,13 @@ namespace BackMeUpApp.Controllers
             IEnumerable<PostForDisplayDto> posts= await _rep.GetPostsAsync();
             return Ok(posts);
         }
+        [HttpGet ("getPostById/{postId}")]
+        public async Task<IActionResult> GetPostById(int postId)
+        {
+
+            PostForDisplayDto post= await _rep.GetPostsByIdAsync(postId);
+            return Ok(post);
+        }
 
         [HttpGet("createdby/{username}")]
         public async Task<IActionResult> Get(String username)
@@ -49,6 +56,22 @@ namespace BackMeUpApp.Controllers
             Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title, Tags=newPostDto.Tags };
             var addedPost = await _rep.AddPostAsync(post,newPostDto.Username);
             return Ok(addedPost); 
+        }
+        [HttpPost("vote")]
+        public async Task<IActionResult> AddNewVote([FromForm] VoteForCreation newVote)
+        {
+
+            var ret = await _rep.AddChoiceAsync(newVote.IdPosta, newVote.Username, newVote.isLeft);
+            return Ok(ret);
+
+        }
+        [HttpPost("make_comment")]
+        public async Task<IActionResult> AddNewComment([FromForm] CommentForCreationDto newComment)
+        {
+
+            var ret = await _rep.AddCommentAsync(newComment.IdPosta, newComment.Username, newComment.Comment_Text);
+            return Ok(ret);
+
         }
 
     }

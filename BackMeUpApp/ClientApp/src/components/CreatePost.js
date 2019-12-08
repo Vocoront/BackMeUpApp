@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+﻿import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import styles from "react-awesome-button/src/styles/themes/theme-bojack";
 
@@ -79,6 +79,7 @@ class CreatePost extends Component {
         >
           Dodaj
         </AwesomeButton>
+
       </div>
     );
   }
