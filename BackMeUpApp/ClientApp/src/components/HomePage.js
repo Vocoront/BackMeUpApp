@@ -22,13 +22,14 @@ class HomePage extends Component {
       })
       .catch(er => console.log(er));
   }
+  
 
   render() {
     return (
       <div>
         <div>
                 {this.state.posts.map((post, index) => {
-                    return <Post key={index} title={post.title} creator={post.username} content={post.text} postId={post.id} />;
+                    return <Post  key={index} title={post.title} creator={post.username} content={post.text} postId={post.id} />;
           })}
         </div>
       </div>

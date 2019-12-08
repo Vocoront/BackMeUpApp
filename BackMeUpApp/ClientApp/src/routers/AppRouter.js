@@ -6,8 +6,11 @@ import NotFoundPage from '../components/error-page/NotFoundPage';
 import Header from '../components/Header';
 import LogInPage from "../components/login-page/LogInPage";
 import CreatePostPage from "../components/CreatePostPage"
+import ExtendedPost from "../components/ExtendedPost"
+
 const AppRouter=(props)=> {
-  return (
+    return (
+       
     <BrowserRouter>
     <div>
       <Header/>
@@ -15,8 +18,10 @@ const AppRouter=(props)=> {
         <Route exact={true} path="/" component={HomePage}/>
         <Route  path="/createpost" component={CreatePostPage}/>
         <Route  path="/profile" component={ProfilePage}/>
-        <Route path="/login" component={LogInPage}/>
-        <Route component={NotFoundPage}/>
+                    <Route path="/login" component={LogInPage} />
+                    <Route path="/extendedPost/:id" component={ExtendedPost} />
+        <Route component={NotFoundPage} />
+                  
    </Switch>
     </div>
  

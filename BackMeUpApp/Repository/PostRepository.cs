@@ -107,6 +107,31 @@ namespace BackMeUpApp.Repository
             }
             return posts;
         }
+
+        public async Task<PostForDisplayDto> GetPostsByIdAsync(int id)
+        {
+
+            var query = this._client.Cypher.Match("(p:Post)-[:CreatedBy]->(u:User)").Where("id(p)=" + id)
+                .Return((m, u) => new
+                {
+                    Post = m.As<Node<Post>>(),
+                    Username = u.As<User>().Username
+                }
+                );
+            var results = await query.ResultsAsync;
+
+            PostForDisplayDto retPost = new PostForDisplayDto();
+            retPost.Id = id;
+            retPost.Title = results.First().Post.Data.Title;
+            retPost.Text = results.First().Post.Data.Text;
+            retPost.Username = results.First().Username;
+            return retPost;
+           
+
+        }
+
+
+
         public async Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft)
         {
             String choice;
@@ -120,6 +145,16 @@ namespace BackMeUpApp.Repository
             IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
                 .CreateUnique("(u)-[:Choice {side:'" + choice + "'}]->(p)")
+                .Return<User>("u").ResultsAsync;
+            return ret.First();
+
+        }
+        public async Task<User> AddCommentAsync(int postId, string username, string comment_text)
+        {
+            
+            IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
+                .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
+                .Create("(u)-[:Comment {text:'" + comment_text + "'}]->(p)")
                 .Return<User>("u").ResultsAsync;
             return ret.First();
 

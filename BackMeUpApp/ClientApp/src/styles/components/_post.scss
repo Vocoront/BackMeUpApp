@@ -6,6 +6,10 @@
   padding-right: $l-size;
   justify-content: space-around;
 }
+.post__container:hover {
+    -webkit-transform: scale(1.03, 1.03);
+    transform: scale(1.03, 1.03);
+}
 
 .post__title {
   margin-bottom: $m-size;
