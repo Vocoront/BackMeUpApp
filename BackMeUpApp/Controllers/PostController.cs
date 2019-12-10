@@ -39,7 +39,13 @@ namespace BackMeUpApp.Controllers
             PostForDisplayDto post= await _rep.GetPostsByIdAsync(postId);
             return Ok(post);
         }
+        [HttpGet("GetCommentsForPost/{postId}")]
+        public async Task<IActionResult> GetCommentsForPost(int postId)
+        {
 
+            IEnumerable < CommentForDisplayDto > comments = await _rep.GetCommentsForPost(postId);
+            return Ok(comments);
+        }
         [HttpGet("createdby/{username}")]
         public async Task<IActionResult> Get(String username)
         {
