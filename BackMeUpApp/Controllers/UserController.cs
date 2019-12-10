@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
 using BackMeUpApp.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
@@ -15,8 +16,10 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace BackMeUpApp.Controllers
 {
+    
     [Route("api/[controller]")]
     [ApiController]
+    
     public class UserController : ControllerBase
     {
         private readonly IUserRepository _repo;
@@ -29,6 +32,25 @@ namespace BackMeUpApp.Controllers
             this._postRepo = postRepository;
         }
 
+
+        [HttpPost("reconnect")]
+        [Authorize]
+        public async Task<IActionResult> Reconnect()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+
+            // Gets list of claims.
+            IEnumerable<Claim> claim = identity.Claims;
+
+            // Gets name from claims. Generally it's an email address.
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            return Ok(new
+            {
+                username = identity.Name
+            });
+        }
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm]UserForRegisterDto userForRegisterDto)
@@ -55,7 +77,7 @@ namespace BackMeUpApp.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddDays(1),
+                Expires = DateTime.Now.AddHours(1),
                 SigningCredentials = creds
             };
 
@@ -93,7 +115,7 @@ namespace BackMeUpApp.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddHours(2),
+                Expires = DateTime.Now.AddHours(10),
                 SigningCredentials = creds
             };
 

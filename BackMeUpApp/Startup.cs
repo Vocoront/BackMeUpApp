@@ -48,6 +48,9 @@ namespace BackMeUpApp
                     {
                         ValidateIssuerSigningKey = true,
                         IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(Configuration.GetSection("AppSettings:Token").Value)),
+                        RequireExpirationTime = true,
+                        ValidateLifetime=true,
+                        ClockSkew=TimeSpan.FromMinutes(0),
                         ValidateIssuer = false,
                         ValidateAudience = false
                     };

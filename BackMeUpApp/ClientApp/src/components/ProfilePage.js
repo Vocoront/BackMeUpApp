@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import Post from "./Post";
 import { connect } from "react-redux";
+import { setPosts } from "../actions/user";
 class ProfilePage extends Component {
   constructor(props) {
     super(props);
@@ -8,26 +9,32 @@ class ProfilePage extends Component {
       posts: []
     };
 
-    this.GetPosts();
-
     this.GetPosts.bind(this);
+  }
+
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextProps.user.username !== this.props.user.username) return true;
+
+    if (nextProps.user.posts.length !== this.props.user.posts.length)
+      return true;
+    return false;
   }
 
   GetPosts() {
     fetch("/api/post/createdby/" + this.props.user.username, { method: "GET" })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
-        this.setState((state, props) => ({ posts: data }));
+        this.props.dispatch(setPosts(data));
       })
       .catch(er => console.log(er));
   }
 
   render() {
+    this.GetPosts();
     return (
       <div>
         <div>
-          {this.state.posts.map((post, index) => {
+          {this.props.user.posts.map((post, index) => {
             return (
               <Post
                 key={index}

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
 using BackMeUpApp.Repository;
+using System.Security.Claims;
 
 namespace BackMeUpApp.Controllers
 {
@@ -28,7 +29,7 @@ namespace BackMeUpApp.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-
+       
             IEnumerable<PostForDisplayDto> posts= await _rep.GetPostsAsync();
             return Ok(posts);
         }
