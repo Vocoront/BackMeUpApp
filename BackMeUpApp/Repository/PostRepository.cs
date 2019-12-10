@@ -42,7 +42,7 @@ namespace BackMeUpApp.Repository
                 IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
                 .Where("id(p)=" + id)
                 .Create("(t:Tag { Title:'" + t + "' })")
-                .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
+                .CreateUnique("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
 
                 var paaom=tret;
 
@@ -129,7 +129,30 @@ namespace BackMeUpApp.Repository
            
 
         }
+        public async Task<IEnumerable<CommentForDisplayDto>> GetCommentsForPost(int postId)
+        {
+            //match (p:Post)-[c:Comment]-(u:User) where id(p)=274 return p,c,u
+            var query = this._client.Cypher.Match("(p:Post)-[c:Comment]-(u:User)").Where("id(p)="+postId)
+                   .Return((c,u) => new
+                   {
+                       Comment = c.As<CommentForDisplayDto>().text,
+                       Username = u.As<User>().Username
+                   }
+                   );
+            var results = await query.ResultsAsync;
 
+            List<CommentForDisplayDto> comments = new List<CommentForDisplayDto>();
+            foreach (var comm in results)
+            {
+                comments.Add(new CommentForDisplayDto
+                {
+                    Username = comm.Username,
+                    text = comm.Comment
+                    
+                });
+            }
+            return comments;
+        }
 
 
         public async Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft)

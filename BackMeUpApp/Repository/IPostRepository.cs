@@ -16,6 +16,7 @@ namespace BackMeUpApp.Repository
         Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft);
         Task<User> AddCommentAsync(int postId, string username, string comment_text);
         Task<PostForDisplayDto> GetPostsByIdAsync(int id);
+        Task<IEnumerable<CommentForDisplayDto>> GetCommentsForPost(int postId);
 
     }
 }
