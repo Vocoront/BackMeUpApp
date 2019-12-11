@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import Post from "./Post";
-
+import Message from './Message';
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -29,6 +29,7 @@ class HomePage extends Component {
     }
     return (
       <div>
+        <Message/>
         <div>
           {this.state.posts.map((post, index) => {
             return (
