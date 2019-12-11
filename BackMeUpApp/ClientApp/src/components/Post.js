@@ -28,6 +28,13 @@ class Post extends Component {
       .catch(er => console.log(er));
   }
 
+  returnTags() {
+    console.log(this.props.tags);
+    this.props.tags.map(tag => {
+      return <Tag Title={"aaa"} />;
+    });
+  }
+
   render() {
     return (
       <Route
@@ -40,6 +47,7 @@ class Post extends Component {
             <div>{this.props.creator}</div>
             <div className="post__content">{this.props.content}</div>
             <div className="post__vote">
+              {this.returnTags()}
               <AwesomeButton
                 className="aws-btn"
                 size="large"

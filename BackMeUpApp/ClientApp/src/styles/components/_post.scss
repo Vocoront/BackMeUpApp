@@ -7,8 +7,10 @@
   justify-content: space-around;
 }
 .post__container:hover {
-    -webkit-transform: scale(1.03, 1.03);
-    transform: scale(1.03, 1.03);
+  //-webkit-transform: scale(1.03, 1.03);
+  //transform: scale(1.03, 1.03);
+
+  box-shadow: 0 1rem 2rem #343a40;
 }
 
 .post__title {

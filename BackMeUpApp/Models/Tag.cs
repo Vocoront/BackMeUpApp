@@ -7,6 +7,6 @@ namespace BackMeUpApp.DomainModel
 {
     public class Tag
     {
-
+        public string Title { get; set; }
     }
 }

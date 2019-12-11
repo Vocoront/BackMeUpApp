@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using BackMeUpApp.DomainModel;
 
 namespace BackMeUpApp.DTOs
 {
@@ -11,5 +12,7 @@ namespace BackMeUpApp.DTOs
         public string Username { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
+
+        public List<Tag> tags { get; set; }
     }
 }

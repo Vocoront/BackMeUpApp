@@ -72,6 +72,7 @@ namespace BackMeUpApp.Repository
             List<PostForDisplayDto> posts = new List<PostForDisplayDto>();
             foreach (var post in results)
             {
+
                 posts.Add(new PostForDisplayDto
                 {
                     Id = post.Post.Reference.Id,
@@ -97,13 +98,46 @@ namespace BackMeUpApp.Repository
             List<PostForDisplayDto> posts = new List<PostForDisplayDto>();
             foreach(var post in results)
             {
-                posts.Add(new PostForDisplayDto
+                var queryTag = this._client.Cypher.Match("(p:Post)-[r:tagged]-(t:Tag)")
+               .Where("id(p)=" + post.Post.Reference.Id)
+               .Return(t => new
+               {
+                   Tag = t.As<Node<Tag>>()
+               }
+
+               );
+                var resultsTag = await queryTag.ResultsAsync;
+
+                PostForDisplayDto tmpPost = new PostForDisplayDto();
+                tmpPost.Id = post.Post.Reference.Id;
+                tmpPost.Text = post.Post.Data.Text;
+                tmpPost.Title = post.Post.Data.Title;
+                tmpPost.Username = post.Username;
+                tmpPost.tags = new List<Tag>();
+
+                foreach (var tag in resultsTag)
                 {
-                    Id = post.Post.Reference.Id,
-                    Title = post.Post.Data.Title,
-                    Text = post.Post.Data.Text,
-                    Username = post.Username
-                });
+                    tmpPost.tags.Add(new Tag { Title = tag.Tag.Data.Title });
+                }
+
+                posts.Add(tmpPost);
+
+                //posts.Add(new PostForDisplayDto
+                //{
+                //    Id = post.Post.Reference.Id,
+                //    Title = post.Post.Data.Title,
+                //    Text = post.Post.Data.Text,
+                //    Username = post.Username
+                //});
+
+                //foreach (var tag in resultsTag)
+                //{
+                //    posts.Last().tags.Add(new Tag { Title = "aa" });
+                //}
+
+                //posts.Last().tags.Add(new Tag { Title = "aa" });
+
+
             }
             return posts;
         }

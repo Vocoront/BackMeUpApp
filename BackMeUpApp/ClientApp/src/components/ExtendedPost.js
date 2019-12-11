@@ -62,7 +62,7 @@ class ExtendedPost extends Component {
 
   render() {
     return (
-      <div className="extPost">
+      <div className="post extPost">
         <p> Title : {this.state.post.title} </p>
         <p> User : {this.state.post.username} </p>
         <p> Text : {this.state.post.text} </p>
