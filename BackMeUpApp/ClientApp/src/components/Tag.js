@@ -5,13 +5,13 @@ import { AwesomeButton } from "react-awesome-button";
 class Tag extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      text: "taag"
-    };
+    this.state = {};
   }
 
   render() {
-    return <div className="tag">{this.state.text}</div>;
+    console.log("bb");
+
+    return <div className="tag">{this.props.Title}</div>;
   }
 }
 
