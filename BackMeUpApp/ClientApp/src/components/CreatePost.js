@@ -79,7 +79,6 @@ class CreatePost extends Component {
         >
           Dodaj
         </AwesomeButton>
-
       </div>
     );
   }

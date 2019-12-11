@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
+import TagBar from "./TagBar.js";
+
 //import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
@@ -28,13 +30,6 @@ class Post extends Component {
       .catch(er => console.log(er));
   }
 
-  returnTags() {
-    console.log(this.props.tags);
-    this.props.tags.map(tag => {
-      return <Tag Title={"aaa"} />;
-    });
-  }
-
   render() {
     return (
       <Route
@@ -47,7 +42,6 @@ class Post extends Component {
             <div>{this.props.creator}</div>
             <div className="post__content">{this.props.content}</div>
             <div className="post__vote">
-              {this.returnTags()}
               <AwesomeButton
                 className="aws-btn"
                 size="large"
@@ -64,6 +58,12 @@ class Post extends Component {
               >
                 <i className="far fa-hand-point-right"></i>
               </AwesomeButton>
+            </div>
+            <div className="tagBar">
+              {this.props.tags.map(tag => {
+                console.log(tag);
+                return <Tag Title={tag.title} />;
+              })}
             </div>
           </div>
         )}
