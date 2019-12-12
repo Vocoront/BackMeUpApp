@@ -48,148 +48,77 @@ namespace BackMeUpApp.Repository
 
             return pom.Data;
         }
-        public async Task<Post> GetPostAsync()
-        {
-            return null; 
-        }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostAsync(string Username)
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
-                .Where((User u)=>u.Username==Username)
-              .Return((m, u) => new
+                .Where((User u) => u.Username == Username)
+                .Match("(m)-[:tagged]-(t:Tag)")
+                .With("id(m) as id,m,u,t")
+              .Return((id,m, u, t) => new PostForDisplayDto
               {
-                  Post = m.As<Node<Post>>(),
-                  Username = u.As<User>().Username
+                  Id= id.As<long>(),
+                  Text=m.As<Post>().Text,
+                  Username=u.As<User>().Username,
+                  Title=m.As<Post>().Title,              
+                  Tags = t.CollectAs<Tag>()
               }
-              );
+              ) ;
             var results = await query.ResultsAsync;
-            List<PostForDisplayDto> posts = new List<PostForDisplayDto>();
-            foreach (var post in results)
-            {
-                var queryTag = this._client.Cypher.Match("(p:Post)-[r:tagged]-(t:Tag)")
-               .Where("id(p)=" + post.Post.Reference.Id)
-               .Return(t => new
-               {
-                   Tag = t.As<Node<Tag>>()
-               }
-
-               );
-                var resultsTag = await queryTag.ResultsAsync;
-                PostForDisplayDto tmpPost = new PostForDisplayDto();
-                tmpPost.Id = post.Post.Reference.Id;
-                tmpPost.Text = post.Post.Data.Text;
-                tmpPost.Title = post.Post.Data.Title;
-                tmpPost.Username = post.Username;
-                tmpPost.tags = new List<Tag>();
-                foreach (var tag in resultsTag)
-                {
-                    tmpPost.tags.Add(new Tag { Title = tag.Tag.Data.Title });
-                }
-                posts.Add(tmpPost);
-            }
-            return posts;
+ 
+            return results;
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
         {
-            var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
-                .Return((m, u) => new 
+            var query = this._client.
+                Cypher
+                .Match("(m:Post)-[r:CreatedBy]-(u:User)")
+                .Match("(m)-[:tagged]-(t:Tag)")
+                .With("id(m) as id,m,u,t")
+                .Return((m, u, t, id) => new PostForDisplayDto
                 {
-                    Post= m.As<Node<Post>>(),
-                    Username = u.As<User>().Username
+                    Id = id.As<long>(),
+                    Text = m.As<Post>().Text,
+                    Username = u.As<User>().Username,
+                    Title = m.As<Post>().Title,
+                    Tags = t.CollectAs<Tag>()
                 }
                 );
             var results = await query.ResultsAsync;
 
-            List<PostForDisplayDto> posts = new List<PostForDisplayDto>();
-            foreach(var post in results)
-            {
-                var queryTag = this._client.Cypher.Match("(p:Post)-[r:tagged]-(t:Tag)")
-               .Where("id(p)=" + post.Post.Reference.Id)
-               .Return(t => new
-               {
-                   Tag = t.As<Node<Tag>>()
-               }
-
-               );
-                var resultsTag = await queryTag.ResultsAsync;
-
-                PostForDisplayDto tmpPost = new PostForDisplayDto();
-                tmpPost.Id = post.Post.Reference.Id;
-                tmpPost.Text = post.Post.Data.Text;
-                tmpPost.Title = post.Post.Data.Title;
-                tmpPost.Username = post.Username;
-                tmpPost.tags = new List<Tag>();
-
-                foreach (var tag in resultsTag)
-                {
-                    tmpPost.tags.Add(new Tag { Title = tag.Tag.Data.Title });
-                }
-
-                posts.Add(tmpPost);
-
-                //posts.Add(new PostForDisplayDto
-                //{
-                //    Id = post.Post.Reference.Id,
-                //    Title = post.Post.Data.Title,
-                //    Text = post.Post.Data.Text,
-                //    Username = post.Username
-                //});
-
-                //foreach (var tag in resultsTag)
-                //{
-                //    posts.Last().tags.Add(new Tag { Title = "aa" });
-                //}
-
-                //posts.Last().tags.Add(new Tag { Title = "aa" });
-
-
-            }
-            return posts;
+            return results;
         }
         public async Task<PostForDisplayDto> GetPostsByIdAsync(int id)
         {
 
-            var query = this._client.Cypher.Match("(p:Post)-[:CreatedBy]->(u:User)").Where("id(p)=" + id)
-                .Return((p, u) => new
+            var query = this._client.Cypher.Match("(p:Post)-[:CreatedBy]-(u:User)")
+                .Where("id(p)=" + id)
+                .Match("(p)-[:tagged]-(t:Tag)")
+                .Return((p, u,t) => new PostForDisplayDto
                 {
-                    Post = p.As<Node<Post>>(),
-                    Username = u.As<User>().Username
+                    Title=p.As<Post>().Title,
+                    Text=p.As<Post>().Text,
+                    Username = u.As<User>().Username,
+                    Tags = t.CollectAs<Tag>()
                 }
                 );
             var results = await query.ResultsAsync;
 
-            PostForDisplayDto retPost = new PostForDisplayDto();
-            retPost.Id = id;
-            retPost.Title = results.First().Post.Data.Title;
-            retPost.Text = results.First().Post.Data.Text;
-            retPost.Username = results.First().Username;
-            return retPost;
-           
+            PostForDisplayDto post= results.First();
+            post.Id = id;
+            return post;
 
         }
         public async Task<IEnumerable<CommentForDisplayDto>> GetCommentsForPost(int postId)
         {
-            //match (p:Post)-[c:Comment]-(u:User) where id(p)=274 return p,c,u
             var query = this._client.Cypher.Match("(p:Post)-[c:Comment]-(u:User)").Where("id(p)="+postId)
-                   .Return((c,u) => new
+                   .Return((c,u) => new CommentForDisplayDto
                    {
-                       Comment = c.As<CommentForDisplayDto>().text,
+                       Text = c.As<CommentForDisplayDto>().Text,
                        Username = u.As<User>().Username
                    }
                    );
             var results = await query.ResultsAsync;
-
-            List<CommentForDisplayDto> comments = new List<CommentForDisplayDto>();
-            foreach (var comm in results)
-            {
-                comments.Add(new CommentForDisplayDto
-                {
-                    Username = comm.Username,
-                    text = comm.Comment
-                    
-                });
-            }
-            return comments;
+            return results;
         }
         public async Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft)
         {
