@@ -11,7 +11,7 @@ class CreatePostPage extends Component {
       loading: false
     };
 
-    this.AddNewPost.bind(this);
+    this.AddNewPost = this.AddNewPost.bind(this);
   }
   AddNewPost = (title, text, tags) => {
     let tagsSend = this.addTags(tags);
@@ -20,9 +20,8 @@ class CreatePostPage extends Component {
     formData.append("Title", title);
     formData.append("Text", text);
     formData.append("Tags", tagsSend);
-    const tagsArray=tags.split(" ");
+    const tagsArray = tags.split(" ");
     console.log(tagsArray);
-
 
     formData.append("Tags", tagsArray);
     formData.append("Username", this.props.user.username);

@@ -6,7 +6,7 @@ import { withRouter } from "react-router-dom";
 import LogIn from "./LogIn";
 import CreateAccount from "./CreateAccount";
 import ErrorContainer from "../error-page/ErrorContainer";
-import {setUsername,setToken} from '../../actions/user';
+import { setUsername, setToken } from "../../actions/user";
 
 class LogInPage extends Component {
   constructor(props) {
@@ -20,18 +20,16 @@ class LogInPage extends Component {
         message: "message"
       }
     };
-    this.loginMode.bind(this);
-    this.loginSubmit.bind(this);
-    this.createAccount.bind(this);
-    this.validatePassword.bind(this);
-    this.validateEmail.bind(this);
-    this.validateUsername.bind(this);
-    this.clearError.bind(this);
-    this.validate.bind(this);
-    this.validateLogin.bind(this);
+    this.loginMode = this.loginMode.bind(this);
+    this.loginSubmit = this.loginSubmit.bind(this);
+    this.createAccount = this.createAccount.bind(this);
+    this.validatePassword = this.validatePassword.bind(this);
+    this.validateEmail = this.validateEmail.bind(this);
+    this.validateUsername = this.validateUsername.bind(this);
+    this.clearError = this.clearError.bind(this);
+    this.validate = this.validate.bind(this);
+    this.validateLogin = this.validateLogin.bind(this);
   }
-
-  
 
   validateLogin(username, password) {
     if (!this.validateUsername(username)) {

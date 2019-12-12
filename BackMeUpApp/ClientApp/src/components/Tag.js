@@ -1,18 +1,5 @@
-import React, { Component } from "react";
-import { AwesomeButton } from "react-awesome-button";
-//import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss";
+import React from "react";
 
-class Tag extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {};
-  }
-
-  render() {
-    console.log("bb");
-
-    return <div className="tag">{this.props.Title}</div>;
-  }
-}
+const Tag = props => <div className="tag">{props.Title}</div>;
 
 export default Tag;

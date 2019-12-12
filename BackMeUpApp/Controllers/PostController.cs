@@ -22,21 +22,16 @@ namespace BackMeUpApp.Controllers
         public PostController(IPostRepository rep)
         {
             _rep = rep;
-
         }
-
-
         [HttpGet]
         public async Task<IActionResult> Get()
-        {
-       
+        {    
             IEnumerable<PostForDisplayDto> posts= await _rep.GetPostsAsync();
             return Ok(posts);
         }
         [HttpGet ("getPostById/{postId}")]
         public async Task<IActionResult> GetPostById(int postId)
         {
-
             PostForDisplayDto post= await _rep.GetPostsByIdAsync(postId);
             return Ok(post);
         }
@@ -54,9 +49,6 @@ namespace BackMeUpApp.Controllers
             IEnumerable<PostForDisplayDto> posts = await _rep.GetPostAsync(username);
             return Ok(posts);
         }
-
-
-
         [HttpPost("create")]
         public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
         {

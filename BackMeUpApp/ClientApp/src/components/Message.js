@@ -10,7 +10,7 @@ class Message extends Component {
       message: ""
     };
 
-    this.createConnection.bind(this);
+    this.createConnection=this.createConnection.bind(this);
   }
 
   createConnection() {

@@ -13,12 +13,10 @@ namespace BackMeUpApp.Repository
     public class PostRepository : IPostRepository
     {
         private readonly IGraphClient _client;
-
         public PostRepository(IGraphClient client)
         {
             this._client = client;
         }
-
         public async Task<Post> AddPostAsync(Post post,string username)
         {
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
@@ -50,13 +48,10 @@ namespace BackMeUpApp.Repository
 
             return pom.Data;
         }
-
-
         public async Task<Post> GetPostAsync()
         {
             return null; 
         }
-
         public async Task<IEnumerable<PostForDisplayDto>> GetPostAsync(string Username)
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
@@ -68,22 +63,32 @@ namespace BackMeUpApp.Repository
               }
               );
             var results = await query.ResultsAsync;
-
             List<PostForDisplayDto> posts = new List<PostForDisplayDto>();
             foreach (var post in results)
             {
+                var queryTag = this._client.Cypher.Match("(p:Post)-[r:tagged]-(t:Tag)")
+               .Where("id(p)=" + post.Post.Reference.Id)
+               .Return(t => new
+               {
+                   Tag = t.As<Node<Tag>>()
+               }
 
-                posts.Add(new PostForDisplayDto
+               );
+                var resultsTag = await queryTag.ResultsAsync;
+                PostForDisplayDto tmpPost = new PostForDisplayDto();
+                tmpPost.Id = post.Post.Reference.Id;
+                tmpPost.Text = post.Post.Data.Text;
+                tmpPost.Title = post.Post.Data.Title;
+                tmpPost.Username = post.Username;
+                tmpPost.tags = new List<Tag>();
+                foreach (var tag in resultsTag)
                 {
-                    Id = post.Post.Reference.Id,
-                    Title = post.Post.Data.Title,
-                    Text = post.Post.Data.Text,
-                    Username = post.Username
-                });
+                    tmpPost.tags.Add(new Tag { Title = tag.Tag.Data.Title });
+                }
+                posts.Add(tmpPost);
             }
             return posts;
         }
-
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
@@ -141,7 +146,6 @@ namespace BackMeUpApp.Repository
             }
             return posts;
         }
-
         public async Task<PostForDisplayDto> GetPostsByIdAsync(int id)
         {
 
@@ -187,8 +191,6 @@ namespace BackMeUpApp.Repository
             }
             return comments;
         }
-
-
         public async Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft)
         {
             String choice;

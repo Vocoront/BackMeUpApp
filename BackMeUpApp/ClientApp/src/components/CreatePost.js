@@ -1,7 +1,6 @@
 ﻿import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import styles from "react-awesome-button/src/styles/themes/theme-bojack";
-
 import { Form } from "react-bootstrap";
 import Tag from "./Tag.js";
 
@@ -50,7 +49,7 @@ class CreatePost extends Component {
             }}
           />
 
-          <div className="tagBar">
+          {/* <div className="tagBar">
             <Tag />
             <Tag />
             <Tag />
@@ -62,7 +61,7 @@ class CreatePost extends Component {
             <Tag />
             <Tag />
             <Tag />
-          </div>
+          </div> */}
         </div>
         <AwesomeButton
           style={styles}

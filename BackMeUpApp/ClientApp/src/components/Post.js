@@ -1,9 +1,6 @@
 import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
-import TagBar from "./TagBar.js";
-
-//import AwesomeButtonStyles from "react-awesome-button/src/styles/styles.scss";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 
@@ -11,12 +8,12 @@ class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.glasaj.bind(this);
+    this.glasaj=this.glasaj.bind(this);
   }
 
   glasaj(levo) {
     var vote;
-    if (levo == "left") vote = true;
+    if (levo === "left") vote = true;
     else vote = false;
     const formData = new FormData();
     formData.append("IdPosta", this.props.postId);
@@ -60,10 +57,9 @@ class Post extends Component {
               </AwesomeButton>
             </div>
             <div className="tagBar">
-              {this.props.tags.map(tag => {
-                console.log(tag);
-                return <Tag Title={tag.title} />;
-              })}
+              {this.props.tags.map((tag, index) => (
+                <Tag key={index} Title={tag.title} />
+              ))}
             </div>
           </div>
         )}

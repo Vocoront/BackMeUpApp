@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-import Post from "./Post";
-import Message from './Message';
+import PostList from "./PostList";
+
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -8,9 +8,9 @@ class HomePage extends Component {
       posts: []
     };
 
-    this.GetPosts();
+    this.GetPosts = this.GetPosts.bind(this);
 
-    this.GetPosts.bind(this);
+    this.GetPosts();
   }
 
   GetPosts() {
@@ -24,26 +24,9 @@ class HomePage extends Component {
   }
 
   render() {
-    {
-      console.log(this.posts);
-    }
     return (
       <div>
-        <Message/>
-        <div>
-          {this.state.posts.map((post, index) => {
-            return (
-              <Post
-                key={index}
-                title={post.title}
-                creator={post.username}
-                content={post.text}
-                postId={post.id}
-                tags={post.tags}
-              />
-            );
-          })}
-        </div>
+        <PostList posts={this.state.posts} />
       </div>
     );
   }

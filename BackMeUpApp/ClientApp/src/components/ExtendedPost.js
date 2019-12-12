@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { AwesomeButton } from "react-awesome-button";
 import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
-import OneComment from "./OneComment";
+import Comment from "./Comment";
 class ExtendedPost extends Component {
   constructor(props) {
     super(props);
@@ -84,7 +84,7 @@ class ExtendedPost extends Component {
           <div className="PostComments">
             {this.state.allComments.map((comment, index) => {
               return (
-                <OneComment
+                <Comment
                   key={index}
                   username={comment.username}
                   text={comment.text}

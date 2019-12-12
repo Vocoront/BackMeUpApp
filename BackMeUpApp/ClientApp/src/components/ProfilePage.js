@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import Post from "./Post";
+import PostList from "./PostList";
 import { connect } from "react-redux";
 import { setPosts } from "../actions/user";
 class ProfilePage extends Component {
@@ -8,20 +8,27 @@ class ProfilePage extends Component {
     this.state = {
       posts: []
     };
+    this.GetPosts=this.GetPosts.bind(this);
+  }
 
-    this.GetPosts.bind(this);
+  componentDidMount(){
+    this.GetPosts(this.props.user.username);
   }
 
   shouldComponentUpdate(nextProps, nextState) {
-    if (nextProps.user.username !== this.props.user.username) return true;
+    if (nextProps.user.username !== this.props.user.username) {
+      this.GetPosts(nextProps.user.username);
+      return true;
+    }
 
     if (nextProps.user.posts.length !== this.props.user.posts.length)
       return true;
     return false;
   }
 
-  GetPosts() {
-    fetch("/api/post/createdby/" + this.props.user.username, { method: "GET" })
+  GetPosts(username) {
+    if(username==="")return;
+    fetch("/api/post/createdby/" + username, { method: "GET" })
       .then(res => res.json())
       .then(data => {
         this.props.dispatch(setPosts(data));
@@ -30,26 +37,13 @@ class ProfilePage extends Component {
   }
 
   render() {
-    this.GetPosts();
     return (
       <div>
-        <div>
-          {this.props.user.posts.map((post, index) => {
-            return (
-              <Post
-                key={index}
-                title={post.title}
-                creator={post.username}
-                content={post.text}
-              />
-            );
-          })}
-        </div>
+        <PostList posts={this.props.user.posts} />
       </div>
     );
   }
 }
 
 const mapStateToProps = state => ({ user: state.user });
-
 export default connect(mapStateToProps)(ProfilePage);
