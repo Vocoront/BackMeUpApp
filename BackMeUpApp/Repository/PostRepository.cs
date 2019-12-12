@@ -37,10 +37,12 @@ namespace BackMeUpApp.Repository
 
             foreach (string t in tags)
             {
+
+            
                 IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
                 .Where("id(p)=" + id)
-                .Create("(t:Tag { Title:'" + t + "' })")
-                .CreateUnique("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
+                .Merge("(t:Tag { Title:'" + t + "' })")
+                .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
 
                 var paaom=tret;
 

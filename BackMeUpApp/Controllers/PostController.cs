@@ -18,7 +18,6 @@ namespace BackMeUpApp.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _rep;
-
         public PostController(IPostRepository rep)
         {
             _rep = rep;
