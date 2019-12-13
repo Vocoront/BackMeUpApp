@@ -28,8 +28,9 @@
   display: flex;
   border-top: 0.3rem solid black;
   flex-direction: row;
-  justify-content: space-around;
+  justify-content: space-between;
   padding: 1rem;
+  padding-bottom: 0rem;
 }
 
 .post__vote__option {
@@ -76,10 +77,12 @@ button {
   display: flex;
   flex-direction: row;
   overflow-x: scroll;
-  justify-content: center;
+  //justify-content: center;
+  padding-left: 1rem;
   scroll-padding-top: 3rem;
-  padding-top: 1rem;
-  padding-bottom: 1rem;
+  //padding-top: 1rem;
+  padding-bottom: 2rem;
+  align-items: flex-start;
 }
 
 .tagBar::-webkit-scrollbar {

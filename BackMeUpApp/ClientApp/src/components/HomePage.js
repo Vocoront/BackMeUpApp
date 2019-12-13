@@ -5,7 +5,8 @@ class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      posts: []
+      posts: [],
+      tag: "tt"
     };
 
     this.GetPosts = this.GetPosts.bind(this);
@@ -14,13 +15,23 @@ class HomePage extends Component {
   }
 
   GetPosts() {
-    fetch("api/post", { method: "GET" })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        this.setState((state, props) => ({ posts: data }));
-      })
-      .catch(er => console.log(er));
+    if (this.state.tag === "") {
+      fetch("api/post", { method: "GET" })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          this.setState((state, props) => ({ posts: data }));
+        })
+        .catch(er => console.log(er));
+    } else {
+      fetch("/api/post/getPostByTag/" + this.state.tag, { method: "GET" })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data);
+          this.setState((state, props) => ({ posts: data }));
+        })
+        .catch(er => console.log(er));
+    }
   }
 
   render() {

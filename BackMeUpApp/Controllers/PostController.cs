@@ -34,6 +34,21 @@ namespace BackMeUpApp.Controllers
             PostForDisplayDto post= await _rep.GetPostsByIdAsync(postId);
             return Ok(post);
         }
+
+        [HttpGet("getPostByTagUsername/{username}/{tag}")]
+        public async Task<IActionResult> GetPostByTagUsername(string username,string tag)
+        {
+            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostsByTagUsernameAsync(username, tag);
+            return Ok(posts);
+        }
+
+        [HttpGet("getPostByTag/{tag}")]
+        public async Task<IActionResult> GetPostByTag(string tag)
+        {
+            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostsByTagAsync(tag);
+            return Ok(posts);
+        }
+
         [HttpGet("GetCommentsForPost/{postId}")]
         public async Task<IActionResult> GetCommentsForPost(int postId)
         {

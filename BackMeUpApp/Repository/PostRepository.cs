@@ -69,6 +69,50 @@ namespace BackMeUpApp.Repository
  
             return results;
         }
+
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsByTagUsernameAsync(string Username,string Tag)
+        {
+            var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
+                .Where((User u) => u.Username == Username)
+                .Match("(m)-[:tagged]-(t:Tag)")
+                .Where((Tag t)=> t.Title==Tag)
+                .With("id(m) as id,m,u,t")
+              .Return((id, m, u, t) => new PostForDisplayDto
+              {
+                  Id = id.As<long>(),
+                  Text = m.As<Post>().Text,
+                  Username = u.As<User>().Username,
+                  Title = m.As<Post>().Title,
+                  Tags = t.CollectAs<Tag>()
+              }
+              );
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsByTagAsync(string Tag)
+        {
+            var query = this._client.
+                Cypher
+                .Match("(m:Post)-[r:CreatedBy]-(u:User)")
+                .Match("(m)-[:tagged]-(t:Tag)")
+                .Where((Tag t)=>t.Title==Tag)
+                .With("id(m) as id,m,u,t")
+                .Return((m, u, t, id) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = m.As<Post>().Text,
+                    Username = u.As<User>().Username,
+                    Title = m.As<Post>().Title,
+                    Tags = t.CollectAs<Tag>()
+                }
+                );
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
         {
             var query = this._client.

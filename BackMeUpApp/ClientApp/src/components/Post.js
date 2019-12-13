@@ -8,7 +8,7 @@ class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.glasaj=this.glasaj.bind(this);
+    this.glasaj = this.glasaj.bind(this);
   }
 
   glasaj(levo) {
@@ -38,7 +38,13 @@ class Post extends Component {
             <div className="post__title">{this.props.title}</div>
             <div>{this.props.creator}</div>
             <div className="post__content">{this.props.content}</div>
-            <div className="post__vote">
+            <div
+              onClick={event => {
+                event.stopPropagation();
+                window.event.cancelBubble = true;
+              }}
+              className="post__vote"
+            >
               <AwesomeButton
                 className="aws-btn"
                 size="large"
@@ -56,7 +62,13 @@ class Post extends Component {
                 <i className="far fa-hand-point-right"></i>
               </AwesomeButton>
             </div>
-            <div className="tagBar">
+            <div
+              onClick={event => {
+                event.stopPropagation();
+                window.event.cancelBubble = true;
+              }}
+              className="tagBar"
+            >
               {this.props.tags.map((tag, index) => (
                 <Tag key={index} Title={tag.title} />
               ))}
