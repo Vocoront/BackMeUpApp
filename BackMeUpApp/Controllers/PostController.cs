@@ -66,8 +66,10 @@ namespace BackMeUpApp.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
         {
-            Post post = new Post { Text = newPostDto.Text, Title = newPostDto.Title, Tags=newPostDto.Tags };
-            var addedPost = await _rep.AddPostAsync(post,newPostDto.Username);
+            Post post = new Post { Text = newPostDto.Text,
+                Title = newPostDto.Title,
+                CreatedAt=DateTime.UtcNow};
+            var addedPost = await _rep.AddPostAsync(post,newPostDto.Tags,newPostDto.Username);
             return Ok(addedPost); 
         }
         [HttpPost("vote")]
@@ -82,7 +84,7 @@ namespace BackMeUpApp.Controllers
         public async Task<IActionResult> AddNewComment([FromForm] CommentForCreationDto newComment)
         {
 
-            var ret = await _rep.AddCommentAsync(newComment.IdPosta, newComment.Username, newComment.Comment_Text);
+            var ret = await _rep.AddCommentAsync(newComment.IdPosta, newComment.Username, newComment.CommentText);
             return Ok(ret);
 
         }

@@ -11,7 +11,7 @@ namespace BackMeUpApp.DomainModel
 
         public string Text { get; set; }
 
-        public string[] Tags { get; set; }
+        public DateTime CreatedAt { get; set; }
 
     }
 }

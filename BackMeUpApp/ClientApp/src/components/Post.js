@@ -3,7 +3,7 @@ import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
-
+import moment from "moment";
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -37,6 +37,12 @@ class Post extends Component {
           >
             <div className="post__title">{this.props.title}</div>
             <div>{this.props.creator}</div>
+            <div>
+              {moment
+                .utc(this.props.createdAt)
+                .local()
+                .format("YYYY-MMM-DD h:mm A")}
+            </div>
             <div className="post__content">{this.props.content}</div>
             <div
               onClick={event => {

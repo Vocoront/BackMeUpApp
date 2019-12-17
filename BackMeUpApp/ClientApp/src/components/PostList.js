@@ -10,6 +10,7 @@ const PostList = props => (
         content={post.text}
         postId={post.id}
         tags={post.tags}
+        createdAt={post.createdAt}
       />
     ))}
   </div>

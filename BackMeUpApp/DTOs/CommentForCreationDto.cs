@@ -9,6 +9,6 @@ namespace BackMeUpApp.DTOs
     {
         public int IdPosta { get; set; }
         public string Username { get; set; }
-        public string Comment_Text { get; set; }
+        public string CommentText { get; set; }
     }
 }

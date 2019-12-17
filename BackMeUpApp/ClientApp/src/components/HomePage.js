@@ -6,7 +6,7 @@ class HomePage extends Component {
     super(props);
     this.state = {
       posts: [],
-      tag: "tt"
+      tag: ""
     };
 
     this.GetPosts = this.GetPosts.bind(this);

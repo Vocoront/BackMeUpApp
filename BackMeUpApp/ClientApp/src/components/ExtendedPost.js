@@ -28,7 +28,6 @@ class ExtendedPost extends Component {
     fetch(putanja, { method: "GET" })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         this.setState((state, props) => ({ post: data }));
       })
       .catch(er => console.log(er));
@@ -53,7 +52,7 @@ class ExtendedPost extends Component {
     const formData = new FormData();
     formData.append("IdPosta", this.props.match.params.id);
     formData.append("Username", this.props.user.username);
-    formData.append("Comment_Text", this.state.comment);
+    formData.append("CommentText", this.state.comment);
     fetch("/api/post/make_comment", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
@@ -91,6 +90,7 @@ class ExtendedPost extends Component {
                   key={index}
                   username={comment.username}
                   text={comment.text}
+                  createdAt={comment.createdAt}
                 />
               );
             })}

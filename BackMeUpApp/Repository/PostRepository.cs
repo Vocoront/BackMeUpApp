@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Threading.Tasks;
 using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
+using BackMeUpApp.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Neo4jClient;
 
@@ -17,13 +18,13 @@ namespace BackMeUpApp.Repository
         {
             this._client = client;
         }
-        public async Task<Post> AddPostAsync(Post post,string username)
+        public async Task<Post> AddPostAsync(Post post,string[] postTags,string username)
         {
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
                 .Create("(p:Post { Title:'"+post.Title+"', " +
                 "Text:'" +post.Text+
-                "' })")
+                "', CreatedAt: '"+post.CreatedAt+"' })")
                 .Create("(p)-[:CreatedBy]->(u)")
                 .Return<Node<Post>>("p").ResultsAsync;
 
@@ -31,14 +32,11 @@ namespace BackMeUpApp.Repository
 
             int id = (int)pom.Reference.Id;
 
-            String str = post.Tags[0];
-
-            String[] tags = str.Split(',');
+            String[] tags = postTags[0].Split(',');
 
             foreach (string t in tags)
             {
 
-            
                 IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
                 .Where("id(p)=" + id)
                 .Merge("(t:Tag { Title:'" + t + "' })")
@@ -62,14 +60,15 @@ namespace BackMeUpApp.Repository
                   Text=m.As<Post>().Text,
                   Username=u.As<User>().Username,
                   Title=m.As<Post>().Title,              
-                  Tags = t.CollectAs<Tag>()
+                  Tags = t.CollectAs<Tag>(),
+                  CreatedAt = m.As<Post>().CreatedAt
+
               }
               ) ;
             var results = await query.ResultsAsync;
  
             return results;
         }
-
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsByTagUsernameAsync(string Username,string Tag)
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
@@ -83,14 +82,15 @@ namespace BackMeUpApp.Repository
                   Text = m.As<Post>().Text,
                   Username = u.As<User>().Username,
                   Title = m.As<Post>().Title,
-                  Tags = t.CollectAs<Tag>()
+                  Tags = t.CollectAs<Tag>(),
+                  CreatedAt = m.As<Post>().CreatedAt
+
               }
               );
             var results = await query.ResultsAsync;
 
             return results;
         }
-
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsByTagAsync(string Tag)
         {
             var query = this._client.
@@ -105,14 +105,15 @@ namespace BackMeUpApp.Repository
                     Text = m.As<Post>().Text,
                     Username = u.As<User>().Username,
                     Title = m.As<Post>().Title,
-                    Tags = t.CollectAs<Tag>()
+                    Tags = t.CollectAs<Tag>(),
+                    CreatedAt = m.As<Post>().CreatedAt
+
                 }
                 );
             var results = await query.ResultsAsync;
 
             return results;
         }
-
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
         {
             var query = this._client.
@@ -126,7 +127,8 @@ namespace BackMeUpApp.Repository
                     Text = m.As<Post>().Text,
                     Username = u.As<User>().Username,
                     Title = m.As<Post>().Title,
-                    Tags = t.CollectAs<Tag>()
+                    Tags = t.CollectAs<Tag>(),
+                    CreatedAt=m.As<Post>().CreatedAt
                 }
                 );
             var results = await query.ResultsAsync;
@@ -144,7 +146,9 @@ namespace BackMeUpApp.Repository
                     Title=p.As<Post>().Title,
                     Text=p.As<Post>().Text,
                     Username = u.As<User>().Username,
-                    Tags = t.CollectAs<Tag>()
+                    Tags = t.CollectAs<Tag>(),
+                    CreatedAt = p.As<Post>().CreatedAt
+
                 }
                 );
             var results = await query.ResultsAsync;
@@ -159,8 +163,9 @@ namespace BackMeUpApp.Repository
             var query = this._client.Cypher.Match("(p:Post)-[c:Comment]-(u:User)").Where("id(p)="+postId)
                    .Return((c,u) => new CommentForDisplayDto
                    {
-                       Text = c.As<CommentForDisplayDto>().Text,
-                       Username = u.As<User>().Username
+                       Text = c.As<Comment>().Text,
+                       Username = u.As<User>().Username,
+                       CreatedAt=c.As<Comment>().CreatedAt
                    }
                    );
             var results = await query.ResultsAsync;
@@ -188,8 +193,9 @@ namespace BackMeUpApp.Repository
             
             IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
-                .Create("(u)-[:Comment {text:'" + comment_text + "'}]->(p)")
+                .Create("(u)-[:Comment {Text:'" + comment_text + "', CreatedAt: '"+DateTime.UtcNow+"'}]->(p)")
                 .Return<User>("u").ResultsAsync;
+            
             return ret.First();
 
         }
