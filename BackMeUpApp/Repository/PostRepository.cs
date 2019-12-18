@@ -32,21 +32,23 @@ namespace BackMeUpApp.Repository
 
             int id = (int)pom.Reference.Id;
 
-            String[] tags = postTags.Split('#');
-
-            foreach (string t in tags)
+            if (postTags != null)
             {
-                if (t.Equals(""))
-                    continue;
-                IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
-                .Where("id(p)=" + id)
-                .Merge("(t:Tag { Title:'" + t + "' })")
-                .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
+                String[] tags = postTags.Split('#');
 
-                var paaom=tret;
+                foreach (string t in tags)
+                {
+                    if (t.Equals(""))
+                        continue;
+                    IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
+                    .Where("id(p)=" + id)
+                    .Merge("(t:Tag { Title:'" + t + "' })")
+                    .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
 
+                    var paaom = tret;
+
+                }
             }
-
             return pom.Data;
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostCreatedByAsync(string Username)
@@ -120,7 +122,7 @@ namespace BackMeUpApp.Repository
             var query = this._client.
                 Cypher
                 .Match("(m:Post)-[r:CreatedBy]-(u:User)")
-                .Match("(m)-[:tagged]-(t:Tag)")
+                .OptionalMatch("(m)-[:tagged]-(t:Tag)")
                 .With("id(m) as id,m,u,t")
                 .Return((m, u, t, id) => new PostForDisplayDto
                 {

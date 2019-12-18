@@ -15,5 +15,3 @@ export const setToken=(token='')=>({
 export const deleteToken=()=>({
     type: "DELETE_TOKEN"
 });
-
-

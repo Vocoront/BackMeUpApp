@@ -3,7 +3,6 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Comment from "./Comment";
-import Modal from "react-bootstrap/Modal";
 
 class ExtendedPost extends Component {
   constructor(props) {
@@ -16,7 +15,7 @@ class ExtendedPost extends Component {
     };
 
     this.GetAllComments = this.GetAllComments.bind(this);
-    this.GetPost = this.GetPost.bind(this); // ovako se pravilno bind-uje
+    this.GetPost = this.GetPost.bind(this);
     this.CommentOnChageHandler = this.CommentOnChageHandler.bind(this);
     this.AddComment = this.AddComment.bind(this);
 
@@ -63,7 +62,6 @@ class ExtendedPost extends Component {
 
   render() {
     return (
-      // <Modal.Dialog>
       <div className="extPost">
         <p> Title : {this.state.post.title} </p>
         <p> User : {this.state.post.username} </p>
@@ -97,7 +95,6 @@ class ExtendedPost extends Component {
           </div>
         )}
       </div>
-      // </Modal.Dialog>
     );
   }
 }

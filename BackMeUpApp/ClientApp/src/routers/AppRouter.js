@@ -6,7 +6,7 @@ import ProfilePage from "../components/ProfilePage";
 import NotFoundPage from "../components/error-page/NotFoundPage";
 import Header from "../components/Header";
 import LogInPage from "../components/login-page/LogInPage";
-import CreatePostPage from "../components/CreatePostPage";
+import CreatePostPage from "../components/create-post-page/CreatePostPage";
 import ExtendedPost from "../components/ExtendedPost";
 import {setUsername, deleteToken} from '../actions/user';
 

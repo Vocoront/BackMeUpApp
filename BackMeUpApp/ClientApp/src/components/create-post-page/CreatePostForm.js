@@ -2,9 +2,8 @@
 import { AwesomeButton } from "react-awesome-button";
 import styles from "react-awesome-button/src/styles/themes/theme-bojack";
 import { Form } from "react-bootstrap";
-import Tag from "./Tag.js";
 
-class CreatePost extends Component {
+class CreatePostForm extends Component {
   constructor(props) {
     super(props);
     this.state = {
@@ -69,4 +68,4 @@ class CreatePost extends Component {
   }
 }
 
-export default CreatePost;
+export default CreatePostForm;

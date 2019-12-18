@@ -57,14 +57,14 @@ class Post extends Component {
                 type="primary"
                 onPress={() => this.AddOpinion('agree',true)}
               >
-              <i class="far fa-grin"></i>
+              <i className="far fa-grin"></i>
               </AwesomeButton>
               <AwesomeButton
                 size="large"
                 type="link"
                 onPress={() => this.AddOpinion("disagree",false)}
               >
-               <i class="far fa-angry"></i>
+               <i className="far fa-angry"></i>
               </AwesomeButton>
             </div>
             <div
