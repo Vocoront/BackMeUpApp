@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PostList from "./PostList";
 import {connect} from "react-redux";
+import {setPosts} from '../actions/posts';
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -23,8 +24,7 @@ class HomePage extends Component {
     })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
-          this.setState((state, props) => ({ posts: data }));
+          this.props.dispatch(setPosts(data))
         })
         .catch(er => console.log(er));
     } else {
@@ -41,7 +41,7 @@ class HomePage extends Component {
   render() {
     return (
       <div>
-        <PostList posts={this.state.posts} />
+        <PostList posts={this.props.posts} />
       </div>
     );
   }
@@ -49,6 +49,7 @@ class HomePage extends Component {
 
 
 const mapStateToProps=(state)=>({
+  posts:state.posts.posts,
   token:state.user.token
 });
 

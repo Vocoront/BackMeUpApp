@@ -4,6 +4,8 @@ import Tag from "./Tag.js";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import moment from "moment";
+import {setPostOpinion} from "../actions/posts";
+
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -11,15 +13,16 @@ class Post extends Component {
     this.AddOpinion = this.AddOpinion.bind(this);
   }
 
-  AddOpinion(opinion) {
+  AddOpinion(opinion,boolOpinion) {
+    if(opinion===this.props.choice)return;
     const formData = new FormData();
     formData.append("idPosta", this.props.postId);
     formData.append("username", this.props.user.username);
-    formData.append("opinion", opinion);
+    formData.append("opinion", boolOpinion);
     fetch("api/post/vote", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
-        console.log(data);
+        this.props.dispatch(setPostOpinion(this.props.postId,data.opinion));
       })
       .catch(er => console.log(er));
   }
@@ -52,17 +55,16 @@ class Post extends Component {
                 className="aws-btn"
                 size="large"
                 type="primary"
-                //border-radius="2rem"
-                onPress={() => this.AddOpinion(true)}
+                onPress={() => this.AddOpinion('agree',true)}
               >
-                Y
+              <i class="far fa-grin"></i>
               </AwesomeButton>
               <AwesomeButton
                 size="large"
                 type="link"
-                onPress={() => this.AddOpinion(false)}
+                onPress={() => this.AddOpinion("disagree",false)}
               >
-                <i className="far fa-hand-point-right"></i>
+               <i class="far fa-angry"></i>
               </AwesomeButton>
             </div>
             <div

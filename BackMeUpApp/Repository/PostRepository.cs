@@ -193,7 +193,7 @@ namespace BackMeUpApp.Repository
             var results = await query.ResultsAsync;
             return results;
         }
-        public async Task<User> AddChoiceAsync(int postId, string username, bool opinion)
+        public async Task<Choice> AddChoiceAsync(int postId, string username, bool opinion)
         {
             String choice;
             if (opinion)
@@ -201,11 +201,11 @@ namespace BackMeUpApp.Repository
             else
                 choice = "disagree";
 
-            IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
+            IEnumerable<Choice> ret = await _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
                 .Merge("(u)-[c:Choice]->(p)")
                 .Set($"c.Opinion='{choice}'")
-                .Return<User>("u").ResultsAsync;
+                .Return<Choice>("c").ResultsAsync;
             return ret.First();
 
         }
