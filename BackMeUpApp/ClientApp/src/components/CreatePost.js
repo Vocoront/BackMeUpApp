@@ -48,20 +48,6 @@ class CreatePost extends Component {
               this.setState({ tags: e.target.value });
             }}
           />
-
-          {/* <div className="tagBar">
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-            <Tag />
-          </div> */}
         </div>
         <AwesomeButton
           style={styles}

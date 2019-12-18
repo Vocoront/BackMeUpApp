@@ -9,7 +9,7 @@ namespace BackMeUpApp.DTOs
     {
         public int IdPosta { get; set; }
         public string Username { get; set; }
-        public bool isLeft { get; set; }
+        public bool Opinion { get; set; }
         
     }
 }

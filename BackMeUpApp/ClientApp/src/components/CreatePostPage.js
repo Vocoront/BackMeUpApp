@@ -14,16 +14,14 @@ class CreatePostPage extends Component {
     this.AddNewPost = this.AddNewPost.bind(this);
   }
   AddNewPost = (title, text, tags) => {
-    let tagsSend = this.addTags(tags);
-
+   
+    tags = tags.replace(/\s/g, '');
+    tags=tags.toLowerCase();
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
-    formData.append("Tags", tagsSend);
-    const tagsArray = tags.split(" ");
-    console.log(tagsArray);
-
-    formData.append("Tags", tagsArray);
+    formData.append("Tags", tags);
+  
     formData.append("Username", this.props.user.username);
     fetch("api/post/create", { method: "POST", body: formData })
       .then(res => res.json())
@@ -34,15 +32,6 @@ class CreatePostPage extends Component {
         this.props.history.push("/");
       })
       .catch(er => console.log(er));
-  };
-
-  addTags = tagsString => {
-    let tags = tagsString.split("#");
-    tags.shift();
-    tags.forEach(el => {
-      el.replace(" ", "");
-    });
-    return tags;
   };
 
   render() {

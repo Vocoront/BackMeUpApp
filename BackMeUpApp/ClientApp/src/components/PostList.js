@@ -11,6 +11,7 @@ const PostList = props => (
         postId={post.id}
         tags={post.tags}
         createdAt={post.createdAt}
+        choice={post.choice}
       />
     ))}
   </div>

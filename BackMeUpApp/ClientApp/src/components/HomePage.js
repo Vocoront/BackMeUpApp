@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import PostList from "./PostList";
-
+import {connect} from "react-redux";
 class HomePage extends Component {
   constructor(props) {
     super(props);
@@ -16,7 +16,11 @@ class HomePage extends Component {
 
   GetPosts() {
     if (this.state.tag === "") {
-      fetch("api/post", { method: "GET" })
+      fetch("api/post", { method: "GET" ,
+      headers: {
+        Authorization: "Bearer " + this.props.token
+      }
+    })
         .then(res => res.json())
         .then(data => {
           console.log(data);
@@ -43,4 +47,9 @@ class HomePage extends Component {
   }
 }
 
-export default HomePage;
+
+const mapStateToProps=(state)=>({
+  token:state.user.token
+});
+
+export default connect(mapStateToProps)(HomePage);

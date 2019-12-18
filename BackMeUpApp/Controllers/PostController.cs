@@ -23,9 +23,19 @@ namespace BackMeUpApp.Controllers
             _rep = rep;
         }
         [HttpGet]
-        public async Task<IActionResult> Get()
-        {    
-            IEnumerable<PostForDisplayDto> posts= await _rep.GetPostsAsync();
+        public async Task<IActionResult> GetPosts()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+           
+            IEnumerable<PostForDisplayDto> posts;
+            if (usernameClaim != null)
+                posts = await _rep.GetPostsAsync(usernameClaim.Value);
+            else
+                posts=await _rep.GetPostsAsync();
             return Ok(posts);
         }
         [HttpGet ("getPostById/{postId}")]
@@ -57,10 +67,10 @@ namespace BackMeUpApp.Controllers
             return Ok(comments);
         }
         [HttpGet("createdby/{username}")]
-        public async Task<IActionResult> Get(String username)
+        public async Task<IActionResult> GetPostCreatedBy(String username)
         {
 
-            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostAsync(username);
+            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostCreatedByAsync(username);
             return Ok(posts);
         }
         [HttpPost("create")]
@@ -76,7 +86,7 @@ namespace BackMeUpApp.Controllers
         public async Task<IActionResult> AddNewVote([FromForm] VoteForCreation newVote)
         {
 
-            var ret = await _rep.AddChoiceAsync(newVote.IdPosta, newVote.Username, newVote.isLeft);
+            var ret = await _rep.AddChoiceAsync(newVote.IdPosta, newVote.Username, newVote.Opinion);
             return Ok(ret);
 
         }

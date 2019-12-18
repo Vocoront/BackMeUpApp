@@ -24,31 +24,25 @@ namespace BackMeUpApp.Controllers
     {
         private readonly IUserRepository _repo;
         private readonly IConfiguration _config;
-        private readonly IPostRepository _postRepo;
-        public UserController(IUserRepository repo,IPostRepository postRepository,IConfiguration config)
+        public UserController(IUserRepository repo,IConfiguration config)
         {
             this._repo = repo;
             this._config = config ;
-            this._postRepo = postRepository;
         }
 
 
         [HttpPost("reconnect")]
         [Authorize]
-        public async Task<IActionResult> Reconnect()
+        public IActionResult Reconnect()
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
-
-            // Gets list of claims.
             IEnumerable<Claim> claim = identity.Claims;
-
-            // Gets name from claims. Generally it's an email address.
             var usernameClaim = claim
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
             return Ok(new
             {
-                username = identity.Name
+                username = usernameClaim.Value
             });
         }
 

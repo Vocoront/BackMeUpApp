@@ -18,7 +18,7 @@ namespace BackMeUpApp.Repository
         {
             this._client = client;
         }
-        public async Task<Post> AddPostAsync(Post post,string[] postTags,string username)
+        public async Task<Post> AddPostAsync(Post post,string postTags,string username)
         {
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
@@ -32,11 +32,12 @@ namespace BackMeUpApp.Repository
 
             int id = (int)pom.Reference.Id;
 
-            String[] tags = postTags[0].Split(',');
+            String[] tags = postTags.Split('#');
 
             foreach (string t in tags)
             {
-
+                if (t.Equals(""))
+                    continue;
                 IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
                 .Where("id(p)=" + id)
                 .Merge("(t:Tag { Title:'" + t + "' })")
@@ -48,7 +49,7 @@ namespace BackMeUpApp.Repository
 
             return pom.Data;
         }
-        public async Task<IEnumerable<PostForDisplayDto>> GetPostAsync(string Username)
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostCreatedByAsync(string Username)
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
                 .Where((User u) => u.Username == Username)
@@ -135,6 +136,27 @@ namespace BackMeUpApp.Repository
 
             return results;
         }
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(string username)
+        {
+            var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
+            .Match("(m)-[:tagged]-(t:Tag)")
+            .OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
+            .With("id(m) as id,c,m,u,t")
+            .Return((id,c,m, u, t) => new PostForDisplayDto
+                {
+                    Id= id.As<long>(),
+                    Text=m.As<Post>().Text,
+                    Username=u.As<User>().Username,
+                    Title=m.As<Post>().Title,              
+                    Tags = t.CollectAs<Tag>(),
+                    CreatedAt = m.As<Post>().CreatedAt,
+                    Choice=c.As<Choice>().Opinion
+                }
+            ) ;
+            var results = await query.ResultsAsync;
+ 
+            return results;
+        }
         public async Task<PostForDisplayDto> GetPostsByIdAsync(int id)
         {
 
@@ -171,19 +193,18 @@ namespace BackMeUpApp.Repository
             var results = await query.ResultsAsync;
             return results;
         }
-        public async Task<User> AddChoiceAsync(int postId, string username, bool ChoiceLeft)
+        public async Task<User> AddChoiceAsync(int postId, string username, bool opinion)
         {
             String choice;
-            if (ChoiceLeft)
-            {
-                choice = "left";
-            }
+            if (opinion)
+                choice = "agree";
             else
-                choice = "right";
+                choice = "disagree";
 
             IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
-                .CreateUnique("(u)-[:Choice {side:'" + choice + "'}]->(p)")
+                .Merge("(u)-[c:Choice]->(p)")
+                .Set($"c.Opinion='{choice}'")
                 .Return<User>("u").ResultsAsync;
             return ret.First();
 
@@ -200,5 +221,6 @@ namespace BackMeUpApp.Repository
 
         }
 
+       
     }
 }

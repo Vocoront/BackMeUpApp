@@ -8,21 +8,18 @@ class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-    this.glasaj = this.glasaj.bind(this);
+    this.AddOpinion = this.AddOpinion.bind(this);
   }
 
-  glasaj(levo) {
-    var vote;
-    if (levo === "left") vote = true;
-    else vote = false;
+  AddOpinion(opinion) {
     const formData = new FormData();
-    formData.append("IdPosta", this.props.postId);
-    formData.append("Username", this.props.user.username);
-    formData.append("isLeft", vote);
+    formData.append("idPosta", this.props.postId);
+    formData.append("username", this.props.user.username);
+    formData.append("opinion", opinion);
     fetch("api/post/vote", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
-        this.props.history.push("/");
+        console.log(data);
       })
       .catch(er => console.log(er));
   }
@@ -56,14 +53,14 @@ class Post extends Component {
                 size="large"
                 type="primary"
                 //border-radius="2rem"
-                onPress={() => this.glasaj("left")}
+                onPress={() => this.AddOpinion(true)}
               >
                 Y
               </AwesomeButton>
               <AwesomeButton
                 size="large"
                 type="link"
-                onPress={() => this.glasaj("right")}
+                onPress={() => this.AddOpinion(false)}
               >
                 <i className="far fa-hand-point-right"></i>
               </AwesomeButton>
@@ -75,6 +72,7 @@ class Post extends Component {
               }}
               className="tagBar"
             >
+        <div>{this.props.choice}</div>
               {this.props.tags.map((tag, index) => (
                 <Tag key={index} Title={tag.title} />
               ))}
