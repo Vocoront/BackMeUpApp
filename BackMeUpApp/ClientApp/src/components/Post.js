@@ -4,7 +4,7 @@ import Tag from "./Tag.js";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import moment from "moment";
-import {setPostOpinion} from "../actions/posts";
+import { setPostOpinion } from "../actions/posts";
 
 class Post extends Component {
   constructor(props) {
@@ -13,8 +13,8 @@ class Post extends Component {
     this.AddOpinion = this.AddOpinion.bind(this);
   }
 
-  AddOpinion(opinion,boolOpinion) {
-    if(opinion===this.props.choice)return;
+  AddOpinion(opinion, boolOpinion) {
+    if (opinion === this.props.choice) return;
     const formData = new FormData();
     formData.append("idPosta", this.props.postId);
     formData.append("username", this.props.user.username);
@@ -22,7 +22,7 @@ class Post extends Component {
     fetch("api/post/vote", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
-        this.props.dispatch(setPostOpinion(this.props.postId,data.opinion));
+        this.props.dispatch(setPostOpinion(this.props.postId, data.opinion));
       })
       .catch(er => console.log(er));
   }
@@ -43,7 +43,16 @@ class Post extends Component {
                 .local()
                 .format("YYYY-MMM-DD h:mm A")}
             </div>
-            <div className="post__content">{this.props.content}</div>
+            <div className="post__content">
+              <div>
+              {this.props.content}
+              </div>
+           
+              {this.props.imageUrls && (
+                <img src={"images/" + this.props.imageUrls.split("#")[0]} />
+              )}
+            </div>
+
             <div
               onClick={event => {
                 event.stopPropagation();
@@ -55,16 +64,16 @@ class Post extends Component {
                 className="aws-btn"
                 size="large"
                 type="primary"
-                onPress={() => this.AddOpinion('agree',true)}
+                onPress={() => this.AddOpinion("agree", true)}
               >
-              <i className="far fa-grin"></i>
+                <i className="far fa-grin"></i>
               </AwesomeButton>
               <AwesomeButton
                 size="large"
                 type="link"
-                onPress={() => this.AddOpinion("disagree",false)}
+                onPress={() => this.AddOpinion("disagree", false)}
               >
-               <i className="far fa-angry"></i>
+                <i className="far fa-angry"></i>
               </AwesomeButton>
             </div>
             <div
@@ -74,7 +83,7 @@ class Post extends Component {
               }}
               className="tagBar"
             >
-        <div>{this.props.choice}</div>
+              <div>{this.props.choice}</div>
               {this.props.tags.map((tag, index) => (
                 <Tag key={index} Title={tag.title} />
               ))}

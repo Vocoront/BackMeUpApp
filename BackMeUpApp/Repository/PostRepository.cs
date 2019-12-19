@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -7,6 +8,8 @@ using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
 using BackMeUpApp.Models;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Neo4jClient;
 
 namespace BackMeUpApp.Repository
@@ -14,11 +17,13 @@ namespace BackMeUpApp.Repository
     public class PostRepository : IPostRepository
     {
         private readonly IGraphClient _client;
-        public PostRepository(IGraphClient client)
+        private readonly IHostingEnvironment _hostingEnvironment;
+        public PostRepository(IGraphClient client, IHostingEnvironment hostingEnvironment)
         {
             this._client = client;
+            this._hostingEnvironment = hostingEnvironment;
         }
-        public async Task<Post> AddPostAsync(Post post,string postTags,string username)
+        public async Task<Post> AddPostAsync(Post post,string postTags,string username, List<IFormFile> images)
         {
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
@@ -31,6 +36,21 @@ namespace BackMeUpApp.Repository
             var pom= ret.First();
 
             int id = (int)pom.Reference.Id;
+            string fileName = $"img;{id};";
+            string imagesPath = "";
+            for(int i = 0; i < images.Count(); i++)
+            {
+                string fileName1 = fileName+i.ToString()+"."+images[i].FileName.Split(".")[1];
+                var filePath = Path.Combine(_hostingEnvironment.ContentRootPath,
+                    "ImageFolder",fileName1);
+                using (var stream = System.IO.File.Create(filePath))
+                {
+                    await images[0].CopyToAsync(stream);
+                }
+                imagesPath += fileName1 + "#";
+            }
+
+            await this._client.Cypher.Match("(p:Post)").Where("id(p)=" + id).Set($"p.ImageUrls='{imagesPath}'").ExecuteWithoutResultsAsync();
 
             if (postTags != null)
             {
@@ -144,17 +164,18 @@ namespace BackMeUpApp.Repository
             .Match("(m)-[:tagged]-(t:Tag)")
             .OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
             .With("id(m) as id,c,m,u,t")
-            .Return((id,c,m, u, t) => new PostForDisplayDto
-                {
-                    Id= id.As<long>(),
-                    Text=m.As<Post>().Text,
-                    Username=u.As<User>().Username,
-                    Title=m.As<Post>().Title,              
-                    Tags = t.CollectAs<Tag>(),
-                    CreatedAt = m.As<Post>().CreatedAt,
-                    Choice=c.As<Choice>().Opinion
-                }
-            ) ;
+            .Return((id, c, m, u, t) => new PostForDisplayDto
+            {
+                Id = id.As<long>(),
+                Text = m.As<Post>().Text,
+                Username = u.As<User>().Username,
+                Title = m.As<Post>().Title,
+                Tags = t.CollectAs<Tag>(),
+                ImageUrls = m.As<Post>().ImageUrls,
+                CreatedAt = m.As<Post>().CreatedAt,
+                Choice = c.As<Choice>().Opinion
+            }
+            ); 
             var results = await query.ResultsAsync;
  
             return results;

@@ -24,6 +24,7 @@ class HomePage extends Component {
     })
         .then(res => res.json())
         .then(data => {
+          console.log(data);
           this.props.dispatch(setPosts(data))
         })
         .catch(er => console.log(er));

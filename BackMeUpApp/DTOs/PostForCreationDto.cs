@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http;
+using System.Collections.Generic;
 
 namespace BackMeUpApp.DTOs
 {
@@ -8,6 +9,6 @@ namespace BackMeUpApp.DTOs
         public string Title { get; set; }
         public string Text { get; set; }
         public string Tags { get; set; }
-        public IFormFile File { get; set; }
+        public List<IFormFile> Files { get; set; }
     }
 }

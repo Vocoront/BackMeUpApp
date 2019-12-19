@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.ReactDevelopmentServer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Neo4jClient;
 using System;
+using System.IO;
 using System.Text;
 
 namespace BackMeUpApp
@@ -76,6 +78,12 @@ namespace BackMeUpApp
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();
+            app.UseStaticFiles(new StaticFileOptions
+            {
+                FileProvider = new PhysicalFileProvider(
+                Path.Combine(Directory.GetCurrentDirectory(), "ImageFolder")),
+                RequestPath = "/images"
+            });
             app.UseSpaStaticFiles();
 
             app.UseAuthentication();

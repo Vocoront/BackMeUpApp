@@ -21,7 +21,12 @@
 
 .post__content {
   flex: 2 2 100%;
+  flex-direction: column;
   border-top: 0.3rem solid black;
+  img{
+    width: $m-container-size;
+    height: $m-container-size;
+  }
 }
 
 .post__vote {

@@ -13,5 +13,7 @@ namespace BackMeUpApp.DomainModel
 
         public DateTime CreatedAt { get; set; }
 
+        public string ImageUrls { get; set; }
+
     }
 }

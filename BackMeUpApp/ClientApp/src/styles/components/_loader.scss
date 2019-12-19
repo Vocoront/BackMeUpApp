@@ -30,7 +30,13 @@
     content: '';
   }
   .loader:after {
-    background: $background;
+    background: repeating-linear-gradient(
+      to right,
+      #C7E4D0,
+      #C7E4D0 15px,
+      #B2DBBF 15px,
+      #B2DBBF 30px
+    );
     width: 75%;
     height: 75%;
     border-radius: 50%;

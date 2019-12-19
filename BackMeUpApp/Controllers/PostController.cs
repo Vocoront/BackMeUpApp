@@ -77,15 +77,11 @@ namespace BackMeUpApp.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
         {
-            var filePath =Path.Combine( "C:\\Users\\Milos\\Desktop\\radi","radi.jpg");
-            using (var stream = System.IO.File.Create(filePath))
-            {
-                await newPostDto.File.CopyToAsync(stream);
-            }
+         
             Post post = new Post { Text = newPostDto.Text,
                 Title = newPostDto.Title,
                 CreatedAt=DateTime.UtcNow};
-            var addedPost = await _rep.AddPostAsync(post,newPostDto.Tags,newPostDto.Username);
+            var addedPost = await _rep.AddPostAsync(post,newPostDto.Tags,newPostDto.Username,newPostDto.Files);
             return Ok(addedPost); 
         }
         [HttpPost("vote")]

@@ -50,18 +50,17 @@ class CreatePostPage extends Component {
     }
     return true;
   };
-  AddNewPost = (title, text, tags,file) => {
+  AddNewPost = (title, text, tags,files) => {
     if (!this.ValidateNewPost(title, text)) return;
     tags = tags.replace(/\s/g, "");
     tags = tags.replace(/\,/g, "");
     tags = tags.toLowerCase();
-    console.log(file);
-
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
     formData.append("Tags", tags);
-    formData.append('File',file);
+    for(let i=0;i<files.length;i++)
+      formData.append('Files',files[i]);
     formData.append("Username", this.props.user.username);
 
     this.setState({ loading: true });
