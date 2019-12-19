@@ -4,7 +4,13 @@ html {
 
 body {
   font-family: "Roboto", sans-serif;
-  background: $background;
+  background: repeating-linear-gradient(
+  to right,
+  #C7E4D0,
+  #C7E4D0 15px,
+  #B2DBBF 15px,
+  #B2DBBF 30px
+);
   color: white;
   font-size: 1.6rem;
 }

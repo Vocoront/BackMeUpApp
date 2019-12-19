@@ -33,7 +33,7 @@ class CreatePostPage extends Component {
         error: {
           visible: true,
           title: "Post doesn't have title",
-          message: "Post couldn't be created, becouse there is no title!"
+          message: "Post couldn't be created, because there is no title!"
         }
       }));
       return false;
@@ -43,21 +43,25 @@ class CreatePostPage extends Component {
         error: {
           visible: true,
           title: "Post doesn't have text",
-          message: "Post couldn't be created, becouse there is no text!"
+          message: "Post couldn't be created, because there is no text!"
         }
       }));
       return false;
     }
     return true;
   };
-  AddNewPost = (title, text, tags) => {
+  AddNewPost = (title, text, tags,file) => {
     if (!this.ValidateNewPost(title, text)) return;
     tags = tags.replace(/\s/g, "");
+    tags = tags.replace(/\,/g, "");
     tags = tags.toLowerCase();
+    console.log(file);
+
     const formData = new FormData();
     formData.append("Title", title);
     formData.append("Text", text);
     formData.append("Tags", tags);
+    formData.append('File',file);
     formData.append("Username", this.props.user.username);
 
     this.setState({ loading: true });

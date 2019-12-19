@@ -1,7 +1,7 @@
 .error-container{
     margin-bottom: $l-size;
     margin-top: $l-size;
-
+    background-color: white;
     width: $m-container-size;
     padding: $m-size;
     box-shadow: 0 1rem 2rem rgba(250, 7, 7, 0.3);
@@ -10,6 +10,7 @@
 .error-container__title{
     margin-bottom: $m-size;
     font-size: $l-font-size;
+    color: black;
     border-bottom: .1rem solid black;
 }
 

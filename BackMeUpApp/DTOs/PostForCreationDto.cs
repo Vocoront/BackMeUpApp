@@ -1,9 +1,4 @@
-﻿using BackMeUpApp.DomainModel;
-using Neo4jClient;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Microsoft.AspNetCore.Http;
 
 namespace BackMeUpApp.DTOs
 {
@@ -13,5 +8,6 @@ namespace BackMeUpApp.DTOs
         public string Title { get; set; }
         public string Text { get; set; }
         public string Tags { get; set; }
+        public IFormFile File { get; set; }
     }
 }

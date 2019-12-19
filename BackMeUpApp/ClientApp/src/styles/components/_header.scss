@@ -5,7 +5,7 @@
   padding: $m-size 0;
   padding-bottom: $s-size;
   display: flex;
-  border-bottom: 0.3rem solid lighten($header-background, 10%);
+  border-bottom: 0.3rem solid darken($header-background, 5%);
 }
 
 .header__title {
