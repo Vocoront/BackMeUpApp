@@ -16,8 +16,8 @@ class Post extends Component {
   }
 
   GetImageUrlsArray = imageUrls => {
-    if(!imageUrls)return null;
-    let array= imageUrls.split("#");
+    if (!imageUrls) return null;
+    let array = imageUrls.split("#");
     array.pop();
     return array;
   };
@@ -37,8 +37,8 @@ class Post extends Component {
   }
 
   render() {
-    let ulrArray=this.GetImageUrlsArray(this.props.imageUrls);
-    console.log(ulrArray);
+    let ulrArray = this.GetImageUrlsArray(this.props.imageUrls);
+
     return (
       <Route
         render={({ history }) => (
@@ -56,13 +56,11 @@ class Post extends Component {
             </div>
             <div className="post__content">
               <div>
-                
-
-                {ulrArray[0]!=="" ?(
-                  <ImageCarousel
-                    imageUrls={ulrArray}
-                  />
-                ):<div>{this.props.content}</div>}
+                {ulrArray[0] !== "" ? (
+                  <ImageCarousel imageUrls={ulrArray} />
+                ) : (
+                  <div>{this.props.content}</div>
+                )}
               </div>
             </div>
 
