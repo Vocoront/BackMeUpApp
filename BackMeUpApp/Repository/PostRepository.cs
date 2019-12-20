@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
 using BackMeUpApp.Models;
+using BackMeUpApp.Services;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -17,6 +18,7 @@ namespace BackMeUpApp.Repository
     public class PostRepository : IPostRepository
     {
         private readonly IGraphClient _client;
+
         private readonly IHostingEnvironment _hostingEnvironment;
         public PostRepository(IGraphClient client, IHostingEnvironment hostingEnvironment)
         {
@@ -37,19 +39,7 @@ namespace BackMeUpApp.Repository
 
             int id = (int)pom.Reference.Id;
             string fileName = $"img;{id};";
-            string imagesPath = "";
-            for(int i = 0; i < images.Count(); i++)
-            {
-                string fileName1 = fileName+i.ToString()+"."+images[i].FileName.Split(".")[1];
-                var filePath = Path.Combine(_hostingEnvironment.ContentRootPath,
-                    "ImageFolder",fileName1);
-                using (var stream = System.IO.File.Create(filePath))
-                {
-                    await images[0].CopyToAsync(stream);
-                }
-                imagesPath += fileName1 + "#";
-            }
-
+            string imagesPath = ImageService.SaveImagesToFS(images,fileName, Path.Combine(_hostingEnvironment.ContentRootPath,"ImageFolder"));
             await this._client.Cypher.Match("(p:Post)").Where("id(p)=" + id).Set($"p.ImageUrls='{imagesPath}'").ExecuteWithoutResultsAsync();
 
             if (postTags != null)
@@ -84,7 +74,8 @@ namespace BackMeUpApp.Repository
                   Username=u.As<User>().Username,
                   Title=m.As<Post>().Title,              
                   Tags = t.CollectAs<Tag>(),
-                  CreatedAt = m.As<Post>().CreatedAt
+                  CreatedAt = m.As<Post>().CreatedAt,
+                  ImageUrls = m.As<Post>().ImageUrls
 
               }
               ) ;
@@ -106,8 +97,8 @@ namespace BackMeUpApp.Repository
                   Username = u.As<User>().Username,
                   Title = m.As<Post>().Title,
                   Tags = t.CollectAs<Tag>(),
-                  CreatedAt = m.As<Post>().CreatedAt
-
+                  CreatedAt = m.As<Post>().CreatedAt,
+                   ImageUrls = m.As<Post>().ImageUrls
               }
               );
             var results = await query.ResultsAsync;
@@ -129,7 +120,9 @@ namespace BackMeUpApp.Repository
                     Username = u.As<User>().Username,
                     Title = m.As<Post>().Title,
                     Tags = t.CollectAs<Tag>(),
-                    CreatedAt = m.As<Post>().CreatedAt
+                    CreatedAt = m.As<Post>().CreatedAt,
+                    ImageUrls = m.As<Post>().ImageUrls
+
 
                 }
                 );
@@ -151,7 +144,9 @@ namespace BackMeUpApp.Repository
                     Username = u.As<User>().Username,
                     Title = m.As<Post>().Title,
                     Tags = t.CollectAs<Tag>(),
-                    CreatedAt=m.As<Post>().CreatedAt
+                    CreatedAt=m.As<Post>().CreatedAt,
+                    ImageUrls = m.As<Post>().ImageUrls
+
                 }
                 );
             var results = await query.ResultsAsync;
@@ -192,7 +187,8 @@ namespace BackMeUpApp.Repository
                     Text=p.As<Post>().Text,
                     Username = u.As<User>().Username,
                     Tags = t.CollectAs<Tag>(),
-                    CreatedAt = p.As<Post>().CreatedAt
+                    CreatedAt = p.As<Post>().CreatedAt,
+                    ImageUrls = p.As<Post>().ImageUrls
 
                 }
                 );

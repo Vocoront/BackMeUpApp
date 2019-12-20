@@ -122,3 +122,8 @@ button {
 .post__selected--button{
   margin: 100px;
 }
+
+.post--img{
+  object-fit: contain;
+  background: black;
+}

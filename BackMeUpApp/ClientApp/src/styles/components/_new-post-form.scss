@@ -3,6 +3,11 @@
     flex-direction: column;
     padding: $m-size $s-size;
     justify-content: space-around;
+
+    label{
+        margin: 0 $m-size;
+    }
+
 }
 
 .new-post-container__button{
@@ -15,4 +20,8 @@
     border: none;
     background: $adjusten-white;
     border: 0.1rem solid darken($adjusten-white, 8%);
+}
+
+.new-post-container__file-input{
+    margin: $m-size;;
 }

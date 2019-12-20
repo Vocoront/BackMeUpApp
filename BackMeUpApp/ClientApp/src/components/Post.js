@@ -1,17 +1,26 @@
 import React, { Component } from "react";
-import { AwesomeButton } from "react-awesome-button";
-import Tag from "./Tag.js";
+import moment from "moment";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
-import moment from "moment";
+import { AwesomeButton } from "react-awesome-button";
+import Tag from "./Tag.js";
 import { setPostOpinion } from "../actions/posts";
+import ImageCarousel from "./ImageCarousel";
 
 class Post extends Component {
   constructor(props) {
     super(props);
     this.state = {};
     this.AddOpinion = this.AddOpinion.bind(this);
+    this.GetImageUrlsArray = this.GetImageUrlsArray.bind(this);
   }
+
+  GetImageUrlsArray = imageUrls => {
+    if(!imageUrls)return null;
+    let array= imageUrls.split("#");
+    array.pop();
+    return array;
+  };
 
   AddOpinion(opinion, boolOpinion) {
     if (opinion === this.props.choice) return;
@@ -28,12 +37,14 @@ class Post extends Component {
   }
 
   render() {
+    let ulrArray=this.GetImageUrlsArray(this.props.imageUrls);
+    console.log(ulrArray);
     return (
       <Route
         render={({ history }) => (
           <div
             className="post post__container"
-            onClick={() => history.push("/extendedPost/" + this.props.postId)}
+            // onClick={() => history.push("/extendedPost/" + this.props.postId)}
           >
             <div className="post__title">{this.props.title}</div>
             <div>{this.props.creator}</div>
@@ -45,12 +56,14 @@ class Post extends Component {
             </div>
             <div className="post__content">
               <div>
-              {this.props.content}
+                
+
+                {ulrArray[0]!=="" ?(
+                  <ImageCarousel
+                    imageUrls={ulrArray}
+                  />
+                ):<div>{this.props.content}</div>}
               </div>
-           
-              {this.props.imageUrls && (
-                <img src={"images/" + this.props.imageUrls.split("#")[0]} />
-              )}
             </div>
 
             <div

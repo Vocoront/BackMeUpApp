@@ -22,12 +22,14 @@ class CreatePostForm extends Component {
   render() {
     return (
       <div className="post new-post-container">
+        <label>Title</label>
         <input
           className="new-post-container__input"
           type="text"
           placeholder="Input post title"
           onChange={e => this.setState({ title: e.target.value })}
         />
+        <label>Text</label>
         <textarea
           className="new-post-container__input"
           rows="5"
@@ -35,6 +37,7 @@ class CreatePostForm extends Component {
           placeholder="Insert post text"
           onChange={e => this.setState({ text: e.target.value })}
         />
+         <label>Tags</label>
         <input
           className="new-post-container__input"
           type="text"
@@ -42,19 +45,18 @@ class CreatePostForm extends Component {
           onChange={e => this.setState({ tags: e.target.value })}
         />
 
-        <div className="form-group files">
-          <label>Upload Your Files </label>
-          <input
-            type="file"
-            className="form-control"
-            onChange={this.onChangeHandler}
-            multiple
-          />
+        <div className=" new-post-container__file-input">
+          <div className="form-group files">
+           Select Images 
+            <input
+              type="file"
+              className="form-control"
+              accept="image/x-png,image/gif,image/jpeg"
+              onChange={this.onChangeHandler}
+              multiple
+            />
+          </div>
         </div>
-        <output id="list"></output>
-
-        <div></div>
-
         <div className="new-post-container__button">
           <AwesomeButton
             style={styles}

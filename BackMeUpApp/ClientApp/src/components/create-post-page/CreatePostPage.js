@@ -17,7 +17,39 @@ class CreatePostPage extends Component {
     this.AddNewPost = this.AddNewPost.bind(this);
     this.ValidateNewPost = this.ValidateNewPost.bind(this);
     this.clearError = this.clearError.bind(this);
+    this.ValidateFiles = this.ValidateFiles.bind(this);
   }
+
+  ValidateFiles = files => {
+    if(files.length===0)return true;
+    if (files.length > 5) {
+      this.setState((state, props) => ({
+        error: {
+          visible: true,
+          title: "Maximum number of files for a post is 5",
+          message:
+            "Post couldn't be created, because there are more than 5 files selected!"
+        }
+      }));
+      return false;
+    }
+
+    for (let i = 0; i < files.length; i++) {
+      if (!files[0].name.match(/.(jpg|jpeg|png|gif)$/i)) {
+        this.setState((state, props) => ({
+          error: {
+            visible: true,
+            title: "Post can only be .jpg|.jpeg|.png|.gif",
+            message:
+              "Post couldn't be created. File format is not appropriate!"
+          }
+        }));
+        return false;
+      }
+    }
+
+    return true;
+  };
   clearError = () => {
     this.setState((state, props) => ({
       error: {
@@ -48,10 +80,12 @@ class CreatePostPage extends Component {
       }));
       return false;
     }
+  
     return true;
   };
-  AddNewPost = (title, text, tags,files) => {
+  AddNewPost = (title, text, tags, files) => {
     if (!this.ValidateNewPost(title, text)) return;
+    if(!this.ValidateFiles(files)) return;
     tags = tags.replace(/\s/g, "");
     tags = tags.replace(/\,/g, "");
     tags = tags.toLowerCase();
@@ -59,8 +93,7 @@ class CreatePostPage extends Component {
     formData.append("Title", title);
     formData.append("Text", text);
     formData.append("Tags", tags);
-    for(let i=0;i<files.length;i++)
-      formData.append('Files',files[i]);
+    for (let i = 0; i < files.length; i++) formData.append("Files", files[i]);
     formData.append("Username", this.props.user.username);
 
     this.setState({ loading: true });
@@ -72,7 +105,7 @@ class CreatePostPage extends Component {
           error: {
             visible: true,
             title: "Post creation failed",
-            message: "Post couldn't be created! Try again later"
+            message: "Post couldn't be created!"
           }
         }));
 

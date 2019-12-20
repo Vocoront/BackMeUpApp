@@ -77,7 +77,11 @@ namespace BackMeUpApp.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
         {
-         
+
+            if (newPostDto.Files!=null&&!Services.ImageService.ValidateImages(newPostDto.Files))
+            {
+                return BadRequest(new { error="invalid file format" });
+            }
             Post post = new Post { Text = newPostDto.Text,
                 Title = newPostDto.Title,
                 CreatedAt=DateTime.UtcNow};

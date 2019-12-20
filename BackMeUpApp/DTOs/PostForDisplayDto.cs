@@ -14,7 +14,6 @@ namespace BackMeUpApp.DTOs
         public string Text { get; set; }
         public DateTime CreatedAt { get; set; }
         public IEnumerable<Tag> Tags { get; set; }
-
         public String ImageUrls { get; set; }
         public string Choice { get; set; }
     }
