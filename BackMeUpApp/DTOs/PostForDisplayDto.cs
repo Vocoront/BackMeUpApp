@@ -16,5 +16,9 @@ namespace BackMeUpApp.DTOs
         public IEnumerable<Tag> Tags { get; set; }
         public String ImageUrls { get; set; }
         public string Choice { get; set; }
+        public int CommentNo { get; set; }
+        public int AgreeNo { get; set; }
+        public int DisagreeNo { get; set; }
+
     }
 }

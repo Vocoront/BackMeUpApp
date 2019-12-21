@@ -3,6 +3,7 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Comment from "./Comment";
+import moment from "moment";
 
 class ExtendedPost extends Component {
   constructor(props) {
@@ -62,38 +63,63 @@ class ExtendedPost extends Component {
 
   render() {
     return (
-      <div className="extPost">
-        <p> Title : {this.state.post.title} </p>
+      <div className="post extPost">
+        {/* <p> Title : {this.state.post.title} </p>
         <p> User : {this.state.post.username} </p>
-        <p> Text : {this.state.post.text} </p>
-        <Form>
+        <p> Text : {this.state.post.text} </p> */}
+
+        <div className="post__header">
+          <div className="post__title">{this.state.post.title}</div>
+          <div>
+            <div>
+              {moment
+                .utc(this.state.post.createdAt)
+                .local()
+                .format("YYYY-MMM-DD h:mm A")}
+              {/* <i
+                  onClick={() =>
+                    history.push("/extendedPost/" + this.props.postId)
+                  }
+                  className="fas fa-search-plus"
+                ></i> */}
+            </div>
+            {this.state.post.username}
+          </div>
+        </div>
+
+        <div className="commentSection">
+          <h2>Comment section</h2>
+          {this.state.loading ? (
+            <div className="loader">Loading...</div>
+          ) : (
+            <div className="PostComments">
+              {this.state.allComments.map((comment, index) => {
+                return (
+                  <Comment
+                    key={index}
+                    username={comment.username}
+                    text={comment.text}
+                    createdAt={comment.createdAt}
+                  />
+                );
+              })}
+            </div>
+          )}
+        </div>
+        <Form className="newComment">
           <Form.Group controlId="exampleForm.ControlTextarea1">
             <Form.Control
               as="textarea"
-              rows="3"
+              rows="4"
               name="comment"
               onChange={this.CommentOnChageHandler}
             />
           </Form.Group>
         </Form>
-        <AwesomeButton onPress={this.AddComment}> add comment </AwesomeButton>
-        <h1>COMMENT SECTION</h1>
-        {this.state.loading ? (
-          <div className="loader">Loading...</div>
-        ) : (
-          <div className="PostComments">
-            {this.state.allComments.map((comment, index) => {
-              return (
-                <Comment
-                  key={index}
-                  username={comment.username}
-                  text={comment.text}
-                  createdAt={comment.createdAt}
-                />
-              );
-            })}
-          </div>
-        )}
+        <AwesomeButton size="large" type="link" onPress={this.AddComment}>
+          {" "}
+          Add Comment{" "}
+        </AwesomeButton>
       </div>
     );
   }

@@ -44,30 +44,41 @@ class Post extends Component {
         render={({ history }) => (
           <div
             className="post post__container"
-            // onClick={() => history.push("/extendedPost/" + this.props.postId)}
+            onClick={() => history.push("/extendedPost/" + this.props.postId)}
           >
-            <div className="post__title">{this.props.title}</div>
-            <div>{this.props.creator}</div>
-            <div>
-              {moment
-                .utc(this.props.createdAt)
-                .local()
-                .format("YYYY-MMM-DD h:mm A")}
-              <i
-                onClick={() =>
-                  history.push("/extendedPost/" + this.props.postId)
-                }
-                className="fas fa-search-plus"
-              ></i>
+            <div className="post__header">
+              <div className="post__title">{this.props.title}</div>
+              <div>
+                <div>
+                  {moment
+                    .utc(this.props.createdAt)
+                    .local()
+                    .format("YYYY-MMM-DD h:mm A")}
+                  {/* <i
+                  onClick={() =>
+                    history.push("/extendedPost/" + this.props.postId)
+                  }
+                  className="fas fa-search-plus"
+                ></i> */}
+                </div>
+                {this.props.creator}
+              </div>
             </div>
-            <div className="post__content">
-             
-                {ulrArray[0] !== "" ? (
-                  <ImageCarousel imageUrls={ulrArray} />
-                ) : (
-                  <div className="post__text-content">{this.props.content}</div>
-                )}
-              
+            <div
+              onClick={event => {
+                event.stopPropagation();
+                window.event.cancelBubble = true;
+              }}
+              className="post__content"
+            >
+              {ulrArray[0] !== "" ? (
+                <ImageCarousel imageUrls={ulrArray} />
+              ) : (
+                <div className="post__text-content">{this.props.content}</div>
+              )}
+            </div>
+            <div>
+              Comments {this.props.commentNo} <i class="far fa-comment"></i>
             </div>
 
             <div
@@ -84,6 +95,7 @@ class Post extends Component {
                 ripple={true}
                 onPress={() => this.AddOpinion("agree", true)}
               >
+                {this.props.agreeNo + "    "}
                 {this.props.choice === "agree" ? (
                   <i className="far fa-thumbs-up fa-2x"></i>
                 ) : (
@@ -101,6 +113,8 @@ class Post extends Component {
                 ) : (
                   <i className="far fa-angry"></i>
                 )}
+
+                {"    " + this.props.disagreeNo}
               </AwesomeButton>
             </div>
             <div

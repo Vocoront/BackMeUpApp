@@ -76,7 +76,7 @@ namespace BackMeUpApp.Repository
                   Text=m.As<Post>().Text,
                   Username=u.As<User>().Username,
                   Title=m.As<Post>().Title,              
-                  Tags = t.CollectAs<Tag>(),
+                  Tags = t.CollectAsDistinct<Tag>(),
                   CreatedAt = m.As<Post>().CreatedAt,
                   ImageUrls = m.As<Post>().ImageUrls
 
@@ -99,7 +99,7 @@ namespace BackMeUpApp.Repository
                   Text = m.As<Post>().Text,
                   Username = u.As<User>().Username,
                   Title = m.As<Post>().Title,
-                  Tags = t.CollectAs<Tag>(),
+                  Tags = t.CollectAsDistinct<Tag>(),
                   CreatedAt = m.As<Post>().CreatedAt,
                    ImageUrls = m.As<Post>().ImageUrls
               }
@@ -122,7 +122,7 @@ namespace BackMeUpApp.Repository
                     Text = m.As<Post>().Text,
                     Username = u.As<User>().Username,
                     Title = m.As<Post>().Title,
-                    Tags = t.CollectAs<Tag>(),
+                    Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt = m.As<Post>().CreatedAt,
                     ImageUrls = m.As<Post>().ImageUrls
 
@@ -135,21 +135,26 @@ namespace BackMeUpApp.Repository
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
         {
-            var query = this._client.
+             var query = this._client.
                 Cypher
                 .Match("(m:Post)-[r:CreatedBy]-(u:User)")
                 .OptionalMatch("(m)-[:tagged]-(t:Tag)")
-                .With("id(m) as id,m,u,t")
-                .Return((m, u, t, id) => new PostForDisplayDto
+                .OptionalMatch("(u)-[c:Comment]->(m)")
+                .OptionalMatch("(u)-[agr:Choice {Opinion: \"agree\"}]->(m)")
+                .OptionalMatch("(u)-[dagr:Choice{Opinion: \"disagree\"}]->(m)")
+                .With("id(m) as id,m,u,t,c,agr,dagr")
+                .Return((m, u, t, id,c,agr,dagr) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
                     Text = m.As<Post>().Text,
                     Username = u.As<User>().Username,
                     Title = m.As<Post>().Title,
-                    Tags = t.CollectAs<Tag>(),
+                    Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt=m.As<Post>().CreatedAt,
-                    ImageUrls = m.As<Post>().ImageUrls
-
+                    ImageUrls = m.As<Post>().ImageUrls,
+                    CommentNo = (int)c.CountDistinct(),
+                    AgreeNo = (int)agr.CountDistinct(),
+                    DisagreeNo = (int)dagr.CountDistinct()
                 }
                 );
             var results = await query.ResultsAsync;
@@ -168,7 +173,7 @@ namespace BackMeUpApp.Repository
                 Text = m.As<Post>().Text,
                 Username = u.As<User>().Username,
                 Title = m.As<Post>().Title,
-                Tags = t.CollectAs<Tag>(),
+                Tags = t.CollectAsDistinct<Tag>(),
                 ImageUrls = m.As<Post>().ImageUrls,
                 CreatedAt = m.As<Post>().CreatedAt,
                 Choice = c.As<Choice>().Opinion
@@ -189,7 +194,7 @@ namespace BackMeUpApp.Repository
                     Title=p.As<Post>().Title,
                     Text=p.As<Post>().Text,
                     Username = u.As<User>().Username,
-                    Tags = t.CollectAs<Tag>(),
+                    Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt = p.As<Post>().CreatedAt,
                     ImageUrls = p.As<Post>().ImageUrls
 

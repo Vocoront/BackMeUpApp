@@ -1,5 +1,5 @@
 import React from "react";
-import Post from './Post';
+import Post from "./Post";
 const PostList = props => (
   <div>
     {props.posts.map((post, index) => (
@@ -13,6 +13,9 @@ const PostList = props => (
         createdAt={post.createdAt}
         choice={post.choice}
         imageUrls={post.imageUrls}
+        commentNo={post.commentNo}
+        agreeNo={post.agreeNo}
+        disagreeNo={post.disagreeNo}
       />
     ))}
   </div>

@@ -3,4 +3,40 @@
   flex-direction: column;
   min-height: $l-container-size;
   padding: 2rem;
+  padding-top: 0em;
+}
+
+.commentSection {
+  padding-top: $m-size;
+}
+
+.OneComment {
+  border: 1px solid black;
+  border-radius: 25px;
+  display: flex;
+  flex-direction: column;
+  padding-top: $s-size;
+  padding-right: $m-size;
+  padding-left: $m-size;
+  margin-bottom: $s-size;
+}
+.OneComment div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.OneComment > p {
+  font-style: italic;
+}
+
+.newComment {
+  margin-top: $m-size;
+}
+button {
+  max-width: 15rem;
+  align-self: flex-end;
+}
+.newComment textarea {
+  border-radius: 25px !important;
 }
