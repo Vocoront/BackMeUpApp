@@ -53,15 +53,21 @@ class Post extends Component {
                 .utc(this.props.createdAt)
                 .local()
                 .format("YYYY-MMM-DD h:mm A")}
+              <i
+                onClick={() =>
+                  history.push("/extendedPost/" + this.props.postId)
+                }
+                className="fas fa-search-plus"
+              ></i>
             </div>
             <div className="post__content">
-              <div>
+             
                 {ulrArray[0] !== "" ? (
                   <ImageCarousel imageUrls={ulrArray} />
                 ) : (
-                  <div>{this.props.content}</div>
+                  <div className="post__text-content">{this.props.content}</div>
                 )}
-              </div>
+              
             </div>
 
             <div
@@ -75,16 +81,26 @@ class Post extends Component {
                 className="aws-btn"
                 size="large"
                 type="primary"
+                ripple={true}
                 onPress={() => this.AddOpinion("agree", true)}
               >
-                <i className="far fa-grin"></i>
+                {this.props.choice === "agree" ? (
+                  <i className="far fa-thumbs-up fa-2x"></i>
+                ) : (
+                  <i className="far fa-grin"></i>
+                )}
               </AwesomeButton>
               <AwesomeButton
                 size="large"
                 type="link"
+                ripple={true}
                 onPress={() => this.AddOpinion("disagree", false)}
               >
-                <i className="far fa-angry"></i>
+                {this.props.choice === "disagree" ? (
+                  <i className="far fa-thumbs-up fa-2x"></i>
+                ) : (
+                  <i className="far fa-angry"></i>
+                )}
               </AwesomeButton>
             </div>
             <div
@@ -94,7 +110,6 @@ class Post extends Component {
               }}
               className="tagBar"
             >
-              <div>{this.props.choice}</div>
               {this.props.tags.map((tag, index) => (
                 <Tag key={index} Title={tag.title} />
               ))}

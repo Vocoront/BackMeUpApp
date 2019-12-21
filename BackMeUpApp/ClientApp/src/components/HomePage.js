@@ -26,7 +26,6 @@ class HomePage extends Component {
       })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
           this.props.dispatch(setPosts(data));
         })
         .catch(er => console.log(er));
@@ -34,7 +33,6 @@ class HomePage extends Component {
       fetch("/api/post/getPostByTag/" + this.state.tag, { method: "GET" })
         .then(res => res.json())
         .then(data => {
-          console.log(data);
           this.setState((state, props) => ({ posts: data }));
         })
         .catch(er => console.log(er));

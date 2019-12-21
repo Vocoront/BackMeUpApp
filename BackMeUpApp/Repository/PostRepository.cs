@@ -27,6 +27,9 @@ namespace BackMeUpApp.Repository
         }
         public async Task<Post> AddPostAsync(Post post,string postTags,string username, List<IFormFile> images)
         {
+            post.Text = post.Text.Replace("\\", @"\u005c")// da se dodaju escape karakteri za znakove, ako nadjete jos neki dodajte
+                .Replace("\"", @"\u0022")
+                .Replace("'", @"\u0027");
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
                 .Create("(p:Post { Title:'"+post.Title+"', " +
@@ -65,7 +68,7 @@ namespace BackMeUpApp.Repository
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
                 .Where((User u) => u.Username == Username)
-                .Match("(m)-[:tagged]-(t:Tag)")
+                .OptionalMatch("(m)-[:tagged]-(t:Tag)")
                 .With("id(m) as id,m,u,t")
               .Return((id,m, u, t) => new PostForDisplayDto
               {
@@ -87,7 +90,7 @@ namespace BackMeUpApp.Repository
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
                 .Where((User u) => u.Username == Username)
-                .Match("(m)-[:tagged]-(t:Tag)")
+                .OptionalMatch("(m)-[:tagged]-(t:Tag)")
                 .Where((Tag t)=> t.Title==Tag)
                 .With("id(m) as id,m,u,t")
               .Return((id, m, u, t) => new PostForDisplayDto
@@ -110,7 +113,7 @@ namespace BackMeUpApp.Repository
             var query = this._client.
                 Cypher
                 .Match("(m:Post)-[r:CreatedBy]-(u:User)")
-                .Match("(m)-[:tagged]-(t:Tag)")
+                .OptionalMatch("(m)-[:tagged]-(t:Tag)")
                 .Where((Tag t)=>t.Title==Tag)
                 .With("id(m) as id,m,u,t")
                 .Return((m, u, t, id) => new PostForDisplayDto
@@ -156,7 +159,7 @@ namespace BackMeUpApp.Repository
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(string username)
         {
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
-            .Match("(m)-[:tagged]-(t:Tag)")
+            .OptionalMatch("(m)-[:tagged]-(t:Tag)")
             .OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
             .With("id(m) as id,c,m,u,t")
             .Return((id, c, m, u, t) => new PostForDisplayDto
@@ -180,7 +183,7 @@ namespace BackMeUpApp.Repository
 
             var query = this._client.Cypher.Match("(p:Post)-[:CreatedBy]-(u:User)")
                 .Where("id(p)=" + id)
-                .Match("(p)-[:tagged]-(t:Tag)")
+                .OptionalMatch("(p)-[:tagged]-(t:Tag)")
                 .Return((p, u,t) => new PostForDisplayDto
                 {
                     Title=p.As<Post>().Title,

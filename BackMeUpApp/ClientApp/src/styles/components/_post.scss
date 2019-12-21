@@ -24,9 +24,40 @@
   flex-direction: column;
   border-top: 0.3rem solid black;
   img{
+    margin: $s-size 0;
     width: $m-container-size;
     height: $m-container-size;
   }
+
+}
+
+
+.post__text-content{
+  padding: $s-size;
+  max-height: $m-container-size;
+  overflow-y: scroll;
+  color: $font-light;
+  white-space: pre-line;
+  
+  ::-webkit-scrollbar {
+    width: 10px;
+  }
+  
+  /* Track */
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+  
+  /* Handle */
+  ::-webkit-scrollbar-thumb {
+    background: #888;
+  }
+  
+  /* Handle on hover */
+  ::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
+ 
 }
 
 .post__vote {

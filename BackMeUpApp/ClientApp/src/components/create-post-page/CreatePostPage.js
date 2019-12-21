@@ -112,7 +112,6 @@ class CreatePostPage extends Component {
         this.setState((state, props) => ({ loading: false }));
       })
       .then(data => {
-        console.log(data);
         this.setState((state, props) => ({ loading: false }));
         this.props.history.push("/");
       })
