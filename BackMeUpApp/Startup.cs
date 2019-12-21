@@ -1,5 +1,6 @@
 using BackMeUpApp.Hubs;
 using BackMeUpApp.Repository;
+using BackMeUpApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,19 +31,20 @@ namespace BackMeUpApp
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
-
-            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misacringeboy");
-            client.Connect();
-            services.AddSingleton<IGraphClient>(provider => client);
-
             // In production, the React files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
                 configuration.RootPath = "ClientApp/build";
             });
 
+            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misahaker69");
+            client.Connect();
+            services.AddSingleton<IGraphClient>(provider => client);
+            RedisMessageService redisMessageService = new RedisMessageService("localhost", "6379");
+            services.AddSingleton<RedisMessageService>(provider => redisMessageService);
             services.AddScoped<IUserRepository, UserRepoistory>();
             services.AddScoped<IPostRepository, PostRepository>();
+            services.AddScoped<NotificationService, NotificationService>();
 
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                 .AddJwtBearer(options =>
