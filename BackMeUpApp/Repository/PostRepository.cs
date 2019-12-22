@@ -11,6 +11,7 @@ using BackMeUpApp.Services;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Neo4j.Driver.V1;
 using Neo4jClient;
 
 namespace BackMeUpApp.Repository
@@ -101,7 +102,7 @@ namespace BackMeUpApp.Repository
                   Title = m.As<Post>().Title,
                   Tags = t.CollectAsDistinct<Tag>(),
                   CreatedAt = m.As<Post>().CreatedAt,
-                   ImageUrls = m.As<Post>().ImageUrls
+                  ImageUrls = m.As<Post>().ImageUrls
               }
               );
             var results = await query.ResultsAsync;
@@ -142,8 +143,8 @@ namespace BackMeUpApp.Repository
                 .OptionalMatch("(u)-[c:Comment]->(m)")
                 .OptionalMatch("(u)-[agr:Choice {Opinion: \"agree\"}]->(m)")
                 .OptionalMatch("(u)-[dagr:Choice{Opinion: \"disagree\"}]->(m)")
-                .With("id(m) as id,m,u,t,c,agr,dagr")
-                .Return((m, u, t, id,c,agr,dagr) => new PostForDisplayDto
+                .With("id(m) as id,m,u,t,count(distinct c) as CommentNo,count(distinct agr) as agrNo,count(distinct dagr) as dagrNo") // bitno je da u ovim count bude distinct jer kad su sukcesivni optional match-evi onda se tu nesto izmuti !
+                .Return((m, u, t, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
                     Text = m.As<Post>().Text,
@@ -152,9 +153,9 @@ namespace BackMeUpApp.Repository
                     Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt=m.As<Post>().CreatedAt,
                     ImageUrls = m.As<Post>().ImageUrls,
-                    CommentNo = (int)c.CountDistinct(),
-                    AgreeNo = (int)agr.CountDistinct(),
-                    DisagreeNo = (int)dagr.CountDistinct()
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>()
                 }
                 );
             var results = await query.ResultsAsync;
@@ -166,8 +167,11 @@ namespace BackMeUpApp.Repository
             var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
             .OptionalMatch("(m)-[:tagged]-(t:Tag)")
             .OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
-            .With("id(m) as id,c,m,u,t")
-            .Return((id, c, m, u, t) => new PostForDisplayDto
+            .OptionalMatch("(u)-[com:Comment]->(m)")
+            .OptionalMatch("(u)-[agr:Choice {Opinion: \"agree\"}]->(m)")
+            .OptionalMatch("(u)-[dagr:Choice{Opinion: \"disagree\"}]->(m)")
+            .With("id(m) as id,c,m,u,t,count(distinct com) as CommentNo,count(distinct agr) as agrNo,count(distinct dagr) as dagrNo")
+            .Return((id, c, m, u, t, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
             {
                 Id = id.As<long>(),
                 Text = m.As<Post>().Text,
@@ -176,7 +180,11 @@ namespace BackMeUpApp.Repository
                 Tags = t.CollectAsDistinct<Tag>(),
                 ImageUrls = m.As<Post>().ImageUrls,
                 CreatedAt = m.As<Post>().CreatedAt,
-                Choice = c.As<Choice>().Opinion
+                Choice = c.As<Choice>().Opinion,
+                CommentNo = CommentNo.As<int>(),
+                AgreeNo = (int)agrNo.As<int>(),
+                DisagreeNo = (int)dagrNo.As<int>()
+
             }
             ); 
             var results = await query.ResultsAsync;

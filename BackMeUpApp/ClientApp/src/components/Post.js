@@ -102,6 +102,7 @@ class Post extends Component {
                   <i className="far fa-grin"></i>
                 )}
               </AwesomeButton>
+
               <AwesomeButton
                 size="large"
                 type="link"
