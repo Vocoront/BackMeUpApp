@@ -2,8 +2,10 @@
   display: flex;
   flex-direction: column;
   min-height: $l-container-size;
+  height: 90%;
   padding: 2rem;
   padding-top: 0em;
+  overflow-y: scroll;
 }
 
 .commentSection {
@@ -19,6 +21,7 @@
   padding-right: $m-size;
   padding-left: $m-size;
   margin-bottom: $s-size;
+  background-color: #e9ece5;
 }
 .OneComment div {
   display: flex;

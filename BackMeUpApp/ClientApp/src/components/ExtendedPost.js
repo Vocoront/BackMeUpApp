@@ -86,6 +86,20 @@ class ExtendedPost extends Component {
             {this.state.post.username}
           </div>
         </div>
+        <Form className="newComment">
+          <Form.Group controlId="exampleForm.ControlTextarea1">
+            <Form.Control
+              as="textarea"
+              rows="4"
+              name="comment"
+              onChange={this.CommentOnChageHandler}
+            />
+          </Form.Group>
+        </Form>
+        <AwesomeButton size="large" type="link" onPress={this.AddComment}>
+          {" "}
+          Add Comment{" "}
+        </AwesomeButton>
 
         <div className="commentSection">
           <h2>Comment section</h2>
@@ -106,20 +120,6 @@ class ExtendedPost extends Component {
             </div>
           )}
         </div>
-        <Form className="newComment">
-          <Form.Group controlId="exampleForm.ControlTextarea1">
-            <Form.Control
-              as="textarea"
-              rows="4"
-              name="comment"
-              onChange={this.CommentOnChageHandler}
-            />
-          </Form.Group>
-        </Form>
-        <AwesomeButton size="large" type="link" onPress={this.AddComment}>
-          {" "}
-          Add Comment{" "}
-        </AwesomeButton>
       </div>
     );
   }
