@@ -74,5 +74,22 @@ namespace BackMeUpApp.Repository
                 return false;
             return true;
         }
+
+        public async  Task<IEnumerable<string>> GetSubscriptions(string username)
+        {
+            var query = this._client.Cypher.Match("(u:User)").Where((User u) => u.Username == username).Match("(u)-[f:Follow]-(p)").With("id(p) as idp").Return((idp) =>
+              new
+              {
+                  SubscriptionId = idp.CollectAsDistinct<String>()
+              });
+            var result = await query.ResultsAsync;
+            List<String> subIds = new List<string>();
+            foreach(string i in result.First().SubscriptionId)
+            {
+                subIds.Add(i);
+            }
+            return subIds;
+
+        }
     }
 }

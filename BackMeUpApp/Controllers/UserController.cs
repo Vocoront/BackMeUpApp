@@ -40,11 +40,30 @@ namespace BackMeUpApp.Controllers
             var usernameClaim = claim
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
+
+             this._repo.GetSubscriptions(usernameClaim.Value);
+
+
             return Ok(new
             {
                 username = usernameClaim.Value
             });
         }
+
+
+        [HttpPost("follows")]
+        [Authorize]
+        public async Task<IActionResult> Follows()
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            await this._repo.GetSubscriptions(usernameClaim.Value);
+            return Ok();
+        }
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromForm]UserForRegisterDto userForRegisterDto)

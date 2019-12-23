@@ -1,11 +1,12 @@
 import React, { Component } from "react";
-import moment from "moment";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import { setPostOpinion } from "../actions/posts";
 import ImageCarousel from "./ImageCarousel";
+import {ConvertUtcToLocal} from "../util/ConvertUtcToLocal";
+
 
 class Post extends Component {
   constructor(props) {
@@ -50,10 +51,7 @@ class Post extends Component {
               <div className="post__title">{this.props.title}</div>
               <div>
                 <div>
-                  {moment
-                    .utc(this.props.createdAt)
-                    .local()
-                    .format("YYYY-MMM-DD h:mm A")}
+                  {ConvertUtcToLocal(this.props.createdAt)}
                   {/* <i
                   onClick={() =>
                     history.push("/extendedPost/" + this.props.postId)
@@ -78,7 +76,7 @@ class Post extends Component {
               )}
             </div>
             <div>
-              Comments {this.props.commentNo} <i class="far fa-comment"></i>
+              Comments {this.props.commentNo} <i className="far fa-comment"></i>
             </div>
 
             <div
