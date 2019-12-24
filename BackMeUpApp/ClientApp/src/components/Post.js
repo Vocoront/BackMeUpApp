@@ -5,7 +5,7 @@ import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import { setPostOpinion } from "../actions/posts";
 import ImageCarousel from "./ImageCarousel";
-import { ConvertUtcToLocal } from "../util/ConvertUtcToLocal";
+import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 
 class Post extends Component {
   constructor(props) {
@@ -60,7 +60,7 @@ class Post extends Component {
               <div className="post__title">{this.props.title}</div>
               <div>
                 <div>
-                  {ConvertUtcToLocal(this.props.createdAt)}
+                  {convertUtcToLocal(this.props.createdAt)}
                   {/* <i
                   onClick={() =>
                     history.push("/extendedPost/" + this.props.postId)

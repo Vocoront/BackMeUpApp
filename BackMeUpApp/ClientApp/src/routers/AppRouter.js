@@ -10,6 +10,7 @@ import CreatePostPage from "../components/create-post-page/CreatePostPage";
 import ExtendedPost from "../components/ExtendedPost";
 import { setUsername, deleteToken } from "../actions/user";
 import { Connect, GetSubscriptions } from "../actions/notification";
+import authHeader from "../helpers/authHeader";
 
 class AppRouter extends Component {
   constructor(props) {
@@ -22,10 +23,11 @@ class AppRouter extends Component {
     this.getSubs = this.getSubs.bind(this);
   }
   getSubs() {
+    const token = authHeader();
     fetch("api/user/follows", {
       method: "GET",
       headers: {
-        Authorization: "Bearer " + this.props.token
+        ...token
       }
     })
       .then(res => res.json())
@@ -51,11 +53,12 @@ class AppRouter extends Component {
   }
 
   reconnect = () => {
-    if (this.props.token) {
+    const token = authHeader();
+    if (token) {
       fetch("api/user/reconnect", {
         method: "POST",
         headers: {
-          Authorization: "Bearer " + this.props.token
+          ...token
         }
       })
         .then(res => {
@@ -88,7 +91,6 @@ class AppRouter extends Component {
   }
 }
 const mapStateToProps = state => ({
-  token: state.user.token,
   connection: state.notification.connection
 });
 
