@@ -1,4 +1,5 @@
 ﻿using BackMeUpApp.DomainModel;
+using BackMeUpApp.DTOs;
 using BackMeUpApp.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using Neo4jClient;
@@ -39,7 +40,10 @@ namespace BackMeUpApp.Services
             }
 
             string messageKey=_rms.CreateHashMessage(idOfNode.ToString(),new DTOs.NotificationMessage { Message=notification,CreatedAt=createdAt,Subscribers=usersSubscribed });
-             
+
+            NotificationMessage msg = _rms.GetDataForMessage(messageKey);
+
+            await _hubContext.Clients.Group(idOfNode.ToString()).SendAsync("ReceiveMessage", msg);
 
             // svakom korisniku posaljemo messageKey, i poruku, a on kad dobije da odgovri, a kad primimo odgovor izbrisemo njegov id iz Subscribers
 

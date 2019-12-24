@@ -5,8 +5,7 @@ import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import { setPostOpinion } from "../actions/posts";
 import ImageCarousel from "./ImageCarousel";
-import {ConvertUtcToLocal} from "../util/ConvertUtcToLocal";
-
+import { ConvertUtcToLocal } from "../util/ConvertUtcToLocal";
 
 class Post extends Component {
   constructor(props) {
@@ -14,7 +13,17 @@ class Post extends Component {
     this.state = {};
     this.AddOpinion = this.AddOpinion.bind(this);
     this.GetImageUrlsArray = this.GetImageUrlsArray.bind(this);
+    this.follow = this.follow.bind(this);
   }
+
+  follow = () => {
+    fetch("api/user/newfollow/" + this.props.postId, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + this.props.user.token
+      }
+    });
+  };
 
   GetImageUrlsArray = imageUrls => {
     if (!imageUrls) return null;
@@ -60,6 +69,15 @@ class Post extends Component {
                 ></i> */}
                 </div>
                 {this.props.creator}
+
+                <div
+                  onClick={event => {
+                    event.stopPropagation();
+                    window.event.cancelBubble = true;
+                  }}
+                >
+                  <button onClick={() => this.follow()}>Follow</button>
+                </div>
               </div>
             </div>
             <div

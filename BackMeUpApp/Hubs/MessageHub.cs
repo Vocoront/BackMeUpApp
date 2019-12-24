@@ -12,5 +12,13 @@ namespace BackMeUpApp.Hubs
         {
             await Clients.All.SendAsync("ReceiveMessage", user, message);
         }
+
+        public async Task AddGroups(string[] groups)
+        {
+            foreach(string i in groups)
+            {
+                await this.Groups.AddToGroupAsync(this.Context.ConnectionId, i);
+            }
+        }
     }
 }

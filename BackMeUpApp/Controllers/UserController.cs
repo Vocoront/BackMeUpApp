@@ -51,7 +51,7 @@ namespace BackMeUpApp.Controllers
         }
 
 
-        [HttpPost("follows")]
+        [HttpGet("follows")]
         [Authorize]
         public async Task<IActionResult> Follows()
         {
@@ -60,7 +60,20 @@ namespace BackMeUpApp.Controllers
             var usernameClaim = claim
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
-            await this._repo.GetSubscriptions(usernameClaim.Value);
+           IEnumerable<String> ids= await this._repo.GetSubscriptions(usernameClaim.Value);
+            return Ok(ids);
+        }
+
+        [HttpGet("newfollow/{id}")]
+        [Authorize]
+        public async Task<IActionResult> AddFollow(string id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            await this._repo.AddSubscription(usernameClaim.Value, id);
             return Ok();
         }
 

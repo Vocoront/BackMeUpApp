@@ -91,5 +91,16 @@ namespace BackMeUpApp.Repository
             return subIds;
 
         }
+
+        public async Task AddSubscription(string username, string id)
+        {
+            var query = this._client.Cypher.Match("(u:User)").Where((User u) => u.Username == username)
+                .Match("(p)")
+                .Where("id(p)=" + id)     
+                .Create("(u)-[f:Follow]->(p)");
+
+            await query.ExecuteWithoutResultsAsync();
+          
+        }
     }
 }

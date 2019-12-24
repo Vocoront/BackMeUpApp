@@ -9,19 +9,45 @@ import LogInPage from "../components/login-page/LogInPage";
 import CreatePostPage from "../components/create-post-page/CreatePostPage";
 import ExtendedPost from "../components/ExtendedPost";
 import { setUsername, deleteToken } from "../actions/user";
-import {Connect} from '../actions/notification';
+import { Connect, GetSubscriptions } from "../actions/notification";
 
 class AppRouter extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      subs: []
+    };
 
     this.reconnect = this.reconnect.bind(this);
+    this.getSubs = this.getSubs.bind(this);
+  }
+  getSubs() {
+    fetch("api/user/follows", {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + this.props.token
+      }
+    })
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        this.setState({ subs: data });
+        setTimeout(() => {
+          this.props.connection.invoke(
+            "SendMessage",
+            "username",
+            this.state.message
+          );
+          this.props.connection.invoke("AddGroups", data);
+        }, 2000);
+      })
+      .catch(er => console.log(er));
   }
 
-  componentDidMount(){
+  componentDidMount() {
     this.reconnect();
     this.props.dispatch(Connect());
+    this.getSubs();
   }
 
   reconnect = () => {
@@ -61,6 +87,9 @@ class AppRouter extends Component {
     );
   }
 }
-const mapStateToProps = state => ({ token: state.user.token });
+const mapStateToProps = state => ({
+  token: state.user.token,
+  connection: state.notification.connection
+});
 
 export default connect(mapStateToProps)(AppRouter);
