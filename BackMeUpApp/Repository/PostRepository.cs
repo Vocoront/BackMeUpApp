@@ -1,18 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using BackMeUpApp.DomainModel;
+﻿using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
 using BackMeUpApp.Models;
 using BackMeUpApp.Services;
-using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
-using Neo4j.Driver.V1;
 using Neo4jClient;
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace BackMeUpApp.Repository
 {
@@ -138,12 +135,17 @@ namespace BackMeUpApp.Repository
         {
              var query = this._client.
                 Cypher
-                .Match("(m:Post)-[r:CreatedBy]-(u:User)")
+                .Match("(m:Post)")
+                .OptionalMatch("(m)-[r:CreatedBy]-(u:User)")
+                .With("m,u")                        // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
                 .OptionalMatch("(m)-[:tagged]-(t:Tag)")
-                .OptionalMatch("(u)-[c:Comment]->(m)")
-                .OptionalMatch("(u)-[agr:Choice {Opinion: \"agree\"}]->(m)")
-                .OptionalMatch("(u)-[dagr:Choice{Opinion: \"disagree\"}]->(m)")
-                .With("id(m) as id,m,u,t,count(distinct c) as CommentNo,count(distinct agr) as agrNo,count(distinct dagr) as dagrNo") // bitno je da u ovim count bude distinct jer kad su sukcesivni optional match-evi onda se tu nesto izmuti !
+                .With("m,u,t")
+                .OptionalMatch("()-[c:Comment]->(m)")
+                .With("m,u,t,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+                .With("m,u,t,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")           
+                .With("id(m) as id,m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")  
                 .Return((m, u, t, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
@@ -164,14 +166,21 @@ namespace BackMeUpApp.Repository
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(string username)
         {
-            var query = this._client.Cypher.Match("(m:Post)-[r:CreatedBy]-(u:User)")
+            var query = this._client.Cypher
+            .Match("(m:Post)")
+            .OptionalMatch("(m)-[r:CreatedBy]-(u:User)")
+            .With("m,u")                        // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
             .OptionalMatch("(m)-[:tagged]-(t:Tag)")
+            .With("m,u,t")
+            .OptionalMatch("()-[c:Comment]->(m)")
+            .With("m,u,t,count(c) as CommentNo")
+            .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+            .With("m,u,t,CommentNo,count(agr) as agrNo")
+            .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
+            .With("m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")
             .OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
-            .OptionalMatch("(u)-[com:Comment]->(m)")
-            .OptionalMatch("(u)-[agr:Choice {Opinion: \"agree\"}]->(m)")
-            .OptionalMatch("(u)-[dagr:Choice{Opinion: \"disagree\"}]->(m)")
-            .With("id(m) as id,c,m,u,t,count(distinct com) as CommentNo,count(distinct agr) as agrNo,count(distinct dagr) as dagrNo")
-            .Return((id, c, m, u, t, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
+            .With("id(m) as id, m, u, t, CommentNo, agrNo, dagrNo,c")
+            .Return((id, m, u, t, CommentNo, agrNo, dagrNo,c) => new PostForDisplayDto
             {
                 Id = id.As<long>(),
                 Text = m.As<Post>().Text,
