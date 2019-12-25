@@ -108,13 +108,43 @@ namespace BackMeUpApp.Repository
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsByTagAsync(string Tag)
         {
+            //var query = this._client.
+            //    Cypher
+            //    .Match("(m:Post)-[r:CreatedBy]-(u:User)")
+            //    .OptionalMatch("(m)-[:tagged]-(t:Tag)")
+            //    .Where((Tag t)=>t.Title==Tag)
+            //    .With("id(m) as id,m,u,t")
+            //    .Return((m, u, t, id) => new PostForDisplayDto
+            //    {
+            //        Id = id.As<long>(),
+            //        Text = m.As<Post>().Text,
+            //        Username = u.As<User>().Username,
+            //        Title = m.As<Post>().Title,
+            //        Tags = t.CollectAsDistinct<Tag>(),
+            //        CreatedAt = m.As<Post>().CreatedAt,
+            //        ImageUrls = m.As<Post>().ImageUrls
+
+
+            //    }
+            //    );
+            //var results = await query.ResultsAsync;
+
+            //return results;
             var query = this._client.
                 Cypher
-                .Match("(m:Post)-[r:CreatedBy]-(u:User)")
-                .OptionalMatch("(m)-[:tagged]-(t:Tag)")
-                .Where((Tag t)=>t.Title==Tag)
-                .With("id(m) as id,m,u,t")
-                .Return((m, u, t, id) => new PostForDisplayDto
+                .Match("(m:Post)")
+                .OptionalMatch("(m)-[r:CreatedBy]-(u:User)")
+                .With("m,u")                        // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
+                .Match("(m)-[:tagged]-(t:Tag)")
+                .Where((Tag t) => t.Title == Tag)
+                .With("m,u,t")
+                .OptionalMatch("()-[c:Comment]->(m)")
+                .With("m,u,t,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+                .With("m,u,t,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
+                .With("id(m) as id,m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")
+                .Return((m, u, t, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
                     Text = m.As<Post>().Text,
@@ -122,9 +152,10 @@ namespace BackMeUpApp.Repository
                     Title = m.As<Post>().Title,
                     Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt = m.As<Post>().CreatedAt,
-                    ImageUrls = m.As<Post>().ImageUrls
-
-
+                    ImageUrls = m.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>()
                 }
                 );
             var results = await query.ResultsAsync;

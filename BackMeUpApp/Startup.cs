@@ -31,7 +31,7 @@ namespace BackMeUpApp
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
 
-            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "dusan");
+            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misacringeboy");
             client.Connect();
             services.AddSingleton<IGraphClient>(provider => client);
 

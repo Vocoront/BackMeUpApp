@@ -5,12 +5,14 @@ import { setPosts } from "../actions/posts";
 import Dropdown from "react-bootstrap/Dropdown";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import DropdownButton from "react-bootstrap/DropdownButton";
+import store from "../reducers/tag";
+
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       posts: [],
-      tag: ""
+      tag: this.props.tag
     };
 
     this.GetPosts = this.GetPosts.bind(this);
@@ -23,7 +25,8 @@ class HomePage extends Component {
   }
 
   GetPosts() {
-    if (this.state.tag === "") {
+    console.log(this.props.tag + "aaaaaaaaa");
+    if (this.props.tag === "") {
       fetch("api/post", {
         method: "GET",
         headers: {
@@ -36,10 +39,16 @@ class HomePage extends Component {
         })
         .catch(er => console.log(er));
     } else {
-      fetch("/api/post/getPostByTag/" + this.state.tag, { method: "GET" })
+      fetch("/api/post/getPostByTag/" + this.props.tag.tag, {
+        method: "GET",
+        headers: {
+          Authorization: "Bearer " + this.props.token
+        }
+      })
         .then(res => res.json())
         .then(data => {
-          this.setState((state, props) => ({ posts: data }));
+          console.log(data);
+          this.props.dispatch(setPosts(data));
         })
         .catch(er => console.log(er));
     }
@@ -109,8 +118,13 @@ class HomePage extends Component {
   }
   render() {
     return (
-      <div className="HomePageContent">
-        <div className="sortButtonDiv">{this.renderSortDropDown()}</div>
+      <div
+        className="HomePageContent"
+        onClick={() => {
+          console.log(this.props.tag);
+        }}
+      >
+        {/* <div className="sortButtonDiv">{this.renderSortDropDown()}</div> */}
         <PostList posts={this.props.posts} />
       </div>
     );
@@ -119,7 +133,8 @@ class HomePage extends Component {
 
 const mapStateToProps = state => ({
   posts: state.posts.posts,
-  token: state.user.token
+  token: state.user.token,
+  tag: state.tag.tag
 });
 
 export default connect(mapStateToProps)(HomePage);
