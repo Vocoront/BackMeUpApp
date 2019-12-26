@@ -265,7 +265,7 @@ namespace BackMeUpApp.Repository
                 .Create("(u)-[c:Comment {Text:'" + comment_text + "', CreatedAt: '" + DateTime.UtcNow + "'}]->(p)")
                 .With("id(p) as idPosta,c,u")
                 .Return((idPosta,c,u) => new
-                {
+                {   
                     Text = c.As<Comment>().Text,
                     Username = u.As<User>().Username,
                     CreatedAt = c.As<Comment>().CreatedAt,
@@ -273,7 +273,7 @@ namespace BackMeUpApp.Repository
                 });
 
             var ret = await query.ResultsAsync;
-            _notificationService.SendNotification($"{username} commented on a post {ret.First().IdPosta}", ret.First().CreatedAt, ret.First().IdPosta);
+            _notificationService.SendNotification($"commented on a post {ret.First().IdPosta}", ret.First().CreatedAt,username, ret.First().IdPosta);
 
             return new CommentForDisplayDto { 
                 CreatedAt=ret.First().CreatedAt,

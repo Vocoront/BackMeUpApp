@@ -5,10 +5,10 @@ using System.Threading.Tasks;
 
 namespace BackMeUpApp.DTOs
 {
-    public class NotificationMessage
+    public class NotificationMessageDto
     {
         public String Message { get; set; }
+        public String Creator { get; set; }
         public DateTime CreatedAt { get; set; }
-        public String Subscribers { get; set; }
     }
 }

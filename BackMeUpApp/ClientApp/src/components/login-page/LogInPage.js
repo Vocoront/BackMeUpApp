@@ -7,7 +7,7 @@ import LogIn from "./LogIn";
 import CreateAccount from "./CreateAccount";
 import ErrorContainer from "../error-page/ErrorContainer";
 import { setUsername, setToken } from "../../actions/user";
-
+import {Connect} from '../../actions/notification';
 class LogInPage extends Component {
   constructor(props) {
     super(props);
@@ -169,7 +169,9 @@ class LogInPage extends Component {
       })
       .then(data => {
         this.props.dispatch(setToken(data.token));
-        this.props.dispatch(setUsername(data.username));
+        this.props.dispatch(setUsername(data.username));         
+         this.props.dispatch(Connect());
+
         this.props.history.push("/");
       })
       .catch(er => console.log(er));
@@ -206,6 +208,8 @@ class LogInPage extends Component {
       .then(data => {
         this.props.dispatch(setToken(data.token));
         this.props.dispatch(setUsername(data.username));
+        this.props.dispatch(Connect());
+
         this.props.history.push("/");
       })
       .catch(er => console.log(er));

@@ -59,15 +59,7 @@ class Post extends Component {
             <div className="post__header">
               <div className="post__title">{this.props.title}</div>
               <div>
-                <div>
-                  {convertUtcToLocal(this.props.createdAt)}
-                  {/* <i
-                  onClick={() =>
-                    history.push("/extendedPost/" + this.props.postId)
-                  }
-                  className="fas fa-search-plus"
-                ></i> */}
-                </div>
+                <div>{convertUtcToLocal(this.props.createdAt)}</div>
                 {this.props.creator}
 
                 <div

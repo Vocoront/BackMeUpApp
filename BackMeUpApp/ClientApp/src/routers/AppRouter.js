@@ -9,7 +9,7 @@ import LogInPage from "../components/login-page/LogInPage";
 import CreatePostPage from "../components/create-post-page/CreatePostPage";
 import ExtendedPost from "../components/ExtendedPost";
 import { setUsername, deleteToken } from "../actions/user";
-import { Connect, GetSubscriptions } from "../actions/notification";
+import { Connect } from "../actions/notification";
 import authHeader from "../helpers/authHeader";
 
 class AppRouter extends Component {
@@ -20,36 +20,11 @@ class AppRouter extends Component {
     };
 
     this.reconnect = this.reconnect.bind(this);
-    this.getSubs = this.getSubs.bind(this);
-  }
-  getSubs() {
-    const token = authHeader();
-    fetch("api/user/follows", {
-      method: "GET",
-      headers: {
-        ...token
-      }
-    })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        this.setState({ subs: data });
-        setTimeout(() => {
-          this.props.connection.invoke(
-            "SendMessage",
-            "username",
-            this.state.message
-          );
-          this.props.connection.invoke("AddGroups", data);
-        }, 2000);
-      })
-      .catch(er => console.log(er));
   }
 
   componentDidMount() {
     this.reconnect();
-    this.props.dispatch(Connect());
-    this.getSubs();
+
   }
 
   reconnect = () => {
@@ -66,7 +41,8 @@ class AppRouter extends Component {
           this.props.dispatch(deleteToken());
         })
         .then(data => {
-          this.props.dispatch(setUsername(data.username));
+          this.props.dispatch(setUsername(data.username));    
+          this.props.dispatch(Connect());
         })
         .catch(er => console.log(er));
     }
@@ -91,7 +67,8 @@ class AppRouter extends Component {
   }
 }
 const mapStateToProps = state => ({
-  connection: state.notification.connection
+  connection: state.notification.connection,
+  connectionId: state.notification.connectionId
 });
 
 export default connect(mapStateToProps)(AppRouter);

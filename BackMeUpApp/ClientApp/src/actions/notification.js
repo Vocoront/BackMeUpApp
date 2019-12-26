@@ -1,31 +1,31 @@
 import * as signalR from "@aspnet/signalr";
-
+import store from "../store/configureStore";
+import { getFollows } from "../services/notification";
 const Connect = () => {
   let connection = new signalR.HubConnectionBuilder()
     .withUrl("/messagehub")
     .build();
-  connection.on("ReceiveMessage", (username, message) => {
-    console.log(username, message);
+  connection.on("ReceiveMessage", message => {
+    connection.invoke(
+      "MessageRecived",
+      message.key,
+      sessionStorage.getItem("username")
+    );
+    console.log(message);
   });
-  connection.start().then(() => console.log("{signalR:connected}"));
+  connection.start().then(() => {
+    console.log("{signalR:connected}");
+    connection.invoke("GetConnectionId").then(data => {
+      store.dispatch({ type: "SET_CONNECTION_ID", connectionId: data });
+      getFollows();
+    });
+  });
   return { type: "SET_CONNECTION", connection };
 };
 
+const SetFollows = follows => ({
+  type: "SET_FOLLOWS",
+  follows
+});
 
-const GetSubscriptions = token => {
-  return dispatch => {
-    fetch("api/user/follows", {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + token
-      }
-    })
-      .then(res => res.json())
-      .then(data =>{
-        dispatch(subscriptions(data))});
-  };
-
-  const subscriptions=(data)=>({type: "SET_SUBSCRIPTIONS", data})
-};
-
-export { Connect, GetSubscriptions };
+export { Connect, SetFollows };

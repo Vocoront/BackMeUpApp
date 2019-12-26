@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using BackMeUpApp.DomainModel;
 using BackMeUpApp.DTOs;
 using BackMeUpApp.Repository;
+using BackMeUpApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -24,10 +25,12 @@ namespace BackMeUpApp.Controllers
     {
         private readonly IUserRepository _repo;
         private readonly IConfiguration _config;
-        public UserController(IUserRepository repo,IConfiguration config)
+        private readonly NotificationService _notificationService;
+        public UserController(IUserRepository repo,IConfiguration config, NotificationService notificationService)
         {
             this._repo = repo;
             this._config = config ;
+            this._notificationService=notificationService;
         }
 
 
@@ -41,8 +44,6 @@ namespace BackMeUpApp.Controllers
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
 
-             this._repo.GetSubscriptions(usernameClaim.Value);
-
 
             return Ok(new
             {
@@ -51,9 +52,9 @@ namespace BackMeUpApp.Controllers
         }
 
 
-        [HttpGet("follows")]
+        [HttpGet("follows/{connectionId}")]
         [Authorize]
-        public async Task<IActionResult> Follows()
+        public async Task<IActionResult> Follows(string connectionId)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             IEnumerable<Claim> claim = identity.Claims;
@@ -61,6 +62,8 @@ namespace BackMeUpApp.Controllers
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
            IEnumerable<String> ids= await this._repo.GetSubscriptions(usernameClaim.Value);
+
+            _notificationService.CheckForNotification(connectionId,usernameClaim.Value, ids);
             return Ok(ids);
         }
 
