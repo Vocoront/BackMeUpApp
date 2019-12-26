@@ -9,7 +9,7 @@ const Header = props => (
     <div className="header__title">Back Me Up</div>
 
     <div className="searchDivHeader">
-      <Form.Control type="search" placeholder="search by tags" />
+      <Form.Control type="search" placeholder="search by tag" />
     </div>
     {/* <div className="header__filler"></div> */}
     <NavLink

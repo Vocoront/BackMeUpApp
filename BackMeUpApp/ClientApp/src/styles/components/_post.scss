@@ -13,6 +13,11 @@
   box-shadow: 0 1rem 2rem #343a40;
 }
 
+.post__container .carousel-control-next,
+.carousel-control-prev {
+  opacity: 0;
+}
+
 .post__header {
   display: flex;
   flex-direction: column;
