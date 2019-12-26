@@ -20,13 +20,30 @@ class HomePage extends Component {
     this.sortByPopularity = this.sortByPopularity.bind(this);
     this.sortByNewest = this.sortByNewest.bind(this);
     this.sortByControversial = this.sortByControversial.bind(this);
+    this.filterPosts = this.filterPosts.bind(this);
 
     this.GetPosts();
   }
 
+  componentDidUpdate(prevProps) {
+    if (typeof this.props.tag == "undefined") console.log("jebem ti mater");
+
+    if (
+      this.props.tag != prevProps.tag &&
+      !(typeof this.props.tag == "undefined")
+    ) {
+      console.log("ponovo uzima");
+      this.GetPosts();
+    }
+    if (this.props.filter != prevProps.filter) {
+      console.log("filter u home");
+      this.filterPosts();
+    }
+  }
+
   GetPosts() {
-    console.log(this.props.tag + "aaaaaaaaa");
-    if (this.props.tag === "") {
+    console.log(this.props.tag + " je tag");
+    if (this.props.tag === "" || !this.props.tag) {
       fetch("api/post", {
         method: "GET",
         headers: {
@@ -39,7 +56,7 @@ class HomePage extends Component {
         })
         .catch(er => console.log(er));
     } else {
-      fetch("/api/post/getPostByTag/" + this.props.tag.tag, {
+      fetch("/api/post/getPostByTag/" + this.props.tag, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.props.token
@@ -51,6 +68,21 @@ class HomePage extends Component {
           this.props.dispatch(setPosts(data));
         })
         .catch(er => console.log(er));
+    }
+  }
+
+  filterPosts() {
+    if (this.props.filter === "Newest") {
+      console.log("newest filter");
+      this.sortByNewest();
+    } else {
+      if (this.props.filter === "Controversial") {
+        this.sortByControversial();
+      } else {
+        if (this.props.filter === "MostPopular") {
+          this.sortByPopularity();
+        }
+      }
     }
   }
 
@@ -121,7 +153,9 @@ class HomePage extends Component {
       <div
         className="HomePageContent"
         onClick={() => {
-          console.log(this.props.tag);
+          console.log(
+            "tag je:" + this.props.tag + "  filter je:" + this.props.filter
+          );
         }}
       >
         {/* <div className="sortButtonDiv">{this.renderSortDropDown()}</div> */}
@@ -134,7 +168,8 @@ class HomePage extends Component {
 const mapStateToProps = state => ({
   posts: state.posts.posts,
   token: state.user.token,
-  tag: state.tag.tag
+  tag: state.tag.tag,
+  filter: state.tag.filter
 });
 
 export default connect(mapStateToProps)(HomePage);

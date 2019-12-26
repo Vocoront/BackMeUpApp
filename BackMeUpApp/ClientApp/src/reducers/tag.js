@@ -13,6 +13,10 @@ const tagReducer = (state = defaulState, action) => {
       console.log(action.tag);
       return { ...state, tag: action.tag };
     }
+    case "SET_FILTER": {
+      console.log("filter je:" + action.filter);
+      return { state, filter: action.filter }; //0 1 2
+    }
     default:
       return state;
   }
