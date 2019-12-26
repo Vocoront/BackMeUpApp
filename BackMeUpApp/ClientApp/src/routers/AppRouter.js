@@ -11,7 +11,7 @@ import ExtendedPost from "../components/ExtendedPost";
 import { setUsername, deleteToken } from "../actions/user";
 import { Connect } from "../actions/notification";
 import authHeader from "../helpers/authHeader";
-
+import NotificationContainer from "../components/NotificationContainer";
 class AppRouter extends Component {
   constructor(props) {
     super(props);
@@ -24,7 +24,6 @@ class AppRouter extends Component {
 
   componentDidMount() {
     this.reconnect();
-
   }
 
   reconnect = () => {
@@ -41,7 +40,7 @@ class AppRouter extends Component {
           this.props.dispatch(deleteToken());
         })
         .then(data => {
-          this.props.dispatch(setUsername(data.username));    
+          this.props.dispatch(setUsername(data.username));
           this.props.dispatch(Connect());
         })
         .catch(er => console.log(er));
@@ -53,14 +52,21 @@ class AppRouter extends Component {
       <BrowserRouter>
         <div>
           <Header />
-          <Switch>
-            <Route exact={true} path="/" component={HomePage} />
-            <Route path="/createpost" component={CreatePostPage} />
-            <Route path="/profile" component={ProfilePage} />
-            <Route path="/login" component={LogInPage} />
-            <Route path="/extendedPost/:id" component={ExtendedPost} />
-            <Route component={NotFoundPage} />
-          </Switch>
+          <div className="page-content-layout">
+            <div className="page-content-layout__sidebar">
+              <NotificationContainer />
+            </div>
+            <div className="page-content-layout__main">
+              <Switch>
+                <Route exact={true} path="/" component={HomePage} />
+                <Route path="/createpost" component={CreatePostPage} />
+                <Route path="/profile" component={ProfilePage} />
+                <Route path="/login" component={LogInPage} />
+                <Route path="/extendedPost/:id" component={ExtendedPost} />
+                <Route component={NotFoundPage} />
+              </Switch>
+            </div>
+          </div>
         </div>
       </BrowserRouter>
     );

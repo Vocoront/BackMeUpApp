@@ -69,7 +69,7 @@ class Header extends Component {
               this.props.dispatch(setTag(this.state.tagFilter));
             }}
           >
-            <i class="fas fa-search"></i>
+            <i className="fas fa-search"></i>
           </Button>
         </div>
 

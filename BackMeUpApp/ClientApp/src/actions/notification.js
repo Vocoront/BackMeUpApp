@@ -11,6 +11,7 @@ const Connect = () => {
       message.key,
       sessionStorage.getItem("username")
     );
+    store.dispatch({type: "ADD_NOTIFICATON",message:message.msg})
     console.log(message);
   });
   connection.start().then(() => {

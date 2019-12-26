@@ -1,5 +1,6 @@
 @import "./base/setting";
 @import "./base/base";
+@import "./base/layout";
 @import "./components/container";
 @import "./components/error-container";
 @import "./components/file-upload";
@@ -7,6 +8,7 @@
 @import "./components/loader";
 @import "./components/login";
 @import "./components/new-post-form";
+@import "./components/notification-container";
 @import "./components/post";
 @import "./components/tag";
 @import "./components/extPost";
