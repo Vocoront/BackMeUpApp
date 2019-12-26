@@ -74,13 +74,15 @@ namespace BackMeUpApp.Controllers
             IEnumerable<PostForDisplayDto> posts = await _rep.GetPostCreatedByAsync(username);
             return Ok(posts);
         }
+
         [HttpPost("create")]
-        public async Task<IActionResult> AddNewPost([FromForm]PostForCreationDto newPostDto)
+        [Authorize]
+        public async Task<IActionResult> CreatePost([FromForm]PostForCreationDto newPostDto)
         {
 
             if (newPostDto.Files!=null&&!Services.ImageService.ValidateImages(newPostDto.Files))
             {
-                return BadRequest(new { error="invalid file format" });
+                return Conflict(new { error="invalid file format" });
             }
             Post post = new Post { Text = newPostDto.Text,
                 Title = newPostDto.Title,

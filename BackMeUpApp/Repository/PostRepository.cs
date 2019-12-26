@@ -34,10 +34,9 @@ namespace BackMeUpApp.Repository
                 .Replace("'", @"\u0027");
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
-                .Create("(p:Post { Title:'"+post.Title+"', " +
-                "Text:'" +post.Text+
-                "', CreatedAt: '"+post.CreatedAt+"' })")
+                .Create("(p:Post { Title:'"+post.Title+"', " +"Text:'" +post.Text+"', CreatedAt: '"+post.CreatedAt+"' })")
                 .Create("(p)-[:CreatedBy]->(u)")
+                .Create("(u)-[:Follow]->(p)")
                 .Return<Node<Post>>("p").ResultsAsync;
 
             var pom= ret.First();
@@ -55,13 +54,11 @@ namespace BackMeUpApp.Repository
                 {
                     if (t.Equals(""))
                         continue;
-                    IEnumerable<Tag> tret = await this._client.Cypher.Match("(p:Post)")
+                    await this._client.Cypher.Match("(p:Post)")
                     .Where("id(p)=" + id)
                     .Merge("(t:Tag { Title:'" + t + "' })")
-                    .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ResultsAsync;
-
-                    var paaom = tret;
-
+                    .Create("(p)-[:tagged]->(t)").Return<Tag>("t").ExecuteWithoutResultsAsync();
+                    
                 }
             }
             return pom.Data;
