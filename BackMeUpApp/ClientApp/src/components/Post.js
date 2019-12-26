@@ -1,11 +1,11 @@
 import React, { Component } from "react";
-import moment from "moment";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import { setPostOpinion } from "../actions/posts";
 import ImageCarousel from "./ImageCarousel";
+import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 
 class Post extends Component {
   constructor(props) {
@@ -13,7 +13,17 @@ class Post extends Component {
     this.state = {};
     this.AddOpinion = this.AddOpinion.bind(this);
     this.GetImageUrlsArray = this.GetImageUrlsArray.bind(this);
+    this.follow = this.follow.bind(this);
   }
+
+  follow = () => {
+    fetch("api/user/newfollow/" + this.props.postId, {
+      method: "GET",
+      headers: {
+        Authorization: "Bearer " + this.props.user.token
+      }
+    });
+  };
 
   GetImageUrlsArray = imageUrls => {
     if (!imageUrls) return null;
@@ -49,19 +59,17 @@ class Post extends Component {
             <div className="post__header">
               <div className="post__title">{this.props.title}</div>
               <div>
-                <div>
-                  {moment
-                    .utc(this.props.createdAt)
-                    .local()
-                    .format("YYYY-MMM-DD h:mm A")}
-                  {/* <i
-                  onClick={() =>
-                    history.push("/extendedPost/" + this.props.postId)
-                  }
-                  className="fas fa-search-plus"
-                ></i> */}
-                </div>
+                <div>{convertUtcToLocal(this.props.createdAt)}</div>
                 {this.props.creator}
+
+                <div
+                  onClick={event => {
+                    event.stopPropagation();
+                    window.event.cancelBubble = true;
+                  }}
+                >
+                  <button onClick={() => this.follow()}>Follow</button>
+                </div>
               </div>
             </div>
             <div
@@ -78,7 +86,7 @@ class Post extends Component {
               )}
             </div>
             <div>
-              Comments {this.props.commentNo} <i class="far fa-comment"></i>
+              Comments {this.props.commentNo} <i className="far fa-comment"></i>
             </div>
 
             <div

@@ -18,10 +18,14 @@ namespace BackMeUpApp.Repository
         private readonly IGraphClient _client;
 
         private readonly IHostingEnvironment _hostingEnvironment;
-        public PostRepository(IGraphClient client, IHostingEnvironment hostingEnvironment)
+
+        private readonly NotificationService _notificationService;
+        public PostRepository(IGraphClient client, IHostingEnvironment hostingEnvironment, NotificationService notificationService)
         {
             this._client = client;
             this._hostingEnvironment = hostingEnvironment;
+            _notificationService = notificationService;
+       
         }
         public async Task<Post> AddPostAsync(Post post,string postTags,string username, List<IFormFile> images)
         {
@@ -284,15 +288,29 @@ namespace BackMeUpApp.Repository
             return ret.First();
 
         }
-        public async Task<User> AddCommentAsync(int postId, string username, string comment_text)
+        public async Task<CommentForDisplayDto> AddCommentAsync(int postId, string username, string comment_text)
         {
-            
-            IEnumerable<User> ret = await _client.Cypher.Match("(u:User),(p:Post)")
+
+            var query =  _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
-                .Create("(u)-[:Comment {Text:'" + comment_text + "', CreatedAt: '"+DateTime.UtcNow+"'}]->(p)")
-                .Return<User>("u").ResultsAsync;
-            
-            return ret.First();
+                .Create("(u)-[c:Comment {Text:'" + comment_text + "', CreatedAt: '" + DateTime.UtcNow + "'}]->(p)")
+                .With("id(p) as idPosta,c,u")
+                .Return((idPosta,c,u) => new
+                {   
+                    Text = c.As<Comment>().Text,
+                    Username = u.As<User>().Username,
+                    CreatedAt = c.As<Comment>().CreatedAt,
+                    IdPosta=idPosta.As<int>()
+                });
+
+            var ret = await query.ResultsAsync;
+            _notificationService.SendNotification($"commented on a post {ret.First().IdPosta}", ret.First().CreatedAt,username, ret.First().IdPosta);
+
+            return new CommentForDisplayDto { 
+                CreatedAt=ret.First().CreatedAt,
+                Text=ret.First().Text,
+                Username=ret.First().Username
+            };
 
         }
 
