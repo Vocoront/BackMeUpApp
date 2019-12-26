@@ -3,7 +3,7 @@ import userReducer from "../reducers/user";
 import tagReducer from "../reducers/tag";
 import postsReducer from "../reducers/posts";
 import notificationReducer from "../reducers/notification";
-
+import alertReducer from "../reducers/alert";
 const enhancers = compose(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
@@ -12,7 +12,8 @@ const store = createStore(
     user: userReducer,
     tag: tagReducer,
     posts: postsReducer,
-    notification: notificationReducer
+    notification: notificationReducer,
+    alert: alertReducer
   }),
   enhancers
 );

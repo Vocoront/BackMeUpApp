@@ -12,6 +12,7 @@ import { setUsername, deleteToken } from "../actions/user";
 import { Connect } from "../actions/notification";
 import authHeader from "../helpers/authHeader";
 import NotificationContainer from "../components/NotificationContainer";
+import Alert from "../components/Alert";
 class AppRouter extends Component {
   constructor(props) {
     super(props);
@@ -38,6 +39,7 @@ class AppRouter extends Component {
         .then(res => {
           if (res.status === 200) return res.json();
           this.props.dispatch(deleteToken());
+          throw new Error("reconnect failed");
         })
         .then(data => {
           this.props.dispatch(setUsername(data.username));
@@ -54,9 +56,10 @@ class AppRouter extends Component {
           <Header />
           <div className="page-content-layout">
             <div className="page-content-layout__sidebar">
-              <NotificationContainer />
+              {/* <NotificationContainer /> */}
             </div>
             <div className="page-content-layout__main">
+              {this.props.showAlert && <Alert />}
               <Switch>
                 <Route exact={true} path="/" component={HomePage} />
                 <Route path="/createpost" component={CreatePostPage} />
@@ -74,7 +77,8 @@ class AppRouter extends Component {
 }
 const mapStateToProps = state => ({
   connection: state.notification.connection,
-  connectionId: state.notification.connectionId
+  connectionId: state.notification.connectionId,
+  showAlert: state.alert.visible
 });
 
 export default connect(mapStateToProps)(AppRouter);
