@@ -43,8 +43,6 @@ namespace BackMeUpApp.Controllers
             var usernameClaim = claim
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
-
-
             return Ok(new
             {
                 username = usernameClaim.Value
@@ -85,16 +83,10 @@ namespace BackMeUpApp.Controllers
         public async Task<IActionResult> Login([FromForm]UserForRegisterDto userForRegisterDto)
         {
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
-            var userToCreate = new User
-            {
-                Username = userForRegisterDto.Username,
-                Email = userForRegisterDto.Email
-            };
-
-
+     
            User user=await  _repo.Login(userForRegisterDto.Username, userForRegisterDto.Password);
             if (user == null)
-                return Unauthorized();
+                return Conflict();
 
             var claims = new[]
             {
@@ -125,7 +117,7 @@ namespace BackMeUpApp.Controllers
         {
             userForRegisterDto.Username = userForRegisterDto.Username.ToLower();
             if (await this._repo.UsernameAndEmailExists(userForRegisterDto.Username,userForRegisterDto.Email))
-                return BadRequest();
+                return Conflict();
             var userToCreate = new User
             {
                 Username = userForRegisterDto.Username,
@@ -144,7 +136,7 @@ namespace BackMeUpApp.Controllers
             var tokenDescriptor = new SecurityTokenDescriptor
             {
                 Subject = new ClaimsIdentity(claims),
-                Expires = DateTime.Now.AddHours(10),
+                Expires = DateTime.Now.AddHours(1),
                 SigningCredentials = creds
             };
 

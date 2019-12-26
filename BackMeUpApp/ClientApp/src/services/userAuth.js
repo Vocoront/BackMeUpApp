@@ -1,11 +1,10 @@
 import isEmail from "validator/lib/isEmail";
 import passwordValidator from "password-validator";
-
 import store from "../store/configureStore";
 import { setAlert, clearAlert } from "../actions/alert";
-import { setUsername, setToken } from "../actions/user";
+import { setUsername, setToken, deleteToken } from "../actions/user";
 import { Connect } from "../actions/notification";
-
+import authHeader from "../helpers/authHeader";
 const validate = (username, email, password, repassword) => {
   if (!validateUsername(username)) {
     store.dispatch(
@@ -73,6 +72,7 @@ const validatePassword = (password, repassword) => {
 
   return schema.validate(password) && password === repassword;
 };
+
 const validateLogin = (username, password) => {
   if (!validateUsername(username)) {
     store.dispatch(
@@ -145,4 +145,26 @@ const loginSubmit = async (username, password) => {
   return result;
 };
 
-export { createAcount, loginSubmit };
+const reconnect = () => {
+  const token = authHeader();
+  if (token) {
+    fetch("api/user/reconnect", {
+      method: "POST",
+      headers: {
+        ...token
+      }
+    })
+      .then(res => {
+        if (res.status === 200) return res.json();
+        store.dispatch(deleteToken());
+        throw new Error("reconnect failed");
+      })
+      .then(data => {
+        store.dispatch(setUsername(data.username));
+        store.dispatch(Connect());
+      })
+      .catch(er => console.log(er));
+  }
+};
+
+export { createAcount, loginSubmit, reconnect };

@@ -13,41 +13,17 @@ import { Connect } from "../actions/notification";
 import authHeader from "../helpers/authHeader";
 import NotificationContainer from "../components/NotificationContainer";
 import Alert from "../components/Alert";
+import { reconnect } from "../services/userAuth";
 class AppRouter extends Component {
   constructor(props) {
     super(props);
     this.state = {
       subs: []
     };
-
-    this.reconnect = this.reconnect.bind(this);
   }
-
   componentDidMount() {
-    this.reconnect();
+    reconnect();
   }
-
-  reconnect = () => {
-    const token = authHeader();
-    if (token) {
-      fetch("api/user/reconnect", {
-        method: "POST",
-        headers: {
-          ...token
-        }
-      })
-        .then(res => {
-          if (res.status === 200) return res.json();
-          this.props.dispatch(deleteToken());
-          throw new Error("reconnect failed");
-        })
-        .then(data => {
-          this.props.dispatch(setUsername(data.username));
-          this.props.dispatch(Connect());
-        })
-        .catch(er => console.log(er));
-    }
-  };
 
   render() {
     return (
@@ -76,8 +52,6 @@ class AppRouter extends Component {
   }
 }
 const mapStateToProps = state => ({
-  connection: state.notification.connection,
-  connectionId: state.notification.connectionId,
   showAlert: state.alert.visible
 });
 

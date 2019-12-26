@@ -39,7 +39,7 @@ namespace BackMeUpApp.Repository
             user.PasswordHash = this.CreateHash(password,salt);
             user.PasswordSalt = Convert.ToBase64String(salt);
 
-             IEnumerable<User> ret = await this._client.Cypher.Create("(m:User {params})").WithParam("params", user).Return<User>("m").ResultsAsync;
+            IEnumerable<User> ret = await this._client.Cypher.Create("(m:User {params})").WithParam("params", user).Return<User>("m").ResultsAsync;
             return ret.First();
         }
 
