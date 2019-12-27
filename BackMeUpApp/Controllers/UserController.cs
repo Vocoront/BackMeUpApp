@@ -65,7 +65,7 @@ namespace BackMeUpApp.Controllers
             return Ok(ids);
         }
 
-        [HttpGet("newfollow/{id}")]
+        [HttpPost("follow/{id}")]
         [Authorize]
         public async Task<IActionResult> AddFollow(string id)
         {
@@ -75,6 +75,19 @@ namespace BackMeUpApp.Controllers
                 .Where(x => x.Type == ClaimTypes.Name)
                 .FirstOrDefault();
             await this._repo.AddSubscription(usernameClaim.Value, id);
+            return Ok();
+        }
+
+        [HttpPost("unfollow/{id}")]
+        [Authorize]
+        public async Task<IActionResult> RemoveFollow(string id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            await this._repo.RemoveSubscription(usernameClaim.Value, id);
             return Ok();
         }
 

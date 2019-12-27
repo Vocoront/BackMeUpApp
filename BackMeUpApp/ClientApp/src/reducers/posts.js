@@ -10,13 +10,22 @@ const setPostOpinion = (postId, choice, state) => {
   return { ...state, posts: newPostArray };
 };
 
+const setPostFollow = (postId, follow, state) => {
+  let newPostArray = state.posts.map(post => {
+    if (post.id === postId) return { ...post, follow };
+    else return post;
+  });
+  return { ...state, posts: newPostArray };
+};
+
 const postsReducer = (state = defaulState, action) => {
   switch (action.type) {
     case "SET_POSTS":
       return { ...state, posts: action.posts };
     case "SET_POST_OPINION":
       return setPostOpinion(action.postId, action.opinion, state);
-
+    case "SET_POST_FOLLOW":
+      return setPostFollow(action.postId, action.follow, state);
     default:
       return state;
   }

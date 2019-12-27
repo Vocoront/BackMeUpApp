@@ -41,7 +41,7 @@ namespace BackMeUpApp.Services
             else
                 for (int i = 0; i < images.Count(); i++)
                 {
-                    string fileName1 = startName + i.ToString() + "." + images[i].FileName.Split(".")[1];
+                    string fileName1 = startName + i.ToString() + "." + images[i].FileName.Split(".").Last();
                     var filePath = Path.Combine(destination, fileName1);
                     using (var stream = System.IO.File.Create(filePath))
                     {

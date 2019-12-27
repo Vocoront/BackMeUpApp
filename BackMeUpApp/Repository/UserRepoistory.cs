@@ -97,10 +97,21 @@ namespace BackMeUpApp.Repository
             var query = this._client.Cypher.Match("(u:User)").Where((User u) => u.Username == username)
                 .Match("(p)")
                 .Where("id(p)=" + id)     
-                .Create("(u)-[f:Follow]->(p)");
+                .Merge("(u)-[f:Follow]->(p)");
 
             await query.ExecuteWithoutResultsAsync();
           
+        }
+
+        public async Task RemoveSubscription(string username, string id)
+        {
+            var query = this._client.Cypher.Match("(u:User)").Where((User u) => u.Username == username)
+                 .Match("(p)")
+                 .Where("id(p)=" + id)
+                 .Match("(u)-[f:Follow]->(p)")
+                 .Delete("f");
+
+            await query.ExecuteWithoutResultsAsync();
         }
     }
 }

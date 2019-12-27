@@ -3,9 +3,10 @@ import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
-import { setPostOpinion } from "../actions/posts";
+import { setPostOpinion, setPostFollow } from "../actions/posts";
 import ImageCarousel from "./ImageCarousel";
 import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
+import { follow, unfollow } from "../services/postModification";
 
 class Post extends Component {
   constructor(props) {
@@ -13,17 +14,7 @@ class Post extends Component {
     this.state = {};
     this.AddOpinion = this.AddOpinion.bind(this);
     this.GetImageUrlsArray = this.GetImageUrlsArray.bind(this);
-    this.follow = this.follow.bind(this);
   }
-
-  follow = () => {
-    fetch("api/user/newfollow/" + this.props.postId, {
-      method: "GET",
-      headers: {
-        Authorization: "Bearer " + this.props.user.token
-      }
-    });
-  };
 
   GetImageUrlsArray = imageUrls => {
     if (!imageUrls) return null;
@@ -57,19 +48,25 @@ class Post extends Component {
             onClick={() => history.push("/extendedPost/" + this.props.postId)}
           >
             <div className="post__header">
-              <div className="post__title">{this.props.title}</div>
+              <div className="post__title">
+                <div className="post__title--title">{this.props.title}</div>
+                {this.props.user.username && (
+                  <div
+                    className="post__follow-button"
+                    onClick={event => {
+                      event.stopPropagation();
+                      window.event.cancelBubble = true;
+                      if (!this.props.follow) follow(this.props.postId);
+                      else unfollow(this.props.postId);
+                    }}
+                  >
+                    {!this.props.follow ? "follow" : "unfollow"}
+                  </div>
+                )}
+              </div>
               <div>
                 <div>{convertUtcToLocal(this.props.createdAt)}</div>
                 {this.props.creator}
-
-                <div
-                  onClick={event => {
-                    event.stopPropagation();
-                    window.event.cancelBubble = true;
-                  }}
-                >
-                  <button onClick={() => this.follow()}>Follow</button>
-                </div>
               </div>
             </div>
             <div

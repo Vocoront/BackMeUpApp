@@ -6,7 +6,7 @@ const PostList = props => (
       <Post
         key={index}
         title={post.title}
-        creator={post.username}
+        creator={post.creator}
         content={post.text}
         postId={post.id}
         tags={post.tags}
@@ -16,6 +16,7 @@ const PostList = props => (
         commentNo={post.commentNo}
         agreeNo={post.agreeNo}
         disagreeNo={post.disagreeNo}
+        follow={post.follow}
       />
     ))}
   </div>

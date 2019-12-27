@@ -13,6 +13,8 @@ namespace BackMeUpApp.Repository
 
         Task<IEnumerable<string>> GetSubscriptions(string username);
         Task AddSubscription(string username,string id);
+
+        Task RemoveSubscription(string username, string id);
         Task<bool> UsernameExists(string username);
         Task<bool> UsernameAndEmailExists(string username,string email);
 

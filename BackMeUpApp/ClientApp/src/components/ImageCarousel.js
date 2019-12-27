@@ -7,7 +7,7 @@ const ImageCarousel = props => (
       {props.imageUrls.map((url, index) => (
         <Carousel.Item key={index}>
           <img
-            className="w-100 post--img"
+            className="d-bloack w-100 post--img"
             src={"images/" + url}
             alt={"images/" + url}
           />

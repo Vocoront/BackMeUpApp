@@ -73,7 +73,7 @@ namespace BackMeUpApp.Repository
               {
                   Id= id.As<long>(),
                   Text=m.As<Post>().Text,
-                  Username=u.As<User>().Username,
+                  Creator=u.As<User>().Username,
                   Title=m.As<Post>().Title,              
                   Tags = t.CollectAsDistinct<Tag>(),
                   CreatedAt = m.As<Post>().CreatedAt,
@@ -96,7 +96,7 @@ namespace BackMeUpApp.Repository
               {
                   Id = id.As<long>(),
                   Text = m.As<Post>().Text,
-                  Username = u.As<User>().Username,
+                  Creator = u.As<User>().Username,
                   Title = m.As<Post>().Title,
                   Tags = t.CollectAsDistinct<Tag>(),
                   CreatedAt = m.As<Post>().CreatedAt,
@@ -149,7 +149,7 @@ namespace BackMeUpApp.Repository
                 {
                     Id = id.As<long>(),
                     Text = m.As<Post>().Text,
-                    Username = u.As<User>().Username,
+                    Creator = u.As<User>().Username,
                     Title = m.As<Post>().Title,
                     Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt = m.As<Post>().CreatedAt,
@@ -182,7 +182,7 @@ namespace BackMeUpApp.Repository
                 {
                     Id = id.As<long>(),
                     Text = m.As<Post>().Text,
-                    Username = u.As<User>().Username,
+                    Creator = u.As<User>().Username,
                     Title = m.As<Post>().Title,
                     Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt=m.As<Post>().CreatedAt,
@@ -198,37 +198,70 @@ namespace BackMeUpApp.Repository
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(string username)
         {
-            var query = this._client.Cypher
-            .Match("(m:Post)")
-            .OptionalMatch("(m)-[r:CreatedBy]-(u:User)")
-            .With("m,u")                        // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
-            .OptionalMatch("(m)-[:tagged]-(t:Tag)")
-            .With("m,u,t")
-            .OptionalMatch("()-[c:Comment]->(m)")
-            .With("m,u,t,count(c) as CommentNo")
-            .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
-            .With("m,u,t,CommentNo,count(agr) as agrNo")
-            .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
-            .With("m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")
-            .OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
-            .With("id(m) as id, m, u, t, CommentNo, agrNo, dagrNo,c")
-            .Return((id, m, u, t, CommentNo, agrNo, dagrNo,c) => new PostForDisplayDto
-            {
-                Id = id.As<long>(),
-                Text = m.As<Post>().Text,
-                Username = u.As<User>().Username,
-                Title = m.As<Post>().Title,
-                Tags = t.CollectAsDistinct<Tag>(),
-                ImageUrls = m.As<Post>().ImageUrls,
-                CreatedAt = m.As<Post>().CreatedAt,
-                Choice = c.As<Choice>().Opinion,
-                CommentNo = CommentNo.As<int>(),
-                AgreeNo = (int)agrNo.As<int>(),
-                DisagreeNo = (int)dagrNo.As<int>()
+            //var query = this._client.Cypher
+            //.Match("(m:Post)")
+            //.Match("(m)-[r:CreatedBy]-(u:User)")             
+            //.OptionalMatch("(m)-[:tagged]-(t:Tag)")     // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
+            //.With("m,u,t")
+            //.OptionalMatch("()-[c:Comment]->(m)")
+            //.With("m,u,t,count(c) as CommentNo")
+            //.OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+            //.With("m,u,t,CommentNo,count(agr) as agrNo")
+            //.OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
+            //.With("m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")
+            //.OptionalMatch($"(user:User {{Username:'{username}'}})-[c:Choice]-(m)")
+            //.With("id(m) as id, m, u, t, CommentNo, agrNo, dagrNo,c, Exists((user)-[:Follow]-(m)) as f")
+            //.Return((id, m, u, t, CommentNo, agrNo, dagrNo,c,f) => new PostForDisplayDto
+            //{
+            //    Id = id.As<long>(),
+            //    Text = m.As<Post>().Text,
+            //    Creator = u.As<User>().Username,
+            //    Title = m.As<Post>().Title,
+            //    Tags = t.CollectAsDistinct<Tag>(),
+            //    ImageUrls = m.As<Post>().ImageUrls,
+            //    CreatedAt = m.As<Post>().CreatedAt,
+            //    Choice = c.As<Choice>().Opinion,
+            //    CommentNo = CommentNo.As<int>(),
+            //    AgreeNo = (int)agrNo.As<int>(),
+            //    DisagreeNo = (int)dagrNo.As<int>(),
+            //    Follow=f.As<bool>()
 
-            }
-            ); 
-            var results = await query.ResultsAsync;
+            //}
+            // ); 
+
+            var query = this._client.Cypher
+           .Match("(m:Post)")
+           .Match("(m)-[r:CreatedBy]-(u:User)")
+           .Match($"(user:User {{Username:'{username}'}})")
+           .OptionalMatch("(m)-[:tagged]-(t:Tag)")     // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
+           .With("m,u,user,t")
+           .OptionalMatch("()-[c:Comment]->(m)")
+           .With("m,u,user,t,count(c) as CommentNo")
+           .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+           .With("m,u,user,t,CommentNo,count(agr) as agrNo")
+           .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
+           .With("m,u,user,t,CommentNo,agrNo, count(dagr) as dagrNo")
+           .OptionalMatch("(user)-[c:Choice]-(m)")
+           .With("id(m) as id, m, u,user, t, CommentNo, agrNo, dagrNo,c, Exists((user)-[:Follow]-(m)) as f")
+           .Return((id, m, u, t, CommentNo, agrNo, dagrNo, c, f) => new PostForDisplayDto
+           {
+               Id = id.As<long>(),
+               Text = m.As<Post>().Text,
+               Creator = u.As<User>().Username,
+               Title = m.As<Post>().Title,
+               Tags = t.CollectAsDistinct<Tag>(),
+               ImageUrls = m.As<Post>().ImageUrls,
+               CreatedAt = m.As<Post>().CreatedAt,
+               Choice = c.As<Choice>().Opinion,
+               CommentNo = CommentNo.As<int>(),
+               AgreeNo = (int)agrNo.As<int>(),
+               DisagreeNo = (int)dagrNo.As<int>(),
+               Follow = f.As<bool>()
+
+           });
+
+
+           var results = await query.ResultsAsync;
  
             return results;
         }
@@ -242,7 +275,7 @@ namespace BackMeUpApp.Repository
                 {
                     Title=p.As<Post>().Title,
                     Text=p.As<Post>().Text,
-                    Username = u.As<User>().Username,
+                    Creator = u.As<User>().Username,
                     Tags = t.CollectAsDistinct<Tag>(),
                     CreatedAt = p.As<Post>().CreatedAt,
                     ImageUrls = p.As<Post>().ImageUrls

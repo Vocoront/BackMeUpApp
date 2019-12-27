@@ -9,7 +9,7 @@ namespace BackMeUpApp.DTOs
     public class PostForDisplayDto
     {
         public long Id { get; set; }
-        public string Username { get; set; }
+        public string Creator { get; set; }
         public string Title { get; set; }
         public string Text { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -19,6 +19,7 @@ namespace BackMeUpApp.DTOs
         public int CommentNo { get; set; }
         public int AgreeNo { get; set; }
         public int DisagreeNo { get; set; }
+        public bool Follow { get; set; }
 
     }
 }
