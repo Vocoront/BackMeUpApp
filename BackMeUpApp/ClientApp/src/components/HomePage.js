@@ -2,17 +2,21 @@ import React, { Component } from "react";
 import PostList from "./PostList";
 import { connect } from "react-redux";
 import { setPosts } from "../actions/posts";
+import { addPosts } from "../actions/posts";
 import Dropdown from "react-bootstrap/Dropdown";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import store from "../reducers/tag";
+import Button from "react-bootstrap/Button";
 
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {
       posts: [],
-      tag: this.props.tag
+      tag: this.props.tag,
+      tmpPage: 0,
+      nextPageBtnVisible: true
     };
 
     this.GetPosts = this.GetPosts.bind(this);
@@ -44,7 +48,7 @@ class HomePage extends Component {
   GetPosts() {
     console.log(this.props.tag + " je tag");
     if (this.props.tag === "" || !this.props.tag) {
-      fetch("api/post", {
+      fetch("api/post/getFrom/" + this.state.tmpPage, {
         method: "GET",
         headers: {
           Authorization: "Bearer " + this.props.token
@@ -52,7 +56,18 @@ class HomePage extends Component {
       })
         .then(res => res.json())
         .then(data => {
-          this.props.dispatch(setPosts(data));
+          console.log("preuzeto postova: " + Object.keys(data).length);
+          if (this.state.tmpPage == 0) {
+            this.props.dispatch(setPosts(data));
+            this.setState({ tmpPage: this.state.tmpPage + 1 });
+          } else {
+            if (Object.keys(data).length > 0) {
+              this.props.dispatch(addPosts(data));
+              this.setState({ tmpPage: this.state.tmpPage + 1 });
+            } else {
+              this.setState({ nextPageBtnVisible: false });
+            }
+          }
         })
         .catch(er => console.log(er));
     } else {
@@ -160,6 +175,19 @@ class HomePage extends Component {
       >
         {/* <div className="sortButtonDiv">{this.renderSortDropDown()}</div> */}
         <PostList posts={this.props.posts} />
+        {this.state.nextPageBtnVisible ? (
+          <Button
+            variant="outline-secondary"
+            onClick={() => {
+              console.log(this.state.tmpPage);
+              this.GetPosts();
+            }}
+          >
+            <i class="fas fa-plus"></i>
+          </Button>
+        ) : (
+          <i class="far fa-times-circle"></i>
+        )}
       </div>
     );
   }

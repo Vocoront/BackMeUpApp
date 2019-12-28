@@ -163,8 +163,10 @@ namespace BackMeUpApp.Repository
 
             return results;
         }
-        public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync()
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(int start)
         {
+            int postsPerPage=2;
+
              var query = this._client.
                 Cypher
                 .Match("(m:Post)")
@@ -178,7 +180,8 @@ namespace BackMeUpApp.Repository
                 .With("m,u,t,CommentNo,count(agr) as agrNo")
                 .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")           
                 .With("id(m) as id,m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")  
-                .Return((m, u, t, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
+                .Return((m, u, t, id, CommentNo, agrNo, dagrNo)
+                => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
                     Text = m.As<Post>().Text,
@@ -190,8 +193,9 @@ namespace BackMeUpApp.Repository
                     CommentNo = CommentNo.As<int>(),
                     AgreeNo = (int)agrNo.As<int>(),
                     DisagreeNo = (int)dagrNo.As<int>()
-                }
-                );
+                })
+                .Skip(start*postsPerPage)
+                .Limit(start * postsPerPage+postsPerPage);
             var results = await query.ResultsAsync;
 
             return results;

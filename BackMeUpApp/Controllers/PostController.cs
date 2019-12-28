@@ -15,7 +15,7 @@ namespace BackMeUpApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    
+
     public class PostController : ControllerBase
     {
         private readonly IPostRepository _rep;
@@ -23,8 +23,8 @@ namespace BackMeUpApp.Controllers
         {
             _rep = rep;
         }
-        [HttpGet]
-        public async Task<IActionResult> GetPosts()
+        [HttpGet("getFrom/{start}")]
+        public async Task<IActionResult> GetPosts(int start)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             IEnumerable<Claim> claim = identity.Claims;
@@ -36,7 +36,7 @@ namespace BackMeUpApp.Controllers
             if (usernameClaim != null)
                 posts = await _rep.GetPostsAsync(usernameClaim.Value);
             else
-                posts=await _rep.GetPostsAsync();
+                posts=await _rep.GetPostsAsync(start);
             return Ok(posts);
         }
         [HttpGet ("getPostById/{postId}")]

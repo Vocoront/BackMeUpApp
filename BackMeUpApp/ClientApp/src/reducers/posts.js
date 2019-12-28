@@ -18,6 +18,13 @@ const setPostFollow = (postId, follow, state) => {
   return { ...state, posts: newPostArray };
 };
 
+const addNextPage = (newposts, state) => {
+  let newPosts = state.posts.concat(newposts);
+  console.log(newPosts);
+
+  return { ...state, posts: newPosts };
+};
+
 const postsReducer = (state = defaulState, action) => {
   switch (action.type) {
     case "SET_POSTS":
@@ -26,6 +33,8 @@ const postsReducer = (state = defaulState, action) => {
       return setPostOpinion(action.postId, action.opinion, state);
     case "SET_POST_FOLLOW":
       return setPostFollow(action.postId, action.follow, state);
+    case "SET_POSTS_NEXTPAGE":
+      return addNextPage(action.posts, state);
     default:
       return state;
   }
