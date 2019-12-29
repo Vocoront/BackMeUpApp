@@ -3,8 +3,8 @@ import { connect } from "react-redux";
 import { Route } from "react-router-dom";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
-import { setPostOpinion, setPostFollow } from "../actions/posts";
 import ImageCarousel from "./ImageCarousel";
+import { setPostOpinion, setPostFollow } from "../actions/posts";
 import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 import { follow, unfollow } from "../services/postModification";
 

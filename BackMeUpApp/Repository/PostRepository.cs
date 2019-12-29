@@ -338,7 +338,7 @@ namespace BackMeUpApp.Repository
                 });
 
             var ret = await query.ResultsAsync;
-            _notificationService.SendNotification($"commented on a post {ret.First().IdPosta}", ret.First().CreatedAt,username, ret.First().IdPosta);
+            _notificationService.SendNotification($"commented on a post :{ret.First().IdPosta}", ret.First().CreatedAt,username, ret.First().IdPosta);
 
             return new CommentForDisplayDto { 
                 CreatedAt=ret.First().CreatedAt,
