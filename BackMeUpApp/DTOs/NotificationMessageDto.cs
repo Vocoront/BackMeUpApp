@@ -10,5 +10,7 @@ namespace BackMeUpApp.DTOs
         public String Message { get; set; }
         public String Creator { get; set; }
         public DateTime CreatedAt { get; set; }
+
+        public long PostId { get; set; }
     }
 }

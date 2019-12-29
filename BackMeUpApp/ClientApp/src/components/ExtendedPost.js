@@ -23,6 +23,13 @@ class ExtendedPost extends Component {
     this.GetPost();
     this.GetAllComments();
   }
+
+  componentDidUpdate(prevProps) {
+    if (this.props.match.params.id !== prevProps.match.params.id) {
+      this.GetPost();
+      this.GetAllComments();
+    }
+  }
   GetPost() {
     let putanja = " /api/post/getPostById/" + this.props.match.params.id; // ovde mora / pre api !!!
     fetch(putanja, { method: "GET" })

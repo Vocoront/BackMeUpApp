@@ -8,18 +8,16 @@ const NortificationContainer = props => {
       {props.notifications === 0 && <div>No notifications</div>}
       {props.notifications.map((notification, index) => (
         <Route
+          key={index}
           render={({ history }) => (
-            <div className="notification-container__message" key={index}>
-              {convertUtcToLocal(notification.createdAt)}:{notification.creator}
-              :{notification.message}
+            <div className="notification-container__message">
               <div
                 onClick={() =>
-                  history.push(
-                    "/extendedPost/" + notification.message.split(":")[1]
-                  )
+                  history.push("/extendedPost/" + notification.postId)
                 }
               >
-                #{notification.message.split(":")[1]}
+                {convertUtcToLocal(notification.createdAt)}:
+                {notification.creator}:{notification.message}
               </div>
             </div>
           )}

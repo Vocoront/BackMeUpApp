@@ -22,7 +22,24 @@ namespace BackMeUpApp.Services
             _rms = redisMessageService;
             _hubContext = hubContext;
         }
-
+        public async void SendNotification(NotificationMessageDto msg)
+        {
+            var query = _client.Cypher.Match("(p)-[:Follow]-(u:User)")
+                .Where("id(p)=" + msg.PostId)
+                .With("u.Username as name")
+                .Return((name) => new
+                {
+                    Users = name.CollectAsDistinct<String>()
+                });
+            var users = await query.ResultsAsync;
+            if (users.First().Users.Count() == 0)
+                return;
+            var key = _rms.GenerateKeyWithPrefix(msg.PostId.ToString());
+            string msgKey = _rms.CreateSetMessage(key, users.First().Users);
+           
+            string hashKey = _rms.CreateHashMessage(key, msg);
+            await _hubContext.Clients.Group(msg.PostId.ToString()).SendAsync("ReceiveMessage", new { msg, key });
+        }
         public async void SendNotification(string notification,DateTime createdAt,string username,int idOfNode)
         {
             var query = _client.Cypher.Match("(p)-[:Follow]-(u:User)")
@@ -58,6 +75,7 @@ namespace BackMeUpApp.Services
                     {
                         var keyOriginal = key.Replace(":"+_rms.SubPostfix, "");
                         var msg = _rms.GetDataForMessage(keyOriginal);
+                        msg.PostId = int.Parse(nodeId);
                         _hubContext.Clients.Clients(connectionId).SendAsync("ReceiveMessage", new { msg, key=keyOriginal });
 
                     }
