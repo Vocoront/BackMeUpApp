@@ -3,7 +3,8 @@ import passwordValidator from "password-validator";
 import store from "../store/configureStore";
 import { setAlert, clearAlert } from "../actions/alert";
 import { setUsername, setToken, deleteToken } from "../actions/user";
-import { Connect } from "../actions/notification";
+//import { Connect } from "../actions/notification";
+import { connect } from "../services/notification";
 import authHeader from "../helpers/authHeader";
 const validate = (username, email, password, repassword) => {
   if (!validateUsername(username)) {
@@ -116,7 +117,7 @@ const createAcount = async (username, email, password, repassword) => {
     .then(data => {
       store.dispatch(setToken(data.token));
       store.dispatch(setUsername(data.username));
-      store.dispatch(Connect());
+      connect();
 
       return true;
     })
@@ -138,7 +139,7 @@ const loginSubmit = async (username, password) => {
     .then(data => {
       store.dispatch(setToken(data.token));
       store.dispatch(setUsername(data.username));
-      store.dispatch(Connect());
+      connect();
       return true;
     })
     .catch(er => console.log(er));
@@ -161,7 +162,7 @@ const reconnect = () => {
       })
       .then(data => {
         store.dispatch(setUsername(data.username));
-        store.dispatch(Connect());
+        connect();
       })
       .catch(er => console.log(er));
   }

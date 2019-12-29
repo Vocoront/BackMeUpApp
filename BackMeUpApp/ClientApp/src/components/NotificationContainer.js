@@ -5,7 +5,10 @@ const NortificationContainer = props => {
     <div className="notification-container">
       {props.notifications === 0 && <div>No notifications</div>}
       {props.notifications.map((notification, index) => (
-        <div key={index}>{notification.message}</div>
+        <div className="notification-container__message" key={index}>
+          {notification.creator}
+          {notification.message}
+        </div>
       ))}
     </div>
   );

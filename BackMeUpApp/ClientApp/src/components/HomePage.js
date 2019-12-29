@@ -183,10 +183,10 @@ class HomePage extends Component {
               this.GetPosts();
             }}
           >
-            <i class="fas fa-plus"></i>
+            <i className="fas fa-plus"></i>
           </Button>
         ) : (
-          <i class="far fa-times-circle"></i>
+          <i className="far fa-times-circle"></i>
         )}
       </div>
     );

@@ -18,13 +18,7 @@ class LogInPage extends Component {
 
   createAccount = async ({ username, email, password, repassword }) => {
     this.setState((state, props) => ({ loading: true }));
-    let result = await createAcount(
-      username,
-      email,
-      password,
-      repassword,
-      this.props.history
-    );
+    let result = await createAcount(username, email, password, repassword);
     this.setState((state, props) => ({ loading: false }));
     if (result) this.props.history.push("/");
   };

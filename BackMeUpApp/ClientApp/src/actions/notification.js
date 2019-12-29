@@ -1,26 +1,4 @@
-import * as signalR from "@aspnet/signalr";
-import store from "../store/configureStore";
-import { getFollows } from "../services/notification";
-const Connect = () => {
-  let connection = new signalR.HubConnectionBuilder()
-    .withUrl("/messagehub")
-    .build();
-  connection.on("ReceiveMessage", message => {
-    connection.invoke(
-      "MessageRecived",
-      message.key,
-      sessionStorage.getItem("username")
-    );
-    store.dispatch({type: "ADD_NOTIFICATON",message:message.msg})
-    console.log(message);
-  });
-  connection.start().then(() => {
-    console.log("{signalR:connected}");
-    connection.invoke("GetConnectionId").then(data => {
-      store.dispatch({ type: "SET_CONNECTION_ID", connectionId: data });
-      getFollows();
-    });
-  });
+const SetConnection = connection => {
   return { type: "SET_CONNECTION", connection };
 };
 
@@ -29,4 +7,4 @@ const SetFollows = follows => ({
   follows
 });
 
-export { Connect, SetFollows };
+export { SetConnection, SetFollows };

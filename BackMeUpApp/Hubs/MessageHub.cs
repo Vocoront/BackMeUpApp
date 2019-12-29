@@ -32,6 +32,11 @@ namespace BackMeUpApp.Hubs
                 await this.Groups.AddToGroupAsync(this.Context.ConnectionId, i);
             }
         }
+        
+        public async Task RemoveFromGroup(string groupname)
+        {
+            await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, groupname);
+        }
 
         public async Task MessageRecived(string key,string username)
         {

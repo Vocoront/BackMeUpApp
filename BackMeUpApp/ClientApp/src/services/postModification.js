@@ -1,7 +1,7 @@
 import store from "../store/configureStore";
 import authHeader from "../helpers/authHeader";
 import { setPostFollow } from "../actions/posts";
-
+import { removeTopic, addNewTopics } from "../services/notification";
 const follow = (postId = null) => {
   if (postId === null) return;
   const bearer = authHeader();
@@ -10,9 +10,12 @@ const follow = (postId = null) => {
     headers: {
       ...bearer
     }
-  }).then(
-    res => res.status === 200 && store.dispatch(setPostFollow(postId, true))
-  );
+  }).then(res => {
+    if (res.status === 200) {
+      store.dispatch(setPostFollow(postId, true));
+      addNewTopics([postId]);
+    }
+  });
 };
 
 const unfollow = (postId = null) => {
@@ -23,9 +26,12 @@ const unfollow = (postId = null) => {
     headers: {
       ...bearer
     }
-  }).then(
-    res => res.status === 200 && store.dispatch(setPostFollow(postId, false))
-  );
+  }).then(res => {
+    if (res.status === 200) {
+      store.dispatch(setPostFollow(postId, false));
+      removeTopic(postId);
+    }
+  });
 };
 
 export { follow, unfollow };

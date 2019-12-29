@@ -1,11 +1,15 @@
 .notification-container {
-    width: $newPost-container-size;
-    height: $m-container-size;
-    margin: 0 auto;
-    padding: $s-size;
-    background: white;
-    color: red;
-    box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
-    border-radius: 25px;
-  }
-  
+  width: $newPost-container-size;
+  height: $m-container-size;
+  margin: 0 auto;
+  padding: $m-size;
+  background: white;
+  color: black;
+  box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
+  border-radius: 25px;
+}
+
+.notification-container__message {
+  font-size: $m-font-size;
+  border-bottom: 0.04rem solid black;
+}

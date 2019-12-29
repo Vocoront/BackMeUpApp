@@ -29,7 +29,7 @@ class AppRouter extends Component {
           <Header />
           <div className="page-content-layout">
             <div className="page-content-layout__sidebar">
-              {/* <NotificationContainer /> */}
+              {this.props.user.username && <NotificationContainer />}
             </div>
             <div className="page-content-layout__main">
               {this.props.showAlert && <Alert />}
@@ -49,7 +49,8 @@ class AppRouter extends Component {
   }
 }
 const mapStateToProps = state => ({
-  showAlert: state.alert.visible
+  showAlert: state.alert.visible,
+  user: state.user
 });
 
 export default connect(mapStateToProps)(AppRouter);
