@@ -12,7 +12,7 @@ const connect = () => {
     connection.invoke(
       "MessageRecived",
       message.key,
-      sessionStorage.getItem("username")
+      store.getState().user.username
     );
     store.dispatch({ type: "ADD_NOTIFICATON", message: message.msg });
     console.log(message);

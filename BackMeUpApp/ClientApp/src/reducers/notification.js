@@ -17,8 +17,12 @@ const notificationReducer = (state = defaultState, action) => {
     case "ADD_NOTIFICATON": {
       return {
         ...state,
-        notifiactions: [...state.notifiactions,action.message]
+        notifiactions: [...state.notifiactions, action.message]
       };
+    }
+    case "DELETE_CONNECTION": {
+      state.connection.stop();
+      return defaultState;
     }
     default:
       return state;

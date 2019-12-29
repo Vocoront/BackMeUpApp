@@ -2,12 +2,12 @@ import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import Form from "react-bootstrap/Form";
-import { connect } from "react-redux";
-import { deleteToken } from "../actions/user";
-import { setFilter } from "../actions/tag";
-import { setTag } from "../actions/tag";
 import Dropdown from "react-bootstrap/Dropdown";
 import Button from "react-bootstrap/Button";
+import { connect } from "react-redux";
+import { setFilter } from "../actions/tag";
+import { setTag } from "../actions/tag";
+import { signOut } from "../services/userAuth";
 
 class Header extends Component {
   constructor(props) {
@@ -102,7 +102,7 @@ class Header extends Component {
             <NavLink
               className="header__navlink"
               to="/"
-              onClick={() => this.props.dispatch(deleteToken())}
+              onClick={() => signOut()}
             >
               Logout
             </NavLink>

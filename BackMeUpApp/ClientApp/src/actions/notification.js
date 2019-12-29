@@ -7,4 +7,8 @@ const SetFollows = follows => ({
   follows
 });
 
-export { SetConnection, SetFollows };
+const DeleteConnection = () => ({
+  type: "DELETE_CONNECTION"
+});
+
+export { SetConnection, SetFollows ,DeleteConnection};

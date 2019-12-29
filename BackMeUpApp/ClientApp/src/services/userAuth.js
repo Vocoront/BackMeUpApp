@@ -3,9 +3,10 @@ import passwordValidator from "password-validator";
 import store from "../store/configureStore";
 import { setAlert, clearAlert } from "../actions/alert";
 import { setUsername, setToken, deleteToken } from "../actions/user";
-//import { Connect } from "../actions/notification";
 import { connect } from "../services/notification";
 import authHeader from "../helpers/authHeader";
+import {DeleteConnection} from '../actions/notification';
+
 const validate = (username, email, password, repassword) => {
   if (!validateUsername(username)) {
     store.dispatch(
@@ -105,7 +106,6 @@ const createAcount = async (username, email, password, repassword) => {
   formData.append("password", password);
 
   store.dispatch(clearAlert());
-  //   this.setState((state, props) => ({ loading: true }));
   return await fetch("api/user/create", { method: "POST", body: formData })
     .then(res => {
       if (res.status === 200) return res.json();
@@ -168,4 +168,11 @@ const reconnect = () => {
   }
 };
 
-export { createAcount, loginSubmit, reconnect };
+const signOut=()=>{
+  store.dispatch(deleteToken());
+  store.dispatch(DeleteConnection());
+
+  
+}
+
+export { createAcount, loginSubmit, reconnect,signOut };
