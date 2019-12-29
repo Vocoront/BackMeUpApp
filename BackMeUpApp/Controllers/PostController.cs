@@ -23,9 +23,16 @@ namespace BackMeUpApp.Controllers
         {
             _rep = rep;
         }
-        [HttpGet("getFrom/{start}")]
-        public async Task<IActionResult> GetPosts(int start)
+        [HttpGet("getFrom/{startPage}/{sortBy}")] //sortBy 1 za newest-defult; 2-popular; 3-controversial
+        public async Task<IActionResult> GetPosts(int startPage, String sortBy)
         {
+            int sort=1;
+            if (sortBy == "MostPopular")
+                sort = 2;
+            else 
+            if (sortBy == "Controversial")
+                sort = 3;
+
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             IEnumerable<Claim> claim = identity.Claims;
             var usernameClaim = claim
@@ -36,7 +43,7 @@ namespace BackMeUpApp.Controllers
             if (usernameClaim != null)
                 posts = await _rep.GetPostsAsync(usernameClaim.Value);
             else
-                posts=await _rep.GetPostsAsync(start);
+                posts=await _rep.GetPostsAsync(startPage, sort);
             return Ok(posts);
         }
         [HttpGet ("getPostById/{postId}")]
