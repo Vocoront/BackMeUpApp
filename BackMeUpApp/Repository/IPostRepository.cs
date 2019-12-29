@@ -11,7 +11,7 @@ namespace BackMeUpApp.Repository
 {
     public interface IPostRepository
     {
-        Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(int start);
+        Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(int startPage, int sortBy);
         Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(string username);
         Task<IEnumerable<PostForDisplayDto>> GetPostCreatedByAsync(String Username);
         Task<IEnumerable<PostForDisplayDto>> GetPostsByTagUsernameAsync(String Username,String Tag);

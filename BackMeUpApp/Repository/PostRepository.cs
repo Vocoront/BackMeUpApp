@@ -163,11 +163,19 @@ namespace BackMeUpApp.Repository
 
             return results;
         }
-        public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(int start)
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(int startPage, int sortBy) //start je strania od koje treba da pocne
         {
             int postsPerPage=2;
+            String sort="m.CreatedAt";
+            if (sortBy == 2)
+                sort = "CommentNo+dagrNo";
+            else
+                if (sortBy == 3)
+                sort = "dagrNo";
 
-             var query = this._client.
+
+
+            var query = this._client.
                 Cypher
                 .Match("(m:Post)")
                 .OptionalMatch("(m)-[r:CreatedBy]-(u:User)")
@@ -179,7 +187,8 @@ namespace BackMeUpApp.Repository
                 .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
                 .With("m,u,t,CommentNo,count(agr) as agrNo")
                 .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")           
-                .With("id(m) as id,m,u,t,CommentNo,agrNo, count(dagr) as dagrNo")  
+                .With("id(m) as id,m,u,t,CommentNo,agrNo, count(dagr) as dagrNo, CommentNo+agrNo as sum ")
+                //.OrderByDescending(sort)
                 .Return((m, u, t, id, CommentNo, agrNo, dagrNo)
                 => new PostForDisplayDto
                 {
@@ -194,8 +203,9 @@ namespace BackMeUpApp.Repository
                     AgreeNo = (int)agrNo.As<int>(),
                     DisagreeNo = (int)dagrNo.As<int>()
                 })
-                .Skip(start*postsPerPage)
-                .Limit(start * postsPerPage+postsPerPage);
+                .OrderByDescending(sort)
+                .Skip(startPage * postsPerPage)
+                .Limit(postsPerPage);
             var results = await query.ResultsAsync;
 
             return results;

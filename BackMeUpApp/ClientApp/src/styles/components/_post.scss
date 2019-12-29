@@ -5,6 +5,7 @@
   padding-left: $l-size;
   padding-right: $l-size;
   justify-content: space-around;
+  min-width: $l-container-size;
 }
 .post__container:hover {
   //-webkit-transform: scale(1.03, 1.03);
