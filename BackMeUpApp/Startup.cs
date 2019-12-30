@@ -12,6 +12,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.FileProviders;
 using Microsoft.IdentityModel.Tokens;
 using Neo4jClient;
+using ServiceStack.Redis;
 using System;
 using System.IO;
 using System.Text;
@@ -40,8 +41,10 @@ namespace BackMeUpApp
             GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misahaker69");
             client.Connect();
             services.AddSingleton<IGraphClient>(provider => client);
-            RedisMessageService redisMessageService = new RedisMessageService("127.0.0.1", "6379");
-            services.AddSingleton<RedisMessageService>(provider => redisMessageService);
+            services.AddSingleton<IRedisClientsManager>(c =>new RedisManagerPool("127.0.0.1:6379"));
+
+
+            services.AddScoped<RedisMessageService, RedisMessageService>();
             services.AddScoped<IUserRepository, UserRepoistory>();
             services.AddScoped<IPostRepository, PostRepository>();
             services.AddScoped<NotificationService, NotificationService>();

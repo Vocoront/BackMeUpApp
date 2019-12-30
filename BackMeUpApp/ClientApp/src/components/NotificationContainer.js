@@ -11,13 +11,17 @@ const NortificationContainer = props => {
           key={index}
           render={({ history }) => (
             <div className="notification-container__message">
+              <div>
+                {convertUtcToLocal(notification.createdAt)}:
+                {notification.creator}:{notification.message}
+              </div>
               <div
+                className="notification-container__post-id"
                 onClick={() =>
                   history.push("/extendedPost/" + notification.postId)
                 }
               >
-                {convertUtcToLocal(notification.createdAt)}:
-                {notification.creator}:{notification.message}
+                post
               </div>
             </div>
           )}

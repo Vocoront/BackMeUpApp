@@ -76,7 +76,7 @@ namespace BackMeUpApp.Services
                         var keyOriginal = key.Replace(":"+_rms.SubPostfix, "");
                         var msg = _rms.GetDataForMessage(keyOriginal);
                         msg.PostId = int.Parse(nodeId);
-                        _hubContext.Clients.Clients(connectionId).SendAsync("ReceiveMessage", new { msg, key=keyOriginal });
+                        await _hubContext.Clients.Clients(connectionId).SendAsync("ReceiveMessage", new { msg, key=keyOriginal });
 
                     }
                 }

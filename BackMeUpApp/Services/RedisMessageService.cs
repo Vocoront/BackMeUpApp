@@ -16,9 +16,10 @@ namespace BackMeUpApp.Services
         public string MsgPostfix { get; private set; }
         private string globalCounterKey = "next.message.id";
 
-        public RedisMessageService(string host,string port)
+        public RedisMessageService(IRedisClientsManager rcm)
         {
-            _redis = new RedisClient($"{host}:{port}");
+            
+            _redis = rcm.GetClient();
             ttl = 60 * 60;
             redisns = "backmeup";
             SubPostfix = "subscribers";
@@ -109,6 +110,8 @@ namespace BackMeUpApp.Services
         public NotificationMessageDto GetDataForMessage(string key)
         {
             var fullKey = key + ":" + MsgPostfix;
+            if (!_redis.ContainsKey(fullKey))
+                return new NotificationMessageDto();
             Dictionary<String,String> data = _redis.GetAllEntriesFromHash(fullKey);
 
             return new NotificationMessageDto

@@ -38,7 +38,7 @@ namespace BackMeUpApp.Hubs
             await this.Groups.RemoveFromGroupAsync(this.Context.ConnectionId, groupname);
         }
 
-        public async Task MessageRecived(string key,string username)
+        public void MessageRecived(string key,string username)
         {
             _ns.RecivedNotification(key, username);
 
