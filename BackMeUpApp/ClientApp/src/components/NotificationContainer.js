@@ -5,23 +5,24 @@ import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 const NortificationContainer = props => {
   return (
     <div className="notification-container">
+      <div className="notification-container_header">Topics</div>
       {props.notifications === 0 && <div>No notifications</div>}
       {props.notifications.map((notification, index) => (
         <Route
           key={index}
           render={({ history }) => (
             <div className="notification-container__message">
-              <div>
-                {convertUtcToLocal(notification.createdAt)}:
-                {notification.creator}:{notification.message}
-              </div>
               <div
-                className="notification-container__post-id"
                 onClick={() =>
                   history.push("/extendedPost/" + notification.postId)
                 }
               >
-                post
+                {" "}
+                {convertUtcToLocal(notification.createdAt)}:
+                {notification.creator}:
+                <div className="notification-container__post-id">
+                  {notification.message}
+                </div>
               </div>
             </div>
           )}
