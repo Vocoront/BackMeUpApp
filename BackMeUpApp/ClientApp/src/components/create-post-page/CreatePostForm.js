@@ -47,7 +47,7 @@ class CreatePostForm extends Component {
 
         <div className=" new-post-container__file-input">
           <div className="form-group files">
-           Select Images 
+           Select Images
             <input
               type="file"
               className="form-control"

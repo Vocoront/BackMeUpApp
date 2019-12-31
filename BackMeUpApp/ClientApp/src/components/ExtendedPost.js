@@ -3,8 +3,7 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Comment from "./Comment";
-import moment from "moment";
-
+import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 class ExtendedPost extends Component {
   constructor(props) {
     super(props);
@@ -71,25 +70,10 @@ class ExtendedPost extends Component {
   render() {
     return (
       <div className="post extPost">
-        {/* <p> Title : {this.state.post.title} </p>
-        <p> User : {this.state.post.username} </p>
-        <p> Text : {this.state.post.text} </p> */}
-
         <div className="post__header">
           <div className="post__title">{this.state.post.title}</div>
           <div>
-            <div>
-              {moment
-                .utc(this.state.post.createdAt)
-                .local()
-                .format("YYYY-MMM-DD h:mm A")}
-              {/* <i
-                  onClick={() =>
-                    history.push("/extendedPost/" + this.props.postId)
-                  }
-                  className="fas fa-search-plus"
-                ></i> */}
-            </div>
+            <div>{convertUtcToLocal(this.state.post.createdAt)}</div>
             {this.state.post.username}
           </div>
         </div>

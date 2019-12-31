@@ -6,7 +6,6 @@ const NortificationContainer = props => {
   return (
     <div className="notification-container">
       <div className="notification-container_header">Topics</div>
-      {props.notifications === 0 && <div>No notifications</div>}
       {props.notifications.map((notification, index) => (
         <Route
           key={index}
@@ -17,10 +16,13 @@ const NortificationContainer = props => {
                   history.push("/extendedPost/" + notification.postId)
                 }
               >
-                {" "}
-                {convertUtcToLocal(notification.createdAt)}:
-                {notification.creator}:
-                <div className="notification-container__post-id">
+                <div className="notification-container__created-at">
+                  {" "}
+                  {convertUtcToLocal(notification.createdAt)}
+                </div>
+                <div> {notification.creator}</div>
+
+                <div className="notification-container__route">
                   {notification.message}
                 </div>
               </div>

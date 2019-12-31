@@ -11,7 +11,7 @@ const userReducer = (state = defaulState, action) => {
       return { ...state, token: action.token };
     case "DELETE_TOKEN":
       sessionStorage.removeItem("token");
-      sessionStorage.removeItem("username", action.username);
+      // sessionStorage.removeItem("username", action.username);
       return {
         ...state,
         token: sessionStorage.getItem("token"),
@@ -20,7 +20,7 @@ const userReducer = (state = defaulState, action) => {
     case "SET_POSTS":
       return { ...state, posts: action.posts };
     case "SET_USERNAME":
-      sessionStorage.setItem("username", action.username);
+      //sessionStorage.setItem("username", action.username);
       return { ...state, username: action.username };
     default:
       return state;

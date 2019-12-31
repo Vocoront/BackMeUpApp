@@ -110,8 +110,6 @@ namespace BackMeUpApp.Services
         public NotificationMessageDto GetDataForMessage(string key)
         {
             var fullKey = key + ":" + MsgPostfix;
-            if (!_redis.ContainsKey(fullKey))
-                return new NotificationMessageDto();
             Dictionary<String,String> data = _redis.GetAllEntriesFromHash(fullKey);
 
             return new NotificationMessageDto

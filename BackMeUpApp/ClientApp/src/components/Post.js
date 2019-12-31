@@ -4,10 +4,10 @@ import { Route } from "react-router-dom";
 import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import ImageCarousel from "./ImageCarousel";
-import { setPostOpinion, setPostFollow } from "../actions/posts";
+import { setPostOpinion } from "../actions/posts";
 import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 import { follow, unfollow } from "../services/postModification";
-
+import { setAlert } from "../actions/alert";
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -24,6 +24,12 @@ class Post extends Component {
   };
 
   AddOpinion(opinion, boolOpinion) {
+    if (!this.props.user.username) {
+      this.props.dispatch(
+        setAlert("You are not logged in.", "Plese log in to add your opinion")
+      );
+      return;
+    }
     if (opinion === this.props.choice) return;
     const formData = new FormData();
     formData.append("idPosta", this.props.postId);

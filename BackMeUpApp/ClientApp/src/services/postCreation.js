@@ -16,11 +16,11 @@ const validateFiles = files => {
   }
 
   for (let i = 0; i < files.length; i++) {
-    if (!files[0].name.match(/.(jpg|jpeg|png|gif)$/i)) {
+    if (!files[i].name.match(/.(jpg|jpeg|png|gif)$/i)) {
       store.dispatch(
         setAlert(
           "Post can only be .jpg|.jpeg|.png|.gif",
-          "Post couldn't be created. File format is not appropriate!"
+          "Post couldn't be created. File format is not appropriate! File format can be 'jpg, jpeg, png, gif'."
         )
       );
       return false;

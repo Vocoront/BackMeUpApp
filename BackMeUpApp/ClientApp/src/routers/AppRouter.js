@@ -14,9 +14,7 @@ import { reconnect } from "../services/userAuth";
 class AppRouter extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      subs: []
-    };
+    this.state = {};
   }
   componentDidMount() {
     reconnect();
