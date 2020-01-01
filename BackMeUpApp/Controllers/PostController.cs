@@ -115,10 +115,10 @@ namespace BackMeUpApp.Controllers
         }
 
 
-        [HttpGet("getposts")]
-        public async Task<IActionResult> GetPosts1()
+        [HttpPost("getposts")]
+        public async Task<IActionResult> GetPosts1([FromForm]FiltersDto filter)
         {
-            var posts = await _rep.GetPosts1(null);
+            var posts = await _rep.GetPosts1(filter);
             return Ok(posts);
         }
 

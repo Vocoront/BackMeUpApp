@@ -7,10 +7,11 @@ namespace BackMeUpApp.DTOs
 {
     public class FiltersDto
     {
-        public String Requester { get; set; }
-        public String Tag { get; set; }
-        public String CreatedBy { get; set; }
+        //public String Tag { get; set; }
+        //public String CreatedBy { get; set; }
         public String Filter { get; set; }
-        public String Page { get; set; }
+        public String Order { get; set; }
+        public int Page { get; set; }
+        public int Limit { get; set; }
     }
 }

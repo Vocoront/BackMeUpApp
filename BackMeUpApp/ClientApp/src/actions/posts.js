@@ -8,6 +8,9 @@ export const addPosts = (posts = []) => ({
   posts
 });
 
+export const incrementPage = () => ({
+  type: "INCREMENT_PAGE"
+});
 export const setPostOpinion = (postId = "", opinion = "agree") => ({
   type: "SET_POST_OPINION",
   postId,

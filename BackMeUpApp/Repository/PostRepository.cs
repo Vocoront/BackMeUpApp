@@ -357,24 +357,34 @@ namespace BackMeUpApp.Repository
 
         }
 
-        public async Task<IEnumerable<PostForDisplayDto>> GetPosts1(FiltersDto filtersDto)
+        public async Task<IEnumerable<PostForDisplayDto>> GetPosts1(FiltersDto filter)
         {
+            string orderQuery="";
+            
+                if (filter.Filter.Equals("date"))
+                    orderQuery="post.CreatedAt";
+                else
+                    orderQuery="agrNo";
+            if (filter.Order.Equals("asc"))
+                orderQuery += " ASC";
+            else
+                orderQuery += " DESC";
+
+
             var query = this._client.
                 Cypher
                 .Match("(post:Post)")
                 .Match("(post)-[r:CreatedBy]-(creator:User)")
-                .With("post,creator")                        // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
+                .With("post,creator")
                 .OptionalMatch("(post)-[:tagged]-(tag:Tag)")
                 .With("post,creator,tag")
-                .OptionalMatch("()-[c:Comment]->(m)")
+                .OptionalMatch("()-[c:Comment]->(post)")
                 .With("post,creator,tag,count(c) as CommentNo")
-                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
                 .With("post,creator,tag,CommentNo,count(agr) as agrNo")
-                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
                 .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo, CommentNo+agrNo as sum ")
-                //.OrderByDescending(sort)
-                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo)
-                => new PostForDisplayDto
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
                     Text = post.As<Post>().Text,
@@ -386,10 +396,9 @@ namespace BackMeUpApp.Repository
                     CommentNo = CommentNo.As<int>(),
                     AgreeNo = (int)agrNo.As<int>(),
                     DisagreeNo = (int)dagrNo.As<int>()
-                })
-                .OrderByDescending("post.CreatedAt");
-                //.Skip(startPage * postsPerPage)
-                //.Limit(postsPerPage);
+                }).OrderBy(orderQuery)
+                .Skip(filter.Page * filter.Limit)
+                .Limit(filter.Limit);
             var results = await query.ResultsAsync;
 
             return results;

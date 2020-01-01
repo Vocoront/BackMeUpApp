@@ -1,13 +1,14 @@
 import React, { Component } from "react";
 import PostList from "./PostList";
 import { connect } from "react-redux";
-import { setPosts } from "../actions/posts";
-import { addPosts } from "../actions/posts";
+import { setPosts, addPosts, incrementPage } from "../actions/posts";
 import Dropdown from "react-bootstrap/Dropdown";
 import ButtonToolbar from "react-bootstrap/ButtonToolbar";
 import DropdownButton from "react-bootstrap/DropdownButton";
 import store from "../reducers/tag";
 import Button from "react-bootstrap/Button";
+import Fillter from "./Fillter";
+import { getPosts } from "../services/postObtaining";
 
 class HomePage extends Component {
   constructor(props) {
@@ -55,6 +56,10 @@ class HomePage extends Component {
   };
 
   GetPosts() {
+    getPosts();
+    this.props.dispatch(incrementPage());
+  }
+  GetPosts1() {
     console.log(
       "sort je: " + this.props.filter + " tmpstrana: " + this.state.tmpPage
     );
@@ -162,6 +167,8 @@ class HomePage extends Component {
           );
         }}
       >
+        <Fillter />
+
         {/* <div className="sortButtonDiv">{this.renderSortDropDown()}</div> */}
         <PostList posts={this.props.posts} />
         {this.state.nextPageBtnVisible ? (

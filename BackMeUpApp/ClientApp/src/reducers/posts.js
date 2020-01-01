@@ -1,5 +1,7 @@
 const defaulState = {
-  posts: []
+  posts: [],
+  page: 0,
+  limit: 2
 };
 
 const setPostOpinion = (postId, choice, state) => {
@@ -35,6 +37,8 @@ const postsReducer = (state = defaulState, action) => {
       return setPostFollow(action.postId, action.follow, state);
     case "SET_POSTS_NEXTPAGE":
       return addNextPage(action.posts, state);
+    case "INCREMENT_PAGE":
+      return { ...state, page: state.page + 1 };
     default:
       return state;
   }
