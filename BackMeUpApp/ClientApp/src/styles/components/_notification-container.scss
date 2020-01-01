@@ -6,35 +6,61 @@
   background: white;
   color: black;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
-  // border-radius: 25px;
+  border-radius: 25px;
   overflow-y: scroll;
-  ::-webkit-scrollbar {
-    width: 10px;
-  }
 
-  /* Track */
-  ::-webkit-scrollbar-track {
-    background:red;
-  }
+  // /* Track */
+  // ::-webkit-scrollbar-track {
+  //   background: red;
+  // }
 
-  /* Handle */
-  ::-webkit-scrollbar-thumb {
-    background: red;
-  }
+  // /* Handle */
+  // ::-webkit-scrollbar-thumb {
+  //   background: red;
+  // }
 
-  /* Handle on hover */
-  ::-webkit-scrollbar-thumb:hover {
-    background: red;
-  }
+  // /* Handle on hover */
+  // ::-webkit-scrollbar-thumb:hover {
+  //   background: red;
+  // }
+}
+
+.notification-container::-webkit-scrollbar {
+  display: none;
+  //width: 10px;
 }
 
 .notification-container__message {
   font-size: $m-font-size;
-  border-bottom: 0.04rem solid black;
+  border: 1px solid black;
+  border-radius: 25px;
+  padding-top: $s-size;
+  padding-right: $m-size;
+  padding-left: $m-size;
+  margin-bottom: $s-size;
 }
 
 .notification-container__post-id {
   cursor: pointer;
+  font-style: italic;
   text-decoration: underline;
   color: blue;
+}
+
+.collapse {
+  display: flex;
+  flex-direction: column;
+}
+
+.collapse > button {
+  align-self: flex-end;
+  border-radius: 25px;
+}
+
+.notificaions_all {
+  transform: translateY(-$l-size);
+}
+
+.aws-btn {
+  font-size: $m-size;
 }
