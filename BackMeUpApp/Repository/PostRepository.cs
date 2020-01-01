@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BackMeUpApp.Repository
 {
-    public class PostRepository : IPostRepository
+    public class PostRepository : IPostRepository 
     {
         private readonly IGraphClient _client;
 
@@ -34,7 +34,7 @@ namespace BackMeUpApp.Repository
                 .Replace("'", @"\u0027");
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
-                .Create("(p:Post { Title:'"+post.Title+"', " +"Text:'" +post.Text+"', CreatedAt: '"+post.CreatedAt+"' })")
+                .Create("(p:Post { Title:'"+post.Title+"', " +"Text:'" +post.Text+ "', CreatedAt: datetime('" + DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + "') })")
                 .Create("(p)-[:CreatedBy]->(u)")
                 .Create("(u)-[:Follow]->(p)")
                 .Return<Node<Post>>("p").ResultsAsync;
@@ -172,7 +172,6 @@ namespace BackMeUpApp.Repository
             else
                 if (sortBy == 3)
                 sort = "dagrNo";
-
 
 
             var query = this._client.
@@ -337,7 +336,7 @@ namespace BackMeUpApp.Repository
 
             var query =  _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)
-                .Create("(u)-[c:Comment {Text:'" + comment_text + "', CreatedAt: '" + DateTime.UtcNow + "'}]->(p)")
+                .Create("(u)-[c:Comment {Text:'" + comment_text + "', CreatedAt: datetime('" + DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss")+ "')}]->(p)")
                 .With("id(p) as idPosta,c,u")
                 .Return((idPosta,c,u) => new
                 {   
@@ -358,6 +357,42 @@ namespace BackMeUpApp.Repository
 
         }
 
-       
+        public async Task<IEnumerable<PostForDisplayDto>> GetPosts1(FiltersDto filtersDto)
+        {
+            var query = this._client.
+                Cypher
+                .Match("(post:Post)")
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .With("post,creator")                        // kada ima puno Optional match-eva zajedno, bitno da se odvoje ovako sa with
+                .OptionalMatch("(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,tag")
+                .OptionalMatch("()-[c:Comment]->(m)")
+                .With("post,creator,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(m)")
+                .With("post,creator,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(m)")
+                .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo, CommentNo+agrNo as sum ")
+                //.OrderByDescending(sort)
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo)
+                => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>()
+                })
+                .OrderByDescending("post.CreatedAt");
+                //.Skip(startPage * postsPerPage)
+                //.Limit(postsPerPage);
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
     }
 }

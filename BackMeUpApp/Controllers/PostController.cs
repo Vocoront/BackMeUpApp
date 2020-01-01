@@ -114,5 +114,13 @@ namespace BackMeUpApp.Controllers
 
         }
 
+
+        [HttpGet("getposts")]
+        public async Task<IActionResult> GetPosts1()
+        {
+            var posts = await _rep.GetPosts1(null);
+            return Ok(posts);
+        }
+
     }
 }
