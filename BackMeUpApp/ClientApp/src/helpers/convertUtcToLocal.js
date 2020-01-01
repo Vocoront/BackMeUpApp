@@ -5,4 +5,7 @@ const convertUtcToLocal = time => {
     .local()
     .format("YYYY-MMM-DD h:mm A");
 };
-export { convertUtcToLocal };
+
+const isAfter = (timeA, timeB) => moment.utc(timeA).isAfter(moment.utc(timeB));
+
+export { convertUtcToLocal, isAfter };

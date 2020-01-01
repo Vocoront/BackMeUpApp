@@ -1,8 +1,22 @@
+import { isAfter } from "../helpers/convertUtcToLocal";
+
 const defaultState = {
   connection: undefined,
   notifiactions: [],
   follows: [],
   connectionId: undefined
+};
+
+const sortNotificationsByDate = notifications => {
+  return notifications.sort((a, b) => {
+    if (isAfter(a.createdAt, b.createdAt)) {
+      return -1;
+    }
+    if (isAfter(b.createdAt, a.createdAt)) {
+      return 1;
+    }
+    return 0;
+  });
 };
 
 const notificationReducer = (state = defaultState, action) => {
@@ -17,7 +31,10 @@ const notificationReducer = (state = defaultState, action) => {
     case "ADD_NOTIFICATON": {
       return {
         ...state,
-        notifiactions: [action.message, ...state.notifiactions]
+        notifiactions: sortNotificationsByDate([
+          action.message,
+          ...state.notifiactions
+        ])
       };
     }
     case "DELETE_CONNECTION": {
