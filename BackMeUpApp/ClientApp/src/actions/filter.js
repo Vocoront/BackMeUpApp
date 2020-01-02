@@ -8,4 +8,9 @@ const setOrder = (order = "desc") => ({
   order
 });
 
-export { setFilter, setOrder };
+const setPeriod = (period = "day") => ({
+  type: "SET_PERIOD",
+  period
+});
+
+export { setFilter, setOrder, setPeriod };

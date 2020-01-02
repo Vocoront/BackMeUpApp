@@ -1,6 +1,7 @@
 const defaulState = {
   filter: "date",
-  order: "desc"
+  order: "desc",
+  period: "day"
 };
 
 const filterReducer = (state = defaulState, action) => {
@@ -9,6 +10,8 @@ const filterReducer = (state = defaulState, action) => {
       return { ...state, filter: action.filter };
     case "SET_ORDER":
       return { ...state, order: action.order };
+    case "SET_PERIOD":
+      return { ...state, period: action.period };
     default:
       return state;
   }

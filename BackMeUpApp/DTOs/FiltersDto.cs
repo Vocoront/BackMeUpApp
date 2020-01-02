@@ -13,5 +13,6 @@ namespace BackMeUpApp.DTOs
         public String Order { get; set; }
         public int Page { get; set; }
         public int Limit { get; set; }
+        public string Period { get; set; }
     }
 }

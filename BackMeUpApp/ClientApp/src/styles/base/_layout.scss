@@ -7,11 +7,9 @@
 
 .page-content-layout__sidebar {
   margin: 0 $m-size;
-  float: 1 1 100%;
-  position: fixed;
+  float: 0 0 25%;
 }
 
 .page-content-layout__main {
   flex: 2 2 100%;
-  overflow: hidden;
 }

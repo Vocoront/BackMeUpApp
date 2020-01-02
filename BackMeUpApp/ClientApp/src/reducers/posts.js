@@ -1,5 +1,6 @@
 const defaulState = {
   posts: [],
+  loading: false,
   page: 0,
   limit: 2
 };
@@ -39,6 +40,8 @@ const postsReducer = (state = defaulState, action) => {
       return addNextPage(action.posts, state);
     case "INCREMENT_PAGE":
       return { ...state, page: state.page + 1 };
+    case "SET_LOADING":
+      return { ...state, loading: action.loading };
     case "RESET_POSTS":
       return defaulState;
     default:

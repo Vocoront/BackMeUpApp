@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { setFilter, setOrder } from "../actions/filter";
+import { setFilter, setOrder, setPeriod } from "../actions/filter";
 import { getPosts } from "../services/postObtaining";
 class Filter extends Component {
   constructor(props) {
@@ -30,6 +30,19 @@ class Filter extends Component {
           >
             <option value="asc">Asc</option>
             <option value="desc">Desc</option>
+          </select>
+        </div>
+        <div className="filter__period">
+          <select
+            value={this.props.filter.period}
+            onChange={e => {
+              this.props.dispatch(setPeriod(e.target.value));
+            }}
+          >
+            <option value="day">Today</option>
+            <option value="week">Week</option>
+            <option value="month">Month</option>
+            <option value="all">All</option>
           </select>
         </div>
         <div className="fillter__button">

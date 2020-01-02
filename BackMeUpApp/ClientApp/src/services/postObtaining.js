@@ -1,6 +1,6 @@
 import authHeader from "../helpers/authHeader";
 import store from "../store/configureStore";
-import { setPosts, addPosts, resetPosts } from "../actions/posts";
+import { setPosts, addPosts, resetPosts, setLoading } from "../actions/posts";
 const getPosts = (nextPage = false) => {
   if (!nextPage) {
     store.dispatch(resetPosts());
@@ -10,8 +10,11 @@ const getPosts = (nextPage = false) => {
   const formData = new FormData();
   formData.append("filter", state.filter.filter);
   formData.append("order", state.filter.order);
+  formData.append("period", state.filter.period);
   formData.append("page", state.posts.page);
   formData.append("limit", state.posts.limit);
+
+  store.dispatch(setLoading(true));
   fetch("api/post", {
     method: "POST",
     headers: {
@@ -26,6 +29,7 @@ const getPosts = (nextPage = false) => {
     .then(data => {
       if (nextPage) store.dispatch(addPosts(data));
       else store.dispatch(setPosts(data));
+      store.dispatch(setLoading(false));
     })
     .catch(er => console.log(er));
 };

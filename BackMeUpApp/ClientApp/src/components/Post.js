@@ -106,7 +106,7 @@ class Post extends Component {
                 ripple={true}
                 onPress={() => this.AddOpinion("agree", true)}
               >
-                {this.props.agreeNo + "    "}
+                {this.props.agreeNo}
                 {this.props.choice === "agree" ? (
                   <i className="far fa-thumbs-up fa-2x"></i>
                 ) : (
@@ -126,7 +126,7 @@ class Post extends Component {
                   <i className="far fa-angry"></i>
                 )}
 
-                {"    " + this.props.disagreeNo}
+                {this.props.disagreeNo}
               </AwesomeButton>
             </div>
             <div

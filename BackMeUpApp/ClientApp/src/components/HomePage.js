@@ -14,7 +14,6 @@ class HomePage extends Component {
       tag: this.props.tag,
       tmpPage: 0,
       nextPageBtnVisible: true
-      //sortBy: 2 //1-newest 2-popular 3-controversial
     };
 
     this.GetPosts = this.GetPosts.bind(this);
@@ -49,7 +48,7 @@ class HomePage extends Component {
     });
   };
 
-  GetPosts(nextPage=false) {
+  GetPosts(nextPage = false) {
     getPosts(nextPage);
   }
   GetPosts1() {
@@ -105,30 +104,9 @@ class HomePage extends Component {
 
   render() {
     return (
-      <div
-        className="HomePageContent"
-        onClick={() => {
-          console.log(
-            "tag je:" + this.props.tag + "  filter je:" + this.props.filter
-          );
-        }}
-      >
+      <div>
         <Fillter />
-
-        <PostList posts={this.props.posts} />
-        {this.state.nextPageBtnVisible ? (
-          <Button
-            variant="outline-secondary"
-            onClick={() => {
-              this.props.dispatch(incrementPage());
-              this.GetPosts(true);
-            }}
-          >
-            <i className="fas fa-plus"></i>
-          </Button>
-        ) : (
-          <i className="far fa-times-circle"></i>
-        )}
+        <PostList />
       </div>
     );
   }

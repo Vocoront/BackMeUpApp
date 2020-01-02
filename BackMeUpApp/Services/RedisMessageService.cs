@@ -11,7 +11,7 @@ namespace BackMeUpApp.Services
     {
         private readonly IRedisClient _redis;
         private int ttl;//time to live for keys in seconds
-        private string redisns;//redisns:keys:globalId:(subpfx|msgpfx)
+        private string redisns;//izgled kljuceva: {redisns}:key-value:globalId:(subpfx|msgpfx)
         public string SubPostfix { get; private set; }
         public string MsgPostfix { get; private set; }
         private string globalCounterKey = "next.message.id";

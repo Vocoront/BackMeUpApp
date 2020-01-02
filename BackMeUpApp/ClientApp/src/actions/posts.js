@@ -11,6 +11,7 @@ export const addPosts = (posts = []) => ({
 export const incrementPage = () => ({
   type: "INCREMENT_PAGE"
 });
+
 export const setPostOpinion = (postId = "", opinion = "agree") => ({
   type: "SET_POST_OPINION",
   postId,
@@ -23,6 +24,11 @@ export const setPostFollow = (postId = "", follow = false) => ({
   follow
 });
 
-export const resetPosts=()=>({
+export const resetPosts = () => ({
   type: "RESET_POSTS"
+});
+
+export const setLoading = (loading = false) => ({
+  type: "SET_LOADING",
+  loading
 });

@@ -373,13 +373,25 @@ namespace BackMeUpApp.Repository
             return orderQuery;
         }
 
+        protected string GetStartDate(string period)
+        {
+            switch(period)
+            {
+                case "day": return DateTime.UtcNow.AddDays(-1).ToString("yyyy-MM-ddTHH:mm:ss");
+                case "week": return DateTime.UtcNow.AddDays(-7).ToString("yyyy-MM-ddTHH:mm:ss");
+                case "month": return DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-ddTHH:mm:ss");
+                default: return DateTime.UtcNow.AddYears(-2000).ToString("yyyy-MM-ddTHH:mm:ss");
+            }
+        }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(FiltersDto filter)
         {
             string orderQuery=GetOrderQuery(filter.Filter,filter.Order);
+            string startingDate = GetStartDate(filter.Period);
 
             var query = this._client.
                 Cypher
                 .Match("(post:Post)")
+                .Where($"post.CreatedAt>=datetime('{startingDate}')")
                 .Match("(post)-[r:CreatedBy]-(creator:User)")
                 .With("post,creator")
                 .OptionalMatch("(post)-[:tagged]-(tag:Tag)")
@@ -413,10 +425,13 @@ namespace BackMeUpApp.Repository
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsForUserAsync(FiltersDto filter, string username)
         {
             string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
+            string startingDate = GetStartDate(filter.Period);
+
 
             var query = this._client.
                 Cypher
                 .Match("(post:Post)")
+                .Where($"post.CreatedAt>=datetime('{startingDate}')")
                 .Match("(post)-[r:CreatedBy]-(creator:User)")
                 .Match($"(user:User)")
                 .Where((User user)=>user.Username==username)
