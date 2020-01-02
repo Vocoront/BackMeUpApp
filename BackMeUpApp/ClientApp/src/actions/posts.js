@@ -22,3 +22,7 @@ export const setPostFollow = (postId = "", follow = false) => ({
   postId,
   follow
 });
+
+export const resetPosts=()=>({
+  type: "RESET_POSTS"
+});

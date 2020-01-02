@@ -22,7 +22,8 @@ namespace BackMeUpApp.Repository
         Task<PostForDisplayDto> GetPostsByIdAsync(int id);
         Task<IEnumerable<CommentForDisplayDto>> GetCommentsForPost(int postId);
 
-        Task<IEnumerable<PostForDisplayDto>> GetPosts1(FiltersDto filtersDto);
+        Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(FiltersDto filtersDto);
+        Task<IEnumerable<PostForDisplayDto>> GetPostsForUserAsync(FiltersDto filtersDto,string username);
 
     }
 }

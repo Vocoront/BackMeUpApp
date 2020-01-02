@@ -3,7 +3,7 @@ const authHeader = () => {
   if (token) {
     return { Authorization: "Bearer " + token };
   } else {
-    return {};
+    return undefined;
   }
 };
 

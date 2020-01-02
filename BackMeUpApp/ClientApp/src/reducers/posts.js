@@ -39,6 +39,8 @@ const postsReducer = (state = defaulState, action) => {
       return addNextPage(action.posts, state);
     case "INCREMENT_PAGE":
       return { ...state, page: state.page + 1 };
+    case "RESET_POSTS":
+      return defaulState;
     default:
       return state;
   }

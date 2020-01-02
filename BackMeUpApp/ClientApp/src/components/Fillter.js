@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { setFilter, setOrder } from "../actions/filter";
-import {getPosts} from '../services/postObtaining';
+import { getPosts } from "../services/postObtaining";
 class Filter extends Component {
   constructor(props) {
     super(props);
@@ -10,14 +10,44 @@ class Filter extends Component {
   render() {
     return (
       <div className="filter">
-        <button onClick={() => {this.props.dispatch(setFilter('date'))}}>Date</button>
-        <button onClick={() => {this.props.dispatch(setFilter('likes'))}}>Likes</button>
-        <button onClick={() => {this.props.dispatch(setOrder('asc'))}}>ASC</button>
-        <button onClick={() => {this.props.dispatch(setOrder("desc"))}}>DESC</button>
-        <button onClick={()=>{getPosts()}}>Filter</button>
+        <div className="filter__filter">
+          <select
+            value={this.props.filter.filter}
+            onChange={e => {
+              this.props.dispatch(setFilter(e.target.value));
+            }}
+          >
+            <option value="date">Date</option>
+            <option value="likes">Likes</option>
+          </select>
+        </div>
+        <div className="filter__order">
+          <select
+            value={this.props.filter.order}
+            onChange={e => {
+              this.props.dispatch(setOrder(e.target.value));
+            }}
+          >
+            <option value="asc">Asc</option>
+            <option value="desc">Desc</option>
+          </select>
+        </div>
+        <div className="fillter__button">
+          <button
+            onClick={() => {
+              getPosts(false);
+            }}
+          >
+            Filter
+          </button>
+        </div>
       </div>
     );
   }
 }
 
-export default connect()(Filter);
+const mapStateToProps = state => ({
+  filter: state.filter
+});
+
+export default connect(mapStateToProps)(Filter);

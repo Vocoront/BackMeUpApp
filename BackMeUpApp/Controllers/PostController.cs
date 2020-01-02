@@ -115,10 +115,21 @@ namespace BackMeUpApp.Controllers
         }
 
 
-        [HttpPost("getposts")]
+        [HttpPost
+            ]
         public async Task<IActionResult> GetPosts1([FromForm]FiltersDto filter)
         {
-            var posts = await _rep.GetPosts1(filter);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+
+            IEnumerable<PostForDisplayDto> posts;
+            if (usernameClaim != null)
+                posts = await _rep.GetPostsForUserAsync(filter,usernameClaim.Value);
+            else
+                posts = await _rep.GetPostsAsync(filter);
             return Ok(posts);
         }
 

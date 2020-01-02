@@ -32,6 +32,7 @@ namespace BackMeUpApp.Repository
             post.Text = post.Text.Replace("\\", @"\u005c")// da se dodaju escape karakteri za znakove, ako nadjete jos neki dodajte
                 .Replace("\"", @"\u0022")
                 .Replace("'", @"\u0027");
+
             IEnumerable<Node<Post>> ret = await this._client.Cypher.Match("(u:User)")
                 .Where((User u)=>u.Username==username)
                 .Create("(p:Post { Title:'"+post.Title+"', " +"Text:'" +post.Text+ "', CreatedAt: datetime('" + DateTime.UtcNow.ToString("yyyy-MM-ddTHH:mm:ss") + "') })")
@@ -356,20 +357,25 @@ namespace BackMeUpApp.Repository
             };
 
         }
-
-        public async Task<IEnumerable<PostForDisplayDto>> GetPosts1(FiltersDto filter)
+        
+        protected string GetOrderQuery(string filter,string order)
         {
-            string orderQuery="";
-            
-                if (filter.Filter.Equals("date"))
-                    orderQuery="post.CreatedAt";
-                else
-                    orderQuery="agrNo";
-            if (filter.Order.Equals("asc"))
+            string orderQuery = "";
+
+            if (filter.Equals("date"))
+                orderQuery = "post.CreatedAt";
+            else
+                orderQuery = "agrNo";
+            if (order.Equals("asc"))
                 orderQuery += " ASC";
             else
                 orderQuery += " DESC";
+            return orderQuery;
+        }
 
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(FiltersDto filter)
+        {
+            string orderQuery=GetOrderQuery(filter.Filter,filter.Order);
 
             var query = this._client.
                 Cypher
@@ -383,7 +389,7 @@ namespace BackMeUpApp.Repository
                 .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
                 .With("post,creator,tag,CommentNo,count(agr) as agrNo")
                 .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
-                .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo, CommentNo+agrNo as sum ")
+                .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo")
                 .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
@@ -396,9 +402,54 @@ namespace BackMeUpApp.Repository
                     CommentNo = CommentNo.As<int>(),
                     AgreeNo = (int)agrNo.As<int>(),
                     DisagreeNo = (int)dagrNo.As<int>()
-                }).OrderBy(orderQuery)
+                })
+                .OrderBy(orderQuery)
                 .Skip(filter.Page * filter.Limit)
                 .Limit(filter.Limit);
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsForUserAsync(FiltersDto filter, string username)
+        {
+            string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
+
+            var query = this._client.
+                Cypher
+                .Match("(post:Post)")
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .Match($"(user:User)")
+                .Where((User user)=>user.Username==username)
+                .With("post,creator,user")
+                .OptionalMatch("(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,user,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,user,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,user,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .OptionalMatch("(user)-[choice:Choice]-(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo,dagrNo,choice, Exists((user)-[:Follow]-(post)) as follow")
+                .Return((post, creator,tag, id, CommentNo, agrNo, dagrNo,choice,follow) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    Choice = choice.As<Choice>().Opinion,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>(),
+                    Follow = follow.As<bool>()
+                })
+                .OrderBy(orderQuery)
+                .Skip(filter.Page * filter.Limit)
+                .Limit(filter.Limit);
+
             var results = await query.ResultsAsync;
 
             return results;

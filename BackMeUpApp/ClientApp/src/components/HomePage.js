@@ -2,10 +2,6 @@ import React, { Component } from "react";
 import PostList from "./PostList";
 import { connect } from "react-redux";
 import { setPosts, addPosts, incrementPage } from "../actions/posts";
-import Dropdown from "react-bootstrap/Dropdown";
-import ButtonToolbar from "react-bootstrap/ButtonToolbar";
-import DropdownButton from "react-bootstrap/DropdownButton";
-import store from "../reducers/tag";
 import Button from "react-bootstrap/Button";
 import Fillter from "./Fillter";
 import { getPosts } from "../services/postObtaining";
@@ -22,10 +18,7 @@ class HomePage extends Component {
     };
 
     this.GetPosts = this.GetPosts.bind(this);
-    //this.renderSortDropDown = this.renderSortDropDown.bind(this);
-    this.sortByPopularity = this.sortByPopularity.bind(this);
-    this.sortByNewest = this.sortByNewest.bind(this);
-    this.sortByControversial = this.sortByControversial.bind(this);
+
     this.filterPosts = this.filterPosts.bind(this);
     this.resetPage = this.resetPage.bind(this);
 
@@ -33,18 +26,19 @@ class HomePage extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.username !== prevProps.username) {
+      this.GetPosts();
+    }
     if (
-      this.props.tag != prevProps.tag &&
-      !(typeof this.props.tag == "undefined")
+      this.props.tag !== prevProps.tag &&
+      !(typeof this.props.tag === "undefined")
     ) {
       this.GetPosts();
     }
-    if (this.props.filter != prevProps.filter) {
-      //this.setState({ tmpPage: 0, nextPageBtnVisible: true });
+    if (this.props.filter !== prevProps.filter) {
       console.log("staro stanje " + this.state.tmpPage);
       this.resetPage();
       console.log("novo stanje " + this.state.tmpPage);
-      //this.filterPosts();
     }
   }
 
@@ -55,9 +49,8 @@ class HomePage extends Component {
     });
   };
 
-  GetPosts() {
-    getPosts();
-    this.props.dispatch(incrementPage());
+  GetPosts(nextPage=false) {
+    getPosts(nextPage);
   }
   GetPosts1() {
     console.log(
@@ -77,7 +70,7 @@ class HomePage extends Component {
         .then(data => {
           console.log("preuzeto postova: " + Object.keys(data).length);
           console.log(data);
-          if (this.state.tmpPage == 0) {
+          if (this.state.tmpPage === 0) {
             this.props.dispatch(setPosts(data));
             this.setState({ tmpPage: this.state.tmpPage + 1 });
           } else {
@@ -107,54 +100,7 @@ class HomePage extends Component {
   }
 
   filterPosts() {
-    this.GetPosts();
-  }
-
-  sortByPopularity() {
-    this.setState({ sortBy: 2, tmpPage: 0 });
-    console.log("izmenjeno");
-    // let sortedPosts = this.props.posts;
-    // sortedPosts.sort((a, b) => {
-    //   let sumaA = a.commentNo + a.agreeNo + a.disagreeNo;
-    //   let sumaB = b.commentNo + b.agreeNo + b.disagreeNo;
-    //   if (sumaA > sumaB) {
-    //     return -1;
-    //   }
-    //   if (sumaB > sumaA) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
-    // this.setState({ posts: this.props.posts });
-  }
-  sortByNewest() {
-    this.setState({ sortBy: 1, tmpPage: 0 });
-    // let sortedPosts = this.props.posts;
-    // sortedPosts.sort((a, b) => {
-    //   if (a.createdAt > b.createdAt) {
-    //     return -1;
-    //   }
-    //   if (b.createdAt > a.createdAt) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
-    // this.setState({ posts: this.props.posts });
-  }
-
-  sortByControversial() {
-    this.setState({ sortBy: 3, tmpPage: 0 });
-    // let sortedPosts = this.props.posts;
-    // sortedPosts.sort((a, b) => {
-    //   if (a.disagreeNo > b.disagreeNo) {
-    //     return -1;
-    //   }
-    //   if (b.disagreeNo > a.disagreeNo) {
-    //     return 1;
-    //   }
-    //   return 0;
-    // });
-    // this.setState({ posts: this.props.posts });
+    // this.GetPosts();
   }
 
   render() {
@@ -169,14 +115,13 @@ class HomePage extends Component {
       >
         <Fillter />
 
-        {/* <div className="sortButtonDiv">{this.renderSortDropDown()}</div> */}
         <PostList posts={this.props.posts} />
         {this.state.nextPageBtnVisible ? (
           <Button
             variant="outline-secondary"
             onClick={() => {
-              console.log(this.state.tmpPage);
-              this.GetPosts();
+              this.props.dispatch(incrementPage());
+              this.GetPosts(true);
             }}
           >
             <i className="fas fa-plus"></i>
@@ -192,6 +137,7 @@ class HomePage extends Component {
 const mapStateToProps = state => ({
   posts: state.posts.posts,
   token: state.user.token,
+  username: state.user.username,
   tag: state.tag.tag,
   filter: state.tag.filter
 });
