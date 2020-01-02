@@ -23,48 +23,12 @@ namespace BackMeUpApp.Controllers
         {
             _rep = rep;
         }
-        [HttpGet("getFrom/{startPage}/{sortBy}")] //sortBy 1 za newest-defult; 2-popular; 3-controversial
-        public async Task<IActionResult> GetPosts(int startPage, String sortBy)
-        {
-            int sort=1;
-            if (sortBy == "MostPopular")
-                sort = 2;
-            else 
-            if (sortBy == "Controversial")
-                sort = 3;
-
-            var identity = HttpContext.User.Identity as ClaimsIdentity;
-            IEnumerable<Claim> claim = identity.Claims;
-            var usernameClaim = claim
-                .Where(x => x.Type == ClaimTypes.Name)
-                .FirstOrDefault();
-           
-            IEnumerable<PostForDisplayDto> posts;
-            if (usernameClaim != null)
-                posts = await _rep.GetPostsAsync(usernameClaim.Value);
-            else
-                posts=await _rep.GetPostsAsync(startPage, sort);
-            return Ok(posts);
-        }
+        
         [HttpGet ("getPostById/{postId}")]
         public async Task<IActionResult> GetPostById(int postId)
         {
             PostForDisplayDto post= await _rep.GetPostsByIdAsync(postId);
             return Ok(post);
-        }
-
-        [HttpGet("getPostByTagUsername/{username}/{tag}")]
-        public async Task<IActionResult> GetPostByTagUsername(string username,string tag)
-        {
-            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostsByTagUsernameAsync(username, tag);
-            return Ok(posts);
-        }
-
-        [HttpGet("getPostByTag/{tag}")]
-        public async Task<IActionResult> GetPostByTag(string tag)
-        {
-            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostsByTagAsync(tag);
-            return Ok(posts);
         }
 
         [HttpGet("GetCommentsForPost/{postId}")]
@@ -115,9 +79,8 @@ namespace BackMeUpApp.Controllers
         }
 
 
-        [HttpPost
-            ]
-        public async Task<IActionResult> GetPosts1([FromForm]FiltersDto filter)
+        [HttpPost]
+        public async Task<IActionResult> GetPosts([FromForm]FiltersDto filter)
         {
             var identity = HttpContext.User.Identity as ClaimsIdentity;
             IEnumerable<Claim> claim = identity.Claims;
@@ -130,6 +93,38 @@ namespace BackMeUpApp.Controllers
                 posts = await _rep.GetPostsForUserAsync(filter,usernameClaim.Value);
             else
                 posts = await _rep.GetPostsAsync(filter);
+            return Ok(posts);
+        }
+
+        [HttpPost("tag/{tag}")]
+        public async Task<IActionResult> GetPostsWithTag([FromForm]FiltersDto filter,string tag)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            IEnumerable<PostForDisplayDto> posts;
+            if (usernameClaim != null)
+                posts = await _rep.GetPostsWithTagForUserAsync(filter,tag, usernameClaim.Value);
+            else
+                posts = await _rep.GetPostsWithTagAsync(filter,tag);
+            return Ok(posts);
+        }
+
+        [HttpPost("createdby/{createdBy}")]
+        public async Task<IActionResult> GetPostsCreatedBy([FromForm]FiltersDto filter, string createdBy)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            IEnumerable<PostForDisplayDto> posts;
+            if (usernameClaim != null)
+                posts = await _rep.GetPostsCreatedByForUserAsync(filter, createdBy, usernameClaim.Value);
+            else
+                posts = await _rep.GetPostsCreatedByAsync(filter, createdBy);
             return Ok(posts);
         }
 

@@ -1,7 +1,9 @@
 const defaulState = {
   filter: "date",
   order: "desc",
-  period: "day"
+  period: "day",
+  tag: "",
+  creator: ""
 };
 
 const filterReducer = (state = defaulState, action) => {
@@ -12,6 +14,10 @@ const filterReducer = (state = defaulState, action) => {
       return { ...state, order: action.order };
     case "SET_PERIOD":
       return { ...state, period: action.period };
+    case "SET_TAG":
+      return { ...state, tag: action.tag };
+    case "SET_CREATOR":
+      return { ...state, creator: action.creator };
     default:
       return state;
   }

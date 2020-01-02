@@ -13,4 +13,14 @@ const setPeriod = (period = "day") => ({
   period
 });
 
-export { setFilter, setOrder, setPeriod };
+const setTag = (tag = "") => ({
+  type: "SET_TAG",
+  tag
+});
+
+const setCreator = (creator = "") => ({
+  type: "SET_CREATOR",
+  creator
+});
+
+export { setFilter, setOrder, setPeriod, setTag, setCreator };

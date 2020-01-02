@@ -23,8 +23,6 @@ const setPostFollow = (postId, follow, state) => {
 
 const addNextPage = (newposts, state) => {
   let newPosts = state.posts.concat(newposts);
-  console.log(newPosts);
-
   return { ...state, posts: newPosts };
 };
 

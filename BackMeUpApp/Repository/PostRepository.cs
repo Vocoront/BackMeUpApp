@@ -13,7 +13,7 @@ using System.Threading.Tasks;
 
 namespace BackMeUpApp.Repository
 {
-    public class PostRepository : IPostRepository 
+    public class PostRepository : IPostRepository
     {
         private readonly IGraphClient _client;
 
@@ -357,7 +357,6 @@ namespace BackMeUpApp.Repository
             };
 
         }
-        
         protected string GetOrderQuery(string filter,string order)
         {
             string orderQuery = "";
@@ -372,7 +371,6 @@ namespace BackMeUpApp.Repository
                 orderQuery += " DESC";
             return orderQuery;
         }
-
         protected string GetStartDate(string period)
         {
             switch(period)
@@ -382,7 +380,7 @@ namespace BackMeUpApp.Repository
                 case "month": return DateTime.UtcNow.AddMonths(-1).ToString("yyyy-MM-ddTHH:mm:ss");
                 default: return DateTime.UtcNow.AddYears(-2000).ToString("yyyy-MM-ddTHH:mm:ss");
             }
-        }
+        }     
         public async Task<IEnumerable<PostForDisplayDto>> GetPostsAsync(FiltersDto filter)
         {
             string orderQuery=GetOrderQuery(filter.Filter,filter.Order);
@@ -394,7 +392,7 @@ namespace BackMeUpApp.Repository
                 .Where($"post.CreatedAt>=datetime('{startingDate}')")
                 .Match("(post)-[r:CreatedBy]-(creator:User)")
                 .With("post,creator")
-                .OptionalMatch("(post)-[:tagged]-(tag:Tag)")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
                 .With("post,creator,tag")
                 .OptionalMatch("()-[c:Comment]->(post)")
                 .With("post,creator,tag,count(c) as CommentNo")
@@ -427,7 +425,6 @@ namespace BackMeUpApp.Repository
             string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
             string startingDate = GetStartDate(filter.Period);
 
-
             var query = this._client.
                 Cypher
                 .Match("(post:Post)")
@@ -436,7 +433,7 @@ namespace BackMeUpApp.Repository
                 .Match($"(user:User)")
                 .Where((User user)=>user.Username==username)
                 .With("post,creator,user")
-                .OptionalMatch("(post)-[:tagged]-(tag:Tag)")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
                 .With("post,creator,user,tag")
                 .OptionalMatch("()-[c:Comment]->(post)")
                 .With("post,creator,user,tag,count(c) as CommentNo")
@@ -447,6 +444,178 @@ namespace BackMeUpApp.Repository
                 .OptionalMatch("(user)-[choice:Choice]-(post)")
                 .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo,dagrNo,choice, Exists((user)-[:Follow]-(post)) as follow")
                 .Return((post, creator,tag, id, CommentNo, agrNo, dagrNo,choice,follow) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    Choice = choice.As<Choice>().Opinion,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>(),
+                    Follow = follow.As<bool>()
+                })
+                .OrderBy(orderQuery)
+                .Skip(filter.Page * filter.Limit)
+                .Limit(filter.Limit);
+
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsWithTagAsync(FiltersDto filter,string tagFilter)
+        {
+            string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
+            string startingDate = GetStartDate(filter.Period);
+
+            var query = this._client.
+                Cypher
+                .Match("(post:Post)-[:tagged]-(t:Tag)")
+                .Where($"post.CreatedAt>=datetime('{startingDate}') AND t.Title='{tagFilter}'")
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .With("post,creator")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>()
+                })
+                .OrderBy(orderQuery)
+                .Skip(filter.Page * filter.Limit)
+                .Limit(filter.Limit);
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsWithTagForUserAsync(FiltersDto filter,string tagFilter, string username)
+        {
+            string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
+            string startingDate = GetStartDate(filter.Period);
+
+            var query = this._client.
+                Cypher
+               .Match("(post:Post)-[:tagged]-(t:Tag)")
+                .Where($"post.CreatedAt>=datetime('{startingDate}') AND t.Title='{tagFilter}'")
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .Match($"(user:User)")
+                .Where((User user) => user.Username == username)
+                .With("post,creator,user")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,user,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,user,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,user,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .OptionalMatch("(user)-[choice:Choice]-(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo,dagrNo,choice, Exists((user)-[:Follow]-(post)) as follow")
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo, choice, follow) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    Choice = choice.As<Choice>().Opinion,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>(),
+                    Follow = follow.As<bool>()
+                })
+                .OrderBy(orderQuery)
+                .Skip(filter.Page * filter.Limit)
+                .Limit(filter.Limit);
+
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsCreatedByAsync(FiltersDto filter, string createdBy)
+        {
+            string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
+            string startingDate = GetStartDate(filter.Period);
+
+            var query = this._client.
+                Cypher
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .Where($"post.CreatedAt>=datetime('{startingDate}') AND creator.Username='{createdBy}'")
+                .With("post,creator")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>()
+                })
+                .OrderBy(orderQuery)
+                .Skip(filter.Page * filter.Limit)
+                .Limit(filter.Limit);
+            var results = await query.ResultsAsync;
+
+            return results;
+        }
+
+        public async Task<IEnumerable<PostForDisplayDto>> GetPostsCreatedByForUserAsync(FiltersDto filter, string createdBy, string username)
+        {
+            string orderQuery = GetOrderQuery(filter.Filter, filter.Order);
+            string startingDate = GetStartDate(filter.Period);
+
+            var query = this._client.
+                Cypher
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .Where($"post.CreatedAt>=datetime('{startingDate}') AND creator.Username='{createdBy}'")
+                .Match($"(user:User)")
+                .Where((User user) => user.Username == username)
+                .With("post,creator,user")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,user,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,user,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,user,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .OptionalMatch("(user)-[choice:Choice]-(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo,dagrNo,choice, Exists((user)-[:Follow]-(post)) as follow")
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo, choice, follow) => new PostForDisplayDto
                 {
                     Id = id.As<long>(),
                     Text = post.As<Post>().Text,
