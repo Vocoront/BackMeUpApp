@@ -38,7 +38,7 @@ namespace BackMeUpApp
                 configuration.RootPath = "ClientApp/build";
             });
 
-            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misahaker69");
+            GraphClient client = new GraphClient(new Uri("http://localhost:7474/db/data"), "neo4j", "misacringeboy");
             client.Connect();
             services.AddSingleton<IGraphClient>(provider => client);
             services.AddSingleton<IRedisClientsManager>(c =>new RedisManagerPool("127.0.0.1:6379"));
