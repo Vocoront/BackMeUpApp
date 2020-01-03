@@ -5,9 +5,11 @@ import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import ImageCarousel from "./ImageCarousel";
 import { setPostOpinion } from "../actions/posts";
+import { clearFilter } from "../actions/filter";
 import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
 import { follow, unfollow } from "../services/postModification";
 import { setAlert } from "../actions/alert";
+
 class Post extends Component {
   constructor(props) {
     super(props);
@@ -72,7 +74,17 @@ class Post extends Component {
               </div>
               <div>
                 <div>{convertUtcToLocal(this.props.createdAt)}</div>
-                {this.props.creator}
+                <div
+                  className="post__creator"
+                  onClick={event => {
+                    event.stopPropagation();
+                    window.event.cancelBubble = true;
+                    this.props.dispatch(clearFilter());
+                    history.push("/post/creator/" + this.props.creator);
+                  }}
+                >
+                  {this.props.creator}
+                </div>
               </div>
             </div>
             <div

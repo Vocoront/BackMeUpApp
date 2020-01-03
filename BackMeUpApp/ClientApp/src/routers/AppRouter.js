@@ -33,6 +33,8 @@ class AppRouter extends Component {
               {this.props.showAlert && <Alert />}
               <Switch>
                 <Route exact={true} path="/" component={HomePage} />
+                <Route path="/post/creator/:username" component={HomePage} />
+                <Route path="/post/tag/:tag" component={HomePage} />
                 <Route path="/createpost" component={CreatePostPage} />
                 <Route path="/profile" component={ProfilePage} />
                 <Route path="/login" component={LogInPage} />

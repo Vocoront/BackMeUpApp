@@ -10,3 +10,45 @@
   display: flex;
   justify-content: space-around;
 }
+
+.filter__filter {
+  display: flex;
+  margin: $s-size;
+  height: $xs-container-size/2;
+  width: $s-container-size + 1rem;
+  background: #e1eaea;
+  border: 0.1rem solid darken(#c3d5d5, 50%);
+  padding: 0;
+}
+
+.filter__filter-period {
+  display: flex;
+  margin: $s-size;
+  height: $xs-container-size/2;
+  width: $m-container-size;
+  background: #e1eaea;
+  border: 0.1rem solid darken(#c3d5d5, 50%);
+  padding: 0;
+}
+
+.filter__filter__option {
+  flex: 1 1 100%;
+  color: $font-light;
+  font-weight: 300;
+  background: #e1eaea;
+  font-size: $m-font-size;
+  text-align: center;
+  cursor: pointer;
+}
+
+.filter__filter__option:hover {
+  color: darken($font-light, 8%);
+  border-bottom: 0.2rem solid darken(#c3d5d5, 39%);
+  font-weight: 500;
+}
+
+.filter__filter__option--selected {
+  color: white;
+  background: darken(#c3d5d5, 39%);
+  font-weight: 400;
+}

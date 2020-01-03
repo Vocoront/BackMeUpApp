@@ -12,13 +12,18 @@ const getPostsCreatedBy = nextPage => {
   formData.append("page", state.posts.page);
   formData.append("limit", state.posts.limit);
 
-  fetch("api/post/createdby/" + state.filter.creator, {
-    method: "POST",
-    headers: {
-      ...authToken
-    },
-    body: formData
-  })
+  fetch(
+    process.env.REACT_APP_SERVER_DOMAIN +
+      "api/post/createdby/" +
+      state.filter.creator,
+    {
+      method: "POST",
+      headers: {
+        ...authToken
+      },
+      body: formData
+    }
+  )
     .then(res => {
       if (res.status === 200) return res.json();
       store.dispatch(setLoading(false));
@@ -44,13 +49,16 @@ const getPostsWithTag = nextPage => {
   formData.append("page", state.posts.page);
   formData.append("limit", state.posts.limit);
 
-  fetch("api/post/tag/" + state.filter.tag, {
-    method: "POST",
-    headers: {
-      ...authToken
-    },
-    body: formData
-  })
+  fetch(
+    process.env.REACT_APP_SERVER_DOMAIN + "api/post/tag/" + state.filter.tag,
+    {
+      method: "POST",
+      headers: {
+        ...authToken
+      },
+      body: formData
+    }
+  )
     .then(res => {
       if (res.status === 200) return res.json();
       store.dispatch(setLoading(false));
@@ -75,7 +83,7 @@ const getAllPosts = nextPage => {
   formData.append("period", state.filter.period);
   formData.append("page", state.posts.page);
   formData.append("limit", state.posts.limit);
-  fetch("api/post", {
+  fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/post", {
     method: "POST",
     headers: {
       ...authToken

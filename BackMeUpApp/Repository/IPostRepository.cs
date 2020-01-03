@@ -16,7 +16,7 @@ namespace BackMeUpApp.Repository
         Task<IEnumerable<PostForDisplayDto>> GetPostCreatedByAsync(String Username);
         Task<IEnumerable<PostForDisplayDto>> GetPostsByTagUsernameAsync(String Username,String Tag);
         Task<IEnumerable<PostForDisplayDto>> GetPostsByTagAsync(String Tag);
-        Task<Post> AddPostAsync(Post post,string tags,string username, List<IFormFile> images);
+        Task<long> AddPostAsync(Post post,string tags,string username, List<IFormFile> images);
         Task<Choice> AddChoiceAsync(int postId, string username, bool opinion);
         Task<CommentForDisplayDto> AddCommentAsync(int postId, string username, string comment_text);
         Task<PostForDisplayDto> GetPostsByIdAsync(int id);

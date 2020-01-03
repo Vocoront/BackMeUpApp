@@ -5,7 +5,7 @@ import { SetFollows, SetConnection } from "../actions/notification";
 
 const connect = () => {
   let connection = new signalR.HubConnectionBuilder()
-    .withUrl("/messagehub")
+    .withUrl(process.env.REACT_APP_SERVER_DOMAIN + "/messagehub")
     .build();
 
   connection.on("ReceiveMessage", message => {

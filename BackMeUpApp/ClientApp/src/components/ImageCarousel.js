@@ -8,8 +8,8 @@ const ImageCarousel = props => (
         <Carousel.Item key={index}>
           <img
             className="d-bloack w-100 post--img"
-            src={"images/" + url}
-            alt={"images/" + url}
+            src={process.env.REACT_APP_SERVER_DOMAIN + "images/" + url}
+            alt={process.env.REACT_APP_SERVER_DOMAIN + "images/" + url}
           />
         </Carousel.Item>
       ))}

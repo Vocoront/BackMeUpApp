@@ -5,7 +5,7 @@ import { removeTopic, addNewTopics } from "../services/notification";
 const follow = (postId = null) => {
   if (postId === null) return;
   const bearer = authHeader();
-  fetch("api/user/follow/" + postId, {
+  fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/user/follow/" + postId, {
     method: "POST",
     headers: {
       ...bearer
@@ -21,7 +21,7 @@ const follow = (postId = null) => {
 const unfollow = (postId = null) => {
   if (postId === null) return;
   const bearer = authHeader();
-  fetch("api/user/unfollow/" + postId, {
+  fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/user/unfollow/" + postId, {
     method: "POST",
     headers: {
       ...bearer

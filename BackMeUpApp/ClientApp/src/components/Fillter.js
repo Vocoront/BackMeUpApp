@@ -11,48 +11,123 @@ class Filter extends Component {
     return (
       <div className="filter">
         <div className="filter__filter">
-          <select
-            value={this.props.filter.filter}
-            onChange={e => {
-              this.props.dispatch(setFilter(e.target.value));
-            }}
-          >
-            <option value="date">Date</option>
-            <option value="likes">Likes</option>
-          </select>
-        </div>
-        <div className="filter__order">
-          <select
-            value={this.props.filter.order}
-            onChange={e => {
-              this.props.dispatch(setOrder(e.target.value));
-            }}
-          >
-            <option value="asc">Asc</option>
-            <option value="desc">Desc</option>
-          </select>
-        </div>
-        <div className="filter__period">
-          <select
-            value={this.props.filter.period}
-            onChange={e => {
-              this.props.dispatch(setPeriod(e.target.value));
-            }}
-          >
-            <option value="day">Today</option>
-            <option value="week">Week</option>
-            <option value="month">Month</option>
-            <option value="all">All</option>
-          </select>
-        </div>
-        <div className="fillter__button">
-          <button
+          <div
             onClick={() => {
+              if (this.props.filter.filter === "date") return;
+              this.props.dispatch(setFilter("date"));
               getPosts(false);
             }}
+            className={
+              (this.props.filter.filter === "date" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
           >
-            Filter
-          </button>
+            Date
+          </div>
+          <div
+            onClick={() => {
+              if (this.props.filter.filter === "likes") return;
+              this.props.dispatch(setFilter("likes"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.filter === "likes" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            Likes
+          </div>
+        </div>
+        <div className="filter__filter">
+          <div
+            onClick={() => {
+              if (this.props.filter.order === "desc") return;
+              this.props.dispatch(setOrder("desc"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.order === "desc" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            {this.props.filter.filter === "date" ? "New" : "Most"}
+          </div>
+          <div
+            onClick={() => {
+              if (this.props.filter.order === "asc") return;
+              this.props.dispatch(setOrder("asc"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.order === "asc" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            {this.props.filter.filter === "date" ? "Old" : "Least"}
+          </div>
+        </div>
+
+        <div className="filter__filter-period">
+          <div
+            onClick={() => {
+              if (this.props.filter.period === "day") return;
+              this.props.dispatch(setPeriod("day"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.period === "day" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            Today
+          </div>
+          <div
+            onClick={() => {
+              if (this.props.filter.period === "week") return;
+              this.props.dispatch(setPeriod("week"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.period === "week" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            Week
+          </div>
+          <div
+            onClick={() => {
+              if (this.props.filter.period === "month") return;
+              this.props.dispatch(setPeriod("month"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.period === "month" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            Month
+          </div>
+          <div
+            onClick={() => {
+              if (this.props.filter.period === "all") return;
+              this.props.dispatch(setPeriod("all"));
+              getPosts(false);
+            }}
+            className={
+              (this.props.filter.period === "all" &&
+                "filter__filter__option filter__filter__option--selected") ||
+              "filter__filter__option"
+            }
+          >
+            All
+          </div>
         </div>
       </div>
     );

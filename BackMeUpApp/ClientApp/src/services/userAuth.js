@@ -5,6 +5,7 @@ import { setAlert, clearAlert } from "../actions/alert";
 import { setUsername, setToken, deleteToken } from "../actions/user";
 import { DeleteConnection } from "../actions/notification";
 import { resetPosts } from "../actions/posts";
+import { clearFilter } from "../actions/filter";
 import { connect } from "../services/notification";
 import authHeader from "../helpers/authHeader";
 
@@ -107,7 +108,10 @@ const createAcount = async (username, email, password, repassword) => {
   formData.append("password", password);
 
   store.dispatch(clearAlert());
-  return await fetch("api/user/create", { method: "POST", body: formData })
+  return await fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/user/create", {
+    method: "POST",
+    body: formData
+  })
     .then(res => {
       if (res.status === 200) return res.json();
       store.dispatch(
@@ -131,7 +135,10 @@ const loginSubmit = async (username, password) => {
   formData.append("username", username);
   formData.append("password", password);
   store.dispatch(clearAlert());
-  let result = await fetch("api/user/login", { method: "POST", body: formData })
+  let result = await fetch(
+    process.env.REACT_APP_SERVER_DOMAIN + "api/user/login",
+    { method: "POST", body: formData }
+  )
     .then(res => {
       if (res.status === 200) return res.json();
       store.dispatch(setAlert("Couldn't login", "Login failed!"));
@@ -151,7 +158,7 @@ const reconnect = () => {
   const token = authHeader();
 
   if (token) {
-    fetch("api/user/reconnect", {
+    fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/user/reconnect", {
       method: "POST",
       headers: {
         ...token
@@ -174,6 +181,7 @@ const signOut = () => {
   store.dispatch(deleteToken());
   store.dispatch(DeleteConnection());
   store.dispatch(resetPosts());
+  store.dispatch(clearFilter());
 };
 
 export { createAcount, loginSubmit, reconnect, signOut };

@@ -158,12 +158,12 @@ button {
 }
 
 .post__follow-button {
-  color: #4a9fff !important;
+  color: #c3d5d5 !important;
   margin-bottom: $s-size;
   text-transform: uppercase;
   background: #ffffff;
   padding: $s-size;
-  border: 0.4rem solid #4a9fff !important;
+  border: 0.4rem solid #c3d5d5 !important;
   border-radius: 0.6rem;
   display: inline-block;
   transition: all 0.3s ease 0s;
@@ -174,9 +174,17 @@ button {
 }
 
 .post__follow-button:hover {
-  color: #4a9fff !important;
+  color: darken(#c3d5d5, 30%) !important;
   border-radius: 50px;
-  border-color: #4a9fff !important;
+  border-color: darken(#c3d5d5, 30%) !important;
   transition: all 0.3s ease 0s;
   text-decoration: none;
+}
+
+.post__creator {
+  cursor: pointer;
+}
+.post__creator:hover {
+  color: #c3d5d5;
+  letter-spacing: 0.1rem;
 }

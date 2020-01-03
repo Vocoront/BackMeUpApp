@@ -23,4 +23,8 @@ const setCreator = (creator = "") => ({
   creator
 });
 
-export { setFilter, setOrder, setPeriod, setTag, setCreator };
+const clearFilter = () => ({
+  type: "CLEAR_FILTER"
+});
+
+export { setFilter, setOrder, setPeriod, setTag, setCreator, clearFilter };

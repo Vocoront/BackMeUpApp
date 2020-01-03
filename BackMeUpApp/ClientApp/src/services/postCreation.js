@@ -1,7 +1,7 @@
 import store from "../store/configureStore";
 import authHeader from "../helpers/authHeader";
 import { setAlert, clearAlert } from "../actions/alert";
-
+import { follow } from "./postModification";
 const validateFiles = files => {
   if (files.length === 0) return true;
   if (files.length > 5) {
@@ -56,7 +56,7 @@ const addNewPost = async (creator, title, text, tags, files) => {
   if (!validateNewPost(title, text)) return;
   if (!validateFiles(files)) return;
   tags = tags.replace(/\s/g, "");
-  tags = tags.replace(/\,/g, "");
+  tags = tags.replace(/,/g, "");
   tags = tags.toLowerCase();
   const formData = new FormData();
   formData.append("Title", title);
@@ -66,7 +66,7 @@ const addNewPost = async (creator, title, text, tags, files) => {
   formData.append("Username", creator);
   store.dispatch(clearAlert());
   let bearer = authHeader();
-  return await fetch("api/post/create", {
+  return await fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/post/create", {
     method: "POST",
     body: formData,
     headers: { ...bearer }
@@ -79,6 +79,7 @@ const addNewPost = async (creator, title, text, tags, files) => {
       throw new Error("Post creation failed");
     })
     .then(data => {
+      follow(data);
       return true;
     })
     .catch(er => console.log(er));

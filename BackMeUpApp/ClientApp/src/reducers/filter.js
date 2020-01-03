@@ -18,6 +18,8 @@ const filterReducer = (state = defaulState, action) => {
       return { ...state, tag: action.tag };
     case "SET_CREATOR":
       return { ...state, creator: action.creator };
+    case "CLEAR_FILTER":
+      return defaulState;
     default:
       return state;
   }

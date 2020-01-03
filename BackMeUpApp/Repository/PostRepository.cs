@@ -27,7 +27,7 @@ namespace BackMeUpApp.Repository
             _notificationService = notificationService;
        
         }
-        public async Task<Post> AddPostAsync(Post post,string postTags,string username, List<IFormFile> images)
+        public async Task<long> AddPostAsync(Post post,string postTags,string username, List<IFormFile> images)
         {
             post.Text = post.Text.Replace("\\", @"\u005c")// da se dodaju escape karakteri za znakove, ako nadjete jos neki dodajte
                 .Replace("\"", @"\u0022")
@@ -62,7 +62,7 @@ namespace BackMeUpApp.Repository
                     
                 }
             }
-            return pom.Data;
+            return pom.Reference.Id;
         }
         public async Task<IEnumerable<PostForDisplayDto>> GetPostCreatedByAsync(string Username)
         {
@@ -357,6 +357,7 @@ namespace BackMeUpApp.Repository
             };
 
         }
+        
         protected string GetOrderQuery(string filter,string order)
         {
             string orderQuery = "";

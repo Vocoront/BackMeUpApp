@@ -6,7 +6,6 @@
   background: white;
   color: black;
   box-shadow: 0 1rem 2rem rgba(0, 0, 0, 0.3);
-  border-radius: 25px;
   overflow-y: scroll;
 }
 
@@ -17,8 +16,7 @@
 
 .notification-container__message {
   font-size: $m-font-size;
-  border: 1px solid black;
-  border-radius: 25px;
+  border-bottom: 1px solid black;
   padding-top: $s-size;
   padding-right: $m-size;
   padding-left: $m-size;

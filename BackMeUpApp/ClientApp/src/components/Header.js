@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { NavLink } from "react-router-dom";
 import Navbar from "react-bootstrap/Navbar";
 import { connect } from "react-redux";
+import { clearFilter } from "../actions/filter";
 import { signOut } from "../services/userAuth";
 
 class Header extends Component {
@@ -28,6 +29,7 @@ class Header extends Component {
           className="header__navlink"
           exact={true}
           activeClassName="header__navlink--is-active"
+          onClick={() => this.props.dispatch(clearFilter())}
           to="/"
         >
           Home
@@ -38,6 +40,7 @@ class Header extends Component {
             <NavLink
               className="header__navlink"
               activeClassName="header__navlink--is-active"
+              onClick={() => this.props.dispatch(clearFilter())}
               to="/profile"
             >
               Profile
@@ -45,6 +48,7 @@ class Header extends Component {
             <NavLink
               className="header__navlink"
               activeClassName="header__navlink--is-active"
+              onClick={() => this.props.dispatch(clearFilter())}
               to="/createpost"
             >
               Create Post
