@@ -1,9 +1,11 @@
 import { createStore, combineReducers, compose } from "redux";
-import userReducer from "../reducers/user";
-import postsReducer from "../reducers/posts";
-import notificationReducer from "../reducers/notification";
 import alertReducer from "../reducers/alert";
 import filterReducer from "../reducers/filter";
+import extendedPostReducer from "../reducers/extendedPost";
+import notificationReducer from "../reducers/notification";
+import postsReducer from "../reducers/posts";
+import userReducer from "../reducers/user";
+
 const enhancers = compose(
   window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
 );
@@ -13,7 +15,8 @@ const store = createStore(
     posts: postsReducer,
     notification: notificationReducer,
     alert: alertReducer,
-    filter: filterReducer
+    filter: filterReducer,
+    extendedPost: extendedPostReducer
   }),
   enhancers
 );

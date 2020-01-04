@@ -38,7 +38,7 @@ class AppRouter extends Component {
                 <Route path="/createpost" component={CreatePostPage} />
                 <Route path="/profile" component={ProfilePage} />
                 <Route path="/login" component={LogInPage} />
-                <Route path="/extendedPost/:id" component={ExtendedPost} />
+                <Route path="/post/id/:id" component={ExtendedPost} />
                 <Route component={NotFoundPage} />
               </Switch>
             </div>

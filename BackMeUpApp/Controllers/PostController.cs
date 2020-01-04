@@ -31,13 +31,6 @@ namespace BackMeUpApp.Controllers
             return Ok(post);
         }
 
-        [HttpGet("GetCommentsForPost/{postId}")]
-        public async Task<IActionResult> GetCommentsForPost(int postId)
-        {
-
-            IEnumerable < CommentForDisplayDto > comments = await _rep.GetCommentsForPost(postId);
-            return Ok(comments);
-        }
         [HttpGet("createdby/{username}")]
         public async Task<IActionResult> GetPostCreatedBy(String username)
         {
@@ -125,6 +118,30 @@ namespace BackMeUpApp.Controllers
             else
                 posts = await _rep.GetPostsCreatedByAsync(filter, createdBy);
             return Ok(posts);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetPostFromId(int id)
+        {
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            PostForDisplayDto post;
+            if (usernameClaim != null)
+                post = await _rep.GetPostByIdForUserAsync(id, usernameClaim.Value);
+            else
+                post = await _rep.GetPostByIdAsync(id);
+            return Ok(post);
+        }
+
+
+        [HttpGet("comments/{postId}")]
+        public async Task<IActionResult> GetCommentsForPost(int postId)
+        {
+            IEnumerable<CommentForDisplayDto> comments = await _rep.GetCommentsForPost(postId);
+            return Ok(comments);
         }
 
     }

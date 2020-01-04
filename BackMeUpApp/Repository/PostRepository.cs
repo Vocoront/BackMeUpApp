@@ -312,7 +312,7 @@ namespace BackMeUpApp.Repository
                        Username = u.As<User>().Username,
                        CreatedAt=c.As<Comment>().CreatedAt
                    }
-                   );
+                   ).OrderBy("c.CreatedAt");
             var results = await query.ResultsAsync;
             return results;
         }
@@ -638,6 +638,83 @@ namespace BackMeUpApp.Repository
             var results = await query.ResultsAsync;
 
             return results;
+        }
+
+        public async Task<PostForDisplayDto> GetPostByIdAsync(int postId)
+        {
+
+            var query = this._client.
+                Cypher
+                .Match("(post:Post)")
+                .Where($"id(post)={postId}")
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .With("post,creator")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>()
+                });
+            var results = await query.ResultsAsync;
+
+            return results.First();
+        }
+
+        public async Task<PostForDisplayDto> GetPostByIdForUserAsync(int postId, string username)
+        {
+
+            var query = this._client.
+                Cypher
+                .Match("(post:Post)")
+                .Where($"id(post)={postId}")
+                .Match("(post)-[r:CreatedBy]-(creator:User)")
+                .Match($"(user:User)")
+                .Where((User user) => user.Username == username)
+                .With("post,creator,user")
+                .OptionalMatch($"(post)-[:tagged]-(tag:Tag)")
+                .With("post,creator,user,tag")
+                .OptionalMatch("()-[c:Comment]->(post)")
+                .With("post,creator,user,tag,count(c) as CommentNo")
+                .OptionalMatch("()-[agr:Choice {Opinion: \"agree\"}]->(post)")
+                .With("post,creator,user,tag,CommentNo,count(agr) as agrNo")
+                .OptionalMatch("()-[dagr:Choice {Opinion: \"disagree\"}]->(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo, count(dagr) as dagrNo")
+                .OptionalMatch("(user)-[choice:Choice]-(post)")
+                .With("id(post) as id,post,creator,user,tag,CommentNo,agrNo,dagrNo,choice, Exists((user)-[:Follow]-(post)) as follow")
+                .Return((post, creator, tag, id, CommentNo, agrNo, dagrNo, choice, follow) => new PostForDisplayDto
+                {
+                    Id = id.As<long>(),
+                    Text = post.As<Post>().Text,
+                    Creator = creator.As<User>().Username,
+                    Title = post.As<Post>().Title,
+                    Tags = tag.CollectAsDistinct<Tag>(),
+                    CreatedAt = post.As<Post>().CreatedAt,
+                    Choice = choice.As<Choice>().Opinion,
+                    ImageUrls = post.As<Post>().ImageUrls,
+                    CommentNo = CommentNo.As<int>(),
+                    AgreeNo = (int)agrNo.As<int>(),
+                    DisagreeNo = (int)dagrNo.As<int>(),
+                    Follow = follow.As<bool>()
+                });
+
+            var results = await query.ResultsAsync;
+
+            return results.First();
         }
     }
 }

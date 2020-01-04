@@ -3,13 +3,13 @@ import { AwesomeButton } from "react-awesome-button";
 import { connect } from "react-redux";
 import Form from "react-bootstrap/Form";
 import Comment from "./Comment";
-import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
+import Post from "./Post";
+import { getPostById, getCommentsForPost } from "../services/postObtaining";
+
 class ExtendedPost extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
-      post: "",
       allComments: "",
       comment: ""
     };
@@ -30,24 +30,10 @@ class ExtendedPost extends Component {
     }
   }
   GetPost() {
-    let putanja = " /api/post/getPostById/" + this.props.match.params.id; // ovde mora / pre api !!!
-    fetch(putanja, { method: "GET" })
-      .then(res => res.json())
-      .then(data => {
-        this.setState((state, props) => ({ post: data }));
-      })
-      .catch(er => console.log(er));
+    getPostById(this.props.match.params.id);
   }
   GetAllComments() {
-    let putanja = " /api/post/GetCommentsForPost/" + this.props.match.params.id; // ovde mora / pre api !!!
-    fetch(putanja, { method: "GET" })
-      .then(res => res.json())
-      .then(data => {
-        console.log(data);
-        this.setState((state, props) => ({ allComments: data }));
-        this.setState((state, props) => ({ loading: false }));
-      })
-      .catch(er => console.log(er));
+    getCommentsForPost(this.props.match.params.id);
   }
 
   CommentOnChageHandler(evt) {
@@ -62,59 +48,80 @@ class ExtendedPost extends Component {
     fetch("/api/post/make_comment", { method: "POST", body: formData })
       .then(res => res.json())
       .then(data => {
-        this.props.history.push("/");
+        this.GetAllComments();
       })
       .catch(er => console.log(er));
   }
 
   render() {
     return (
-      <div className="post extPost">
-        <div className="post__header">
-          <div className="post__title">{this.state.post.title}</div>
-          <div>
-            <div>{convertUtcToLocal(this.state.post.createdAt)}</div>
-            {this.state.post.username}
-          </div>
-        </div>
-        <Form className="newComment">
-          <Form.Group controlId="exampleForm.ControlTextarea1">
-            <Form.Control
-              as="textarea"
-              rows="4"
-              name="comment"
-              onChange={this.CommentOnChageHandler}
+      <div>
+        {this.props.extendedPost.loading === true ? (
+          <div className="loader">Loading...</div>
+        ) : (
+          this.props.extendedPost.post !== {} && (
+            <Post
+              extended={true}
+              title={this.props.extendedPost.post.title}
+              creator={this.props.extendedPost.post.creator}
+              content={this.props.extendedPost.post.text}
+              postId={this.props.extendedPost.post.id}
+              tags={this.props.extendedPost.post.tags}
+              createdAt={this.props.extendedPost.post.createdAt}
+              choice={this.props.extendedPost.post.choice}
+              imageUrls={this.props.extendedPost.post.imageUrls}
+              commentNo={this.props.extendedPost.post.commentNo}
+              agreeNo={this.props.extendedPost.post.agreeNo}
+              disagreeNo={this.props.extendedPost.post.disagreeNo}
+              follow={this.props.extendedPost.post.follow}
             />
-          </Form.Group>
-        </Form>
-        <AwesomeButton size="large" type="link" onPress={this.AddComment}>
-          {" "}
-          Add Comment{" "}
-        </AwesomeButton>
+          )
+        )}
 
-        <div className="commentSection">
-          <h2>Comment section</h2>
-          {this.state.loading ? (
-            <div className="loader">Loading...</div>
-          ) : (
-            <div className="PostComments">
-              {this.state.allComments.map((comment, index) => {
-                return (
-                  <Comment
-                    key={index}
-                    username={comment.username}
-                    text={comment.text}
-                    createdAt={comment.createdAt}
-                  />
-                );
-              })}
+        {this.props.extendedPost.commentsLoading ? (
+          <div className="loader">Loading...</div>
+        ) : (
+          <div className="post extPost">
+            <Form className="newComment">
+              <Form.Group controlId="exampleForm.ControlTextarea1">
+                <Form.Control
+                  as="textarea"
+                  rows="4"
+                  name="comment"
+                  onChange={this.CommentOnChageHandler}
+                />
+              </Form.Group>
+            </Form>
+            <AwesomeButton size="large" type="link" onPress={this.AddComment}>
+              {" "}
+              Add Comment{" "}
+            </AwesomeButton>
+
+            <div className="commentSection">
+              <h2>Comment section</h2>
+
+              <div className="PostComments">
+                {this.props.extendedPost.comments.map((comment, index) => {
+                  return (
+                    <Comment
+                      key={index}
+                      username={comment.username}
+                      text={comment.text}
+                      createdAt={comment.createdAt}
+                    />
+                  );
+                })}
+              </div>
             </div>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     );
   }
 }
-const mapStateToProps = state => ({ user: state.user });
+const mapStateToProps = state => ({
+  user: state.user,
+  extendedPost: state.extendedPost
+});
 
 export default connect(mapStateToProps)(ExtendedPost);

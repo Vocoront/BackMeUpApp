@@ -53,7 +53,10 @@ class Post extends Component {
         render={({ history }) => (
           <div
             className="post post__container"
-            onClick={() => history.push("/extendedPost/" + this.props.postId)}
+            onClick={() => {
+              if (this.props.extended) return;
+              history.push("/post/id/" + this.props.postId);
+            }}
           >
             <div className="post__header">
               <div className="post__title">
@@ -94,7 +97,16 @@ class Post extends Component {
               }}
               className="post__content"
             >
-              {ulrArray[0] !== "" ? (
+              {this.props.extended ? (
+                ulrArray[0] !== "" ? (
+                  <div className="post__text-content">
+                    <ImageCarousel imageUrls={ulrArray} />
+                    {this.props.content}
+                  </div>
+                ) : (
+                  <div className="post__text-content">{this.props.content}</div>
+                )
+              ) : ulrArray[0] !== "" ? (
                 <ImageCarousel imageUrls={ulrArray} />
               ) : (
                 <div className="post__text-content">{this.props.content}</div>

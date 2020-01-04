@@ -1,7 +1,12 @@
 import authHeader from "../helpers/authHeader";
 import store from "../store/configureStore";
 import { setPosts, addPosts, resetPosts, setLoading } from "../actions/posts";
-
+import {
+  setPost,
+  setExtendedLoading,
+  setPostComments,
+  setCommentLoading
+} from "../actions/extendedPost";
 const getPostsCreatedBy = nextPage => {
   const state = store.getState();
   const authToken = authHeader();
@@ -118,4 +123,38 @@ const getPosts = (nextPage = false) => {
   }
 };
 
-export { getPosts };
+const getPostById = (id = undefined) => {
+  if (!id) return;
+  store.dispatch(setExtendedLoading(true));
+  fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/post/" + id, {
+    method: "GET"
+  })
+    .then(res => {
+      if (res.status === 200) return res.json();
+      store.dispatch(setLoading(false));
+      throw new Error("Failed to obtain post");
+    })
+    .then(data => {
+      store.dispatch(setPost(data));
+      store.dispatch(setExtendedLoading(false));
+    })
+    .catch(er => {
+      store.dispatch(setExtendedLoading(false));
+      console.log(er);
+    });
+};
+
+const getCommentsForPost = (id = undefined) => {
+  if (!id) return;
+  let putanja = process.env.REACT_APP_SERVER_DOMAIN + "api/post/comments/" + id;
+  store.dispatch(setCommentLoading(true));
+  fetch(putanja, { method: "GET" })
+    .then(res => res.json())
+    .then(data => {
+      store.dispatch(setPostComments(data));
+      store.dispatch(setCommentLoading(false));
+    })
+    .catch(er => console.log(er));
+};
+
+export { getPosts, getPostById, getCommentsForPost };
