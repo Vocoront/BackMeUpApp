@@ -4,13 +4,17 @@ import PostList from "./PostList";
 import Fillter from "./Fillter";
 import { getPosts } from "../services/postObtaining";
 import { setCreator, setTag } from "../actions/filter";
+import { setBackHistory } from "../actions/posts";
 class HomePage extends Component {
   constructor(props) {
     super(props);
     this.state = {};
-
     this.GetPosts = this.GetPosts.bind(this);
-    this.GetPosts();
+    if (props.stopLoading && props.posts.length !== 0) {
+      props.dispatch(setBackHistory());
+    } else {
+      this.GetPosts();
+    }
   }
 
   componentDidMount() {
@@ -56,6 +60,7 @@ class HomePage extends Component {
 
 const mapStateToProps = state => ({
   posts: state.posts.posts,
+  stopLoading: state.posts.backHistory,
   token: state.user.token,
   username: state.user.username,
   tag: state.filter.tag

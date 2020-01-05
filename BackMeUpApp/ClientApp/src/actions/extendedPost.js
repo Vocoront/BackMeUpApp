@@ -1,3 +1,5 @@
+import { follow } from "../services/postModification";
+
 export const setPost = (post = {}) => ({
   type: "SET_POST",
   post
@@ -20,4 +22,14 @@ export const setCommentLoading = (loading = false) => ({
 
 export const resetExtendedPost = () => ({
   type: "RESET_EXTENDED_POST"
+});
+
+export const setFollow = (follow = true) => ({
+  type: "SET_EXT_FOLLOW",
+  follow
+});
+
+export const setExtPostOpinion = (choice = "agree") => ({
+  type: "SET_EXT_POST_OPINION",
+  choice
 });

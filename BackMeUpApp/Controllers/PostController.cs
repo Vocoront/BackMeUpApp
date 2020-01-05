@@ -10,6 +10,7 @@ using BackMeUpApp.DTOs;
 using BackMeUpApp.Repository;
 using System.Security.Claims;
 using System.IO;
+using BackMeUpApp.Models;
 
 namespace BackMeUpApp.Controllers
 {
@@ -24,21 +25,6 @@ namespace BackMeUpApp.Controllers
             _rep = rep;
         }
         
-        [HttpGet ("getPostById/{postId}")]
-        public async Task<IActionResult> GetPostById(int postId)
-        {
-            PostForDisplayDto post= await _rep.GetPostsByIdAsync(postId);
-            return Ok(post);
-        }
-
-        [HttpGet("createdby/{username}")]
-        public async Task<IActionResult> GetPostCreatedBy(String username)
-        {
-
-            IEnumerable<PostForDisplayDto> posts = await _rep.GetPostCreatedByAsync(username);
-            return Ok(posts);
-        }
-
         [HttpPost("create")]
         [Authorize]
         public async Task<IActionResult> CreatePost([FromForm]PostForCreationDto newPostDto)
@@ -55,18 +41,38 @@ namespace BackMeUpApp.Controllers
             return Ok(addedPostId); 
         }
         [HttpPost("vote")]
+        [Authorize]
         public async Task<IActionResult> AddNewVote([FromForm] VoteForCreation newVote)
         {
 
-            var ret = await _rep.AddChoiceAsync(newVote.IdPosta, newVote.Username, newVote.Opinion);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+
+            Choice ret;
+            if (usernameClaim != null)
+                ret= await _rep.AddChoiceAsync(newVote.IdPosta, usernameClaim.Value, newVote.Opinion);
+            else
+                return BadRequest();
             return Ok(ret);
 
         }
         [HttpPost("make_comment")]
+        [Authorize]
         public async Task<IActionResult> AddNewComment([FromForm] CommentForCreationDto newComment)
         {
-
-            var ret = await _rep.AddCommentAsync(newComment.IdPosta, newComment.Username, newComment.CommentText);
+            var identity = HttpContext.User.Identity as ClaimsIdentity;
+            IEnumerable<Claim> claim = identity.Claims;
+            var usernameClaim = claim
+                .Where(x => x.Type == ClaimTypes.Name)
+                .FirstOrDefault();
+            CommentForDisplayDto ret;
+            if (usernameClaim != null)
+                ret = await _rep.AddCommentAsync(newComment.IdPosta, usernameClaim.Value, newComment.CommentText);
+            else
+                return BadRequest();
             return Ok(ret);
 
         }
@@ -135,7 +141,6 @@ namespace BackMeUpApp.Controllers
                 post = await _rep.GetPostByIdAsync(id);
             return Ok(post);
         }
-
 
         [HttpGet("comments/{postId}")]
         public async Task<IActionResult> GetCommentsForPost(int postId)

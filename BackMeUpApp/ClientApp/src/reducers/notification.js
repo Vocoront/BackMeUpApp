@@ -25,6 +25,13 @@ const notificationReducer = (state = defaultState, action) => {
       return { ...state, connection: action.connection };
     case "SET_FOLLOWS":
       return { ...state, follows: action.follows };
+    case "ADD_NEW_FOLLOW":
+      return { ...state, follows: state.follows.concat(action.follow) };
+    case "REMOVE_FOLLOW":
+      return {
+        ...state,
+        follows: state.follows.filter(f => f != action.follow)
+      };
     case "SET_CONNECTION_ID": {
       return { ...state, connectionId: action.connectionId };
     }

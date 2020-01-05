@@ -16,9 +16,9 @@ namespace BackMeUpApp.Services
         private readonly IGraphClient _client;
         private readonly IHubContext<MessageHub> _hubContext;
 
-        public NotificationService(IGraphClient client, RedisMessageService redisMessageService,IHubContext<MessageHub> hubContext)
+        public NotificationService(IGraphClientFactory factory, RedisMessageService redisMessageService,IHubContext<MessageHub> hubContext)
         {
-            _client = client;
+            _client = factory.Create();
             _rms = redisMessageService;
             _hubContext = hubContext;
         }

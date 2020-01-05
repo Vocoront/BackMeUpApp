@@ -14,7 +14,7 @@ const NortificationContainer = props => {
             <div className="notification-container__message">
               <div
                 onClick={() =>
-                  history.push("/extendedPost/" + notification.postId)
+                  history.push("/post/id/" + notification.postId)
                 }
               >
                 <div className="notification-container__created-at">

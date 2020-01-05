@@ -15,6 +15,19 @@ const extendedPostReducer = (state = defaulState, action) => {
       return { ...state, loading: action.loading };
     case "SET_COMMENT_LOADING":
       return { ...state, commentsLoading: action.loading };
+    case "SET_EXT_FOLLOW":
+      return { ...state, post: { ...state.post, follow: action.follow } };
+    case "SET_EXT_POST_OPINION": {
+      if (action.choice === "agree") {
+        state.post.agreeNo++;
+        if (state.post.choice === "disagree") state.post.disagreeNo--;
+      } else {
+        if (state.post.choice === "agree") state.post.agreeNo--;
+        state.post.disagreeNo++;
+      }
+      return { ...state, post: { ...state.post, choice: action.choice } };
+    }
+
     case "RESET_EXTENDED_POST":
       return defaulState;
     default:

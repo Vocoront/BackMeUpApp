@@ -1,7 +1,12 @@
 import * as signalR from "@aspnet/signalr";
 import store from "../store/configureStore";
 import authHeader from "../helpers/authHeader";
-import { SetFollows, SetConnection } from "../actions/notification";
+import {
+  SetFollows,
+  SetConnection,
+  AddNewFollow,
+  RemoveFollow
+} from "../actions/notification";
 
 const connect = () => {
   let connection = new signalR.HubConnectionBuilder()
@@ -30,26 +35,33 @@ const connect = () => {
 
 const addNewTopics = topics => {
   const state = store.getState();
+  store.dispatch(AddNewFollow(topics));
   state.notification.connection.invoke("AddGroups", topics);
 };
 
 const removeTopic = topic => {
   const state = store.getState();
+  store.dispatch(RemoveFollow(topic));
+
   state.notification.connection.invoke("RemoveFromGroup", topic);
 };
 
 const getFollows = () => {
   const state = store.getState();
   const token = authHeader();
-  fetch("api/user/follows/" + state.notification.connectionId, {
-    method: "GET",
-    headers: {
-      ...token
+  fetch(
+    process.env.REACT_APP_SERVER_DOMAIN +
+      "api/user/follows/" +
+      state.notification.connectionId,
+    {
+      method: "GET",
+      headers: {
+        ...token
+      }
     }
-  })
+  )
     .then(res => res.json())
     .then(data => {
-      console.log(data);
       store.dispatch(SetFollows(data));
       addNewTopics(data);
     })

@@ -1,19 +1,21 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { Route } from "react-router-dom";
-import { AwesomeButton } from "react-awesome-button";
 import Tag from "./Tag.js";
 import ImageCarousel from "./ImageCarousel";
 import { setPostOpinion } from "../actions/posts";
 import { clearFilter } from "../actions/filter";
 import { convertUtcToLocal } from "../helpers/convertUtcToLocal";
-import { follow, unfollow } from "../services/postModification";
+import { follow, unfollow, addOpinion } from "../services/postModification";
 import { setAlert } from "../actions/alert";
 
 class Post extends Component {
   constructor(props) {
     super(props);
-    this.state = {};
+    this.state = {
+      loadFollowing: false,
+      loadChoice: false
+    };
     this.AddOpinion = this.AddOpinion.bind(this);
     this.GetImageUrlsArray = this.GetImageUrlsArray.bind(this);
   }
@@ -25,7 +27,7 @@ class Post extends Component {
     return array;
   };
 
-  AddOpinion(opinion, boolOpinion) {
+  async AddOpinion(opinion, boolOpinion) {
     if (!this.props.user.username) {
       this.props.dispatch(
         setAlert("You are not logged in.", "Plese log in to add your opinion")
@@ -33,16 +35,7 @@ class Post extends Component {
       return;
     }
     if (opinion === this.props.choice) return;
-    const formData = new FormData();
-    formData.append("idPosta", this.props.postId);
-    formData.append("username", this.props.user.username);
-    formData.append("opinion", boolOpinion);
-    fetch("api/post/vote", { method: "POST", body: formData })
-      .then(res => res.json())
-      .then(data => {
-        this.props.dispatch(setPostOpinion(this.props.postId, data.opinion));
-      })
-      .catch(er => console.log(er));
+    await addOpinion(this.props.postId, boolOpinion);
   }
 
   render() {
@@ -61,19 +54,33 @@ class Post extends Component {
             <div className="post__header">
               <div className="post__title">
                 <div className="post__title--title">{this.props.title}</div>
-                {this.props.user.username && (
-                  <div
-                    className="post__follow-button"
-                    onClick={event => {
-                      event.stopPropagation();
-                      window.event.cancelBubble = true;
-                      if (!this.props.follow) follow(this.props.postId);
-                      else unfollow(this.props.postId);
-                    }}
-                  >
-                    {!this.props.follow ? "follow" : "unfollow"}
-                  </div>
-                )}
+                {this.props.user.username &&
+                  (this.state.loadFollowing ? (
+                    <div
+                      onClick={event => {
+                        event.stopPropagation();
+                        window.event.cancelBubble = true;
+                      }}
+                      className="post__follow-button"
+                    >
+                      Sync...
+                    </div>
+                  ) : (
+                    <div
+                      className="post__follow-button"
+                      onClick={async event => {
+                        event.stopPropagation();
+                        window.event.cancelBubble = true;
+                        this.setState({ loadFollowing: true });
+
+                        if (!this.props.follow) await follow(this.props.postId);
+                        else await unfollow(this.props.postId);
+                        this.setState({ loadFollowing: false });
+                      }}
+                    >
+                      {!this.props.follow ? "follow" : "unfollow"}
+                    </div>
+                  ))}
               </div>
               <div>
                 <div>{convertUtcToLocal(this.props.createdAt)}</div>
@@ -116,43 +123,53 @@ class Post extends Component {
               Comments {this.props.commentNo} <i className="far fa-comment"></i>
             </div>
 
-            <div
-              onClick={event => {
-                event.stopPropagation();
-                window.event.cancelBubble = true;
-              }}
-              className="post__vote"
-            >
-              <AwesomeButton
-                className="aws-btn"
-                size="large"
-                type="primary"
-                ripple={true}
-                onPress={() => this.AddOpinion("agree", true)}
+            {this.state.loadChoice ? (
+              <div className="post__follow-button">Sync...</div>
+            ) : (
+              <div
+                onClick={event => {
+                  event.stopPropagation();
+                  window.event.cancelBubble = true;
+                }}
+                className="post__vote"
               >
-                {this.props.agreeNo}
-                {this.props.choice === "agree" ? (
-                  <i className="far fa-thumbs-up fa-2x"></i>
-                ) : (
-                  <i className="far fa-grin"></i>
-                )}
-              </AwesomeButton>
+                <div
+                  onClick={async () => {
+                    this.setState({ loadChoice: true });
+                    await this.AddOpinion("agree", true);
+                    this.setState({ loadChoice: false });
+                  }}
+                  className="post__vote__option"
+                >
+                  <div>{this.props.agreeNo}</div>
+                  <div>
+                    {this.props.choice === "agree" ? (
+                      <i className="far fa-thumbs-up fa-2x"></i>
+                    ) : (
+                      <i className="far fa-grin"></i>
+                    )}
+                  </div>
+                </div>
 
-              <AwesomeButton
-                size="large"
-                type="link"
-                ripple={true}
-                onPress={() => this.AddOpinion("disagree", false)}
-              >
-                {this.props.choice === "disagree" ? (
-                  <i className="far fa-thumbs-up fa-2x"></i>
-                ) : (
-                  <i className="far fa-angry"></i>
-                )}
-
-                {this.props.disagreeNo}
-              </AwesomeButton>
-            </div>
+                <div
+                  onClick={async e => {
+                    this.setState({ loadChoice: true });
+                    await this.AddOpinion("disagree", false);
+                    this.setState({ loadChoice: false });
+                  }}
+                  className="post__vote__option"
+                >
+                  <div>{this.props.disagreeNo}</div>
+                  <div>
+                    {this.props.choice === "disagree" ? (
+                      <i className="far fa-thumbs-up fa-2x"></i>
+                    ) : (
+                      <i className="far fa-angry"></i>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
             <div
               onClick={event => {
                 event.stopPropagation();

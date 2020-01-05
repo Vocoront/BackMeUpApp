@@ -43,3 +43,20 @@ button {
 .newComment textarea {
   border-radius: 25px !important;
 }
+
+.ext-post__go-back-btn {
+  color: darken(#c3d5d5, 25%) !important;
+  width: $s-container-size;
+  margin-bottom: $s-size;
+  text-transform: uppercase;
+  background: #ffffff;
+  padding: $s-size;
+  border: 0.4rem solid darken(#c3d5d5, 25%) !important;
+  border-radius: 0.6rem;
+  display: inline-block;
+  transition: all 0.3s ease 0s;
+  text-decoration: none;
+  text-align: center;
+  font-size: $m-font-size;
+  cursor: pointer;
+}

@@ -32,3 +32,8 @@ export const setLoading = (loading = false) => ({
   type: "SET_LOADING",
   loading
 });
+
+export const setBackHistory = (value = false) => ({
+  type: "SET_BACK_HISTORY",
+  value
+});

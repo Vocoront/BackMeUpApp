@@ -124,10 +124,14 @@ const getPosts = (nextPage = false) => {
 };
 
 const getPostById = (id = undefined) => {
+  const authToken = authHeader();
   if (!id) return;
   store.dispatch(setExtendedLoading(true));
   fetch(process.env.REACT_APP_SERVER_DOMAIN + "api/post/" + id, {
-    method: "GET"
+    method: "GET",
+    headers: {
+      ...authToken
+    }
   })
     .then(res => {
       if (res.status === 200) return res.json();
@@ -145,16 +149,25 @@ const getPostById = (id = undefined) => {
 };
 
 const getCommentsForPost = (id = undefined) => {
+  const authToken = authHeader();
   if (!id) return;
   let putanja = process.env.REACT_APP_SERVER_DOMAIN + "api/post/comments/" + id;
   store.dispatch(setCommentLoading(true));
-  fetch(putanja, { method: "GET" })
+  fetch(putanja, {
+    method: "GET",
+    headers: {
+      ...authToken
+    }
+  })
     .then(res => res.json())
     .then(data => {
       store.dispatch(setPostComments(data));
       store.dispatch(setCommentLoading(false));
     })
-    .catch(er => console.log(er));
+    .catch(er => {
+      store.dispatch(setCommentLoading(false));
+      console.log(er);
+    });
 };
 
 export { getPosts, getPostById, getCommentsForPost };

@@ -13,9 +13,9 @@ namespace BackMeUpApp.Repository
     {
         private readonly IGraphClient _client;
 
-        public UserRepoistory(IGraphClient client)
+        public UserRepoistory(IGraphClientFactory factory)
         {
-            this._client = client;
+            this._client = factory.Create();
         }
 
         private string CreateHash(string password,byte[] salt)
