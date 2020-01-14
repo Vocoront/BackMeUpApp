@@ -105,6 +105,10 @@ namespace BackMeUpApp.Repository
         }
         public async Task<CommentForDisplayDto> AddCommentAsync(int postId, string username, string comment_text)
         {
+            comment_text = comment_text.Replace("\\", @"\u005c")// da se dodaju escape karakteri za znakove, ako nadjete jos neki dodajte
+                .Replace("\"", @"\u0022")
+                .Replace("'", @"\u0027");
+
 
             var query =  _client.Cypher.Match("(u:User),(p:Post)")
                 .Where("u.Username = '" + username + "' AND  id(p)=" + postId)

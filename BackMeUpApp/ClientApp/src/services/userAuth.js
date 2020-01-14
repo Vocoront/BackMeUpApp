@@ -61,7 +61,7 @@ const validatePassword = (password, repassword) => {
   const schema = new passwordValidator();
   schema
     .is()
-    .min(8) // Minimum length 8
+    .min(6) // Minimum length 6
     .is()
     .max(32) // Maximum length 32
     .has()
@@ -135,6 +135,7 @@ const loginSubmit = async (username, password) => {
   formData.append("username", username);
   formData.append("password", password);
   store.dispatch(clearAlert());
+  console.log(process.env);
   let result = await fetch(
     process.env.REACT_APP_SERVER_DOMAIN + "api/user/login",
     { method: "POST", body: formData }

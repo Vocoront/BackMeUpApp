@@ -1,7 +1,7 @@
 const defaulState = {
   filter: "date",
   order: "desc",
-  period: "day",
+  period: "all",
   tag: "",
   creator: ""
 };
